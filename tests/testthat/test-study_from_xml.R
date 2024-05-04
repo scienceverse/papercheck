@@ -49,24 +49,7 @@ test_that("iteration", {
   expect_equal(s[[2]]$info$title, "Having other-sex siblings predicts moral attitudes to sibling incest, but not parent-child incest")
   expect_equal(s[[3]]$info$title, "Will knowledge about more efficient study designs increase the willingness to pre-register?")
 
-  # search full text
-  sig <- search_full_text(s, "significant")
-  expect_equal(nrow(sig), 13)
-
-  equal <- search_full_text(s, "=", section = "results")
-  classes <- as.character(unique(equal$section_class))
-  expect_equal(classes, "results")
-})
-
-test_that("search_full_text", {
-  filename <- file.path(grobid_dir, "prereg.pdf.tei.xml")
-  s <- study_from_xml(filename)
-  alpha <- search_full_text(s, "alpha")
-
-  expect_true(all(grepl("alpha", alpha$text)))
-  expect_equal(nrow(alpha), 3)
-
-  alpha_intro <- search_full_text(s, "alpha", "intro")
-  expect_equal(nrow(alpha_intro), 2)
 
 })
+
+

@@ -26,4 +26,3 @@ is_nowt(x, test_for = "trim")
 is_nowt(x, test_for = "empty")
 
 }
-\keyword{internal}

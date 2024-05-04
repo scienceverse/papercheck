@@ -1,26 +1,46 @@
 ---
-title: "papercheck"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{papercheck}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+output: github_document
 ---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
 )
 ```
 
-```{r setup}
+# papercheck <img src="man/figures/logo.png" align="right" height="120" alt="" />
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+The goal of papercheck is to automatically check scientific papers for best practices.
+
+## Installation
+
+You can install the development version of papercheck from [GitHub](https://github.com/) with:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("scienceverse/papercheck")
+```
+
+## Example
+
+```{r}
 library(papercheck)
 ```
 
-## Load from XML
+
+### Load from XML
 
 The function `study_from_xml()` can read XML files in [TEI](https://tei-c.org/) format created by [grobid](https://grobid.readthedocs.io/). 
+
+The example below uses some previously created XML files that are included with papercheck. You can [use grobid on your own paper](https://huggingface.co/spaces/kermitt2/grobid) here.
 
 ```{r}
 grobid_dir <- system.file("grobid", package="papercheck")
@@ -60,4 +80,5 @@ studies <- study_from_xml(grobid_dir)
 
 search_full_text(studies, "hypothesi", section = "intro")
 ```
+
 

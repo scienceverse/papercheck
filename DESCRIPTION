@@ -1,5 +1,5 @@
 Package: papercheck
-Title: Check Scientific Papaers for Best Practices
+Title: Check Scientific Papers for Best Practices
 Version: 0.0.0.9000
 Authors@R: c(
   person(  given = "Lisa",
@@ -12,7 +12,7 @@ Authors@R: c(
            role = c("aut"),
            email = "lakens@gmail.com",
            comment = c(ORCID = "0000-0002-0247-239X")))
-Description: What the package does (one paragraph).
+Description: Automatically check papers for best practices.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

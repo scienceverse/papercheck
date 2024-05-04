@@ -156,7 +156,7 @@ full_text_table_from_grobid <- function(body) {
     df[rows, tag] <- regmatches(df$tag, m = m)
     vals <- gsub(".+_", "", df[, tag])
 
-    return(vals)
+    return(as.numeric(vals))
   }
 
   ft$div <- add_tag(ft, "div")
@@ -164,37 +164,41 @@ full_text_table_from_grobid <- function(body) {
   ft$s <- add_tag(ft, "s")
 
   # make table of sections and classify
-  headers <- ft[grepl("head", ft$tag), c("section", "text")]
-  sections <- data.frame(
-    section = unique(ft$section)
-  ) |>
-    merge(headers, by = "section", all.x = TRUE)
+  sections <- dplyr::summarise(ft, .by = "section",
+                header = ifelse(type == "head", text, "") |>
+                         paste(collapse = ""))
 
+  # headers <- ft[grepl("head", ft$tag), c("section", "text")]
+  # names(headers)[[2]] <- "header"
+  # sections <- data.frame(
+  #   section = unique(ft$section)
+  # ) |>
+  #   merge(headers, by = "section", all.x = TRUE)
 
-  intro <- grepl("intro", sections$text, ignore.case = TRUE)
-  method <- grepl("method", sections$text, ignore.case = TRUE)
-  results <- grepl("result", sections$text, ignore.case = TRUE)
-  discussion <- grepl("discuss", sections$text, ignore.case = TRUE)
+  sections$header <- gsub("\\s*\\.$", "", sections$header)
+
+  intro <- grepl("intro", sections$header, ignore.case = TRUE)
+  method <- grepl("method", sections$header, ignore.case = TRUE)
+  results <- grepl("result", sections$header, ignore.case = TRUE)
+  discussion <- grepl("discuss", sections$header, ignore.case = TRUE)
+  sections$section_class <- NA
   sections$section_class[intro] <- "intro"
   sections$section_class[method] <- "method"
-  sections$section_class[results] <- "results"
   sections$section_class[discussion] <- "discussion"
+  sections$section_class[results] <- "results"
+
 
   # assume sections are the same class as previous if unclassified
   for (i in seq_along(sections$section_class)) {
-    if (is_nowt(sections$section_class[i]) & i > 1)
+    if (is.na(sections$section_class[i]) & i > 1)
       sections$section_class[i] <- sections$section_class[i-1]
   }
 
-  # replace blank sections with header text
-  blanks <- is_nowt(sections$section_class)
-  sections$section_class[blanks] <- sections$text[blanks]
-
   # beginning sections with no header labelled intro
-  non_blanks <- which(!is_nowt(sections$section_class))
+  non_blanks <- which(!is.na(sections$section_class))
   if (length(non_blanks) > 0) {
     blank_start <- non_blanks[[1]] - 1
-    blanks <- rep(c(TRUE, FALSE), c(blank_start, length(blanks) - blank_start))
+    blanks <- rep(c(TRUE, FALSE), c(blank_start, length(sections$section_class) - blank_start))
     sections$section_class[blanks] <- "intro"
   }
 
@@ -202,78 +206,28 @@ full_text_table_from_grobid <- function(body) {
   sec_labels <- gsub("_\\d+$", "", sections$section)
   notdivs <- sec_labels != "div"
   sections$section_class[notdivs] <- sec_labels[notdivs]
-  tables <- grepl("table", sections$text, ignore.case = TRUE)
+  tables <- grepl("table", sections$header, ignore.case = TRUE)
   sections$section_class[notdivs & tables] <- "table"
 
   # add sections to full text
-  ft <- merge(ft, sections[, c("section", "section_class")],
+  ft <- merge(ft, sections[, c("section", "section_class", "header")],
               by = "section", all.x = TRUE)
+
+  ft <- ft[, c("text", "type", "section", "section_class",
+               "header", "div", "p", "s", "tag")]
+
+  # try to fix bad sentence parsing
+  # start_equal <- grepl("^\\s*=", ft$text)
+  # is_sentence <- ft$type == "s"
+  # bad_start <- which(start_equal & is_sentence)
+  # sentence_n <- ft$s[bad_start]
+  # prev_sentence <- ft$s[bad_start - 1]
+  # is_new_sentence <- (sentence_n != prev_sentence) |> sapply(isTRUE)
+  # ft$merge_prev = FALSE
+  # ft$merge_prev[bad_start[is_new_sentence]] <- TRUE
 
   # TODO: process table sections
 
   return(ft)
 }
 
-#' Search the full text
-#'
-#' Search the full text of a study paper. Currently only works with study objects that have full text imported from grobid (e.g., using `study_from_xml()`).
-#'
-#' @param study a study object created by `study_from_xml` or a list of study objects
-#' @param term the regex term to search for
-#' @param section the section(s) to search in
-#' @param refs whether to include references
-#' @param ignore.case whether to ignore case when text searching
-#' @param ... additional arguments to pass to `grepl()`
-#'
-#' @return a data frame of matching sentences
-#' @export
-#'
-#' @examples
-#' grobid_dir <- system.file("grobid", package="scienceverse")
-#' filename <- file.path(grobid_dir, "eyecolor.pdf.tei.xml")
-#' study <- study_from_xml(filename)
-#' sig <- search_full_text(study, "significant", "results")
-search_full_text <- function(study, term, section = NULL, refs = FALSE, ignore.case = TRUE, ...) {
-  section_class <- text <- div <- p <- s <- NULL
-
-  # handle list of scivrs objects ----
-  if (!"scivrs_study" %in% class(study)) {
-    contains_scivrs <- lapply(study, class) |>
-      sapply(\(x) "scivrs_study" %in% x)
-    if (all(contains_scivrs)) {
-      matches <- lapply(study, \(x) {
-        search_full_text(x, term, section, refs, ignore.case, ...)
-      })
-      matches_agg <- do.call(rbind, matches)
-      return(matches_agg)
-    } else {
-      stop("The study argument doesn't seem to be a scivrs_study object or a list of study objects")
-    }
-  }
-
-  # filter full text
-  section_filter <- seq_along(study$full_text$section_class)
-  if (!is.null(section))
-    section_filter <- study$full_text$section_class %in% section
-  ref_filter <- TRUE
-  if (!refs) ref_filter <- study$full_text$type != "ref"
-  ft <- study$full_text[section_filter & ref_filter, ]
-
-  # get all sentences with at least 1 part matching term
-  match_term <- grepl(term, ft$text, ignore.case = ignore.case, ...)
-  ft_match <- ft[match_term, ]
-  # adds back the other sentence parts for divided sentences
-  ft_match_all <- dplyr::semi_join(ft, ft_match, by = c("div", "p", "s"))
-
-  full_text_table <- dplyr::group_by(ft_match_all, section_class, section, div, p, s) |>
-    dplyr::summarise(text = paste(text, collapse = ""))
-
-  # full_text_table <- aggregate(text ~ section_class + section + div + p + s,
-  #                              data = ft_match_all,
-  #                              FUN = paste, collapse = "")
-
-
-  full_text_table$study <- study$name
-
-  return(full_text_table)
-}

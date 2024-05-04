@@ -27,7 +27,7 @@ message <- function (..., domain = NULL, appendLF = TRUE) {
 #' @param test_for values to test for ("null" replaces NULL values, "na", replaces NA values, "trim" replaces empty strings after trimws(), "empty" replaces empty lists)
 #'
 #' @return vector or list of logical values
-#' @keywords internal
+#' @export
 #'
 #' @examples
 #' x <- list(NULL, NA, " ", list())
@@ -73,7 +73,7 @@ is_nowt <- function(x, test_for = c("null", "na", "trim", "empty")) {
 #' @param test_for values to test for ("null" replaces NULL values, "na", replaces NA values, "trim" replaces empty strings after trimws(), "empty" replaces empty lists)
 #'
 #' @return vector or list with replaced values
-#' @keywords internal
+#' @export
 #'
 #' @examples
 #' if_nowt(NULL)
@@ -81,11 +81,11 @@ is_nowt <- function(x, test_for = c("null", "na", "trim", "empty")) {
 #' if_nowt("   ")
 #' if_nowt(c(1, 2, NA), replace = 0)
 #' x <- list(NULL, NA, " ", list())
-#' if_nowt(x) %>% str()
-#' if_nowt(x, test_for = "null") %>% str()
-#' if_nowt(x, test_for = "na") %>% str()
-#' if_nowt(x, test_for = "trim") %>% str()
-#' if_nowt(x, test_for = "empty") %>% str()
+#' if_nowt(x) |> str()
+#' if_nowt(x, test_for = "null") |> str()
+#' if_nowt(x, test_for = "na") |> str()
+#' if_nowt(x, test_for = "trim") |> str()
+#' if_nowt(x, test_for = "empty") |> str()
 if_nowt <- function(x, replace = "", test_for = c("null", "na", "trim", "empty")) {
   if (length(x) > 1) {
     args <- list(X = x, FUN = if_nowt,

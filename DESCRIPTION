@@ -26,5 +26,5 @@ Imports:
     dplyr,
     xml2
 VignetteBuilder: knitr
-URL: https://github.com/debruine/papercheck
+URL: https://github.com/debruine/papercheck, https://scienceverse.github.io/papercheck/
 BugReports: https://github.com/debruine/papercheck/issues

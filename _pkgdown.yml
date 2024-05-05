@@ -1,0 +1,11 @@
+url: https://scienceverse.github.io/papercheck/
+template:
+  bootstrap: 5
+  bslib:
+    preset: spacelab
+    primary: "#327118"
+    # red :"#B52824"
+    # green: "#327118"
+    # blue: "#154E81"
+  params:
+    ganalytics: UA-160147578-1

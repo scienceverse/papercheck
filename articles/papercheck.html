@@ -39,7 +39,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">papercheck</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9001</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -118,10 +118,10 @@
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/search_full_text.html">search_full_text</a></span><span class="op">(</span><span class="va">s</span>, <span class="st">"significan[t|ce]"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   section_class section div p s</span></span>
-<span><span class="co">#&gt; 1       results   div_5   5 2 1</span></span>
-<span><span class="co">#&gt; 2       results   div_5   5 3 1</span></span>
-<span><span class="co">#&gt; 3       results   div_5   5 3 7</span></span>
-<span><span class="co">#&gt; 4    discussion   div_6   6 3 1</span></span>
+<span><span class="co">#&gt; 1       results   5_div   5 2 1</span></span>
+<span><span class="co">#&gt; 2       results   5_div   5 3 1</span></span>
+<span><span class="co">#&gt; 3       results   5_div   5 3 7</span></span>
+<span><span class="co">#&gt; 4    discussion   6_div   6 3 1</span></span>
 <span><span class="co">#&gt;                                                                                                                                                                            text</span></span>
 <span><span class="co">#&gt; 1                      Our main, omnibus analysis showed a significant three-way interaction among incest type, participant sex, and sibling type (Estimate = 0.285, t(578.003)</span></span>
 <span><span class="co">#&gt; 2                Our analysis of moral wrongness scores for sibling incest scores showed a significant interaction between participant sex and sibling type (Estimate = -0.559,</span></span>
@@ -139,11 +139,11 @@ detecting and fixing this.)</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/search_full_text.html">search_full_text</a></span><span class="op">(</span><span class="va">s</span>, <span class="st">"third-party"</span>, section <span class="op">=</span> <span class="st">"intro"</span>, refs <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   section_class section div p s</span></span>
-<span><span class="co">#&gt; 1         intro   div_1   1 3 3</span></span>
-<span><span class="co">#&gt; 2         intro   div_1   1 4 3</span></span>
-<span><span class="co">#&gt; 3         intro   div_1   1 4 4</span></span>
-<span><span class="co">#&gt; 4         intro   div_1   1 5 1</span></span>
-<span><span class="co">#&gt; 5         intro   div_1   1 5 2</span></span>
+<span><span class="co">#&gt; 1         intro   1_div   1 3 3</span></span>
+<span><span class="co">#&gt; 2         intro   1_div   1 4 3</span></span>
+<span><span class="co">#&gt; 3         intro   1_div   1 4 4</span></span>
+<span><span class="co">#&gt; 4         intro   1_div   1 5 1</span></span>
+<span><span class="co">#&gt; 5         intro   1_div   1 5 2</span></span>
 <span><span class="co">#&gt;                                                                                                                                                                                                                                                                                   text</span></span>
 <span><span class="co">#&gt; 1 This observation led Lieberman and colleagues to propose that moral opposition to third-party sibling incest may be greater among individuals with other-sex siblings than among individuals who do not have other-sex siblings (Lieberman et al., 2007 (Lieberman et al.,, 2002)) .</span></span>
 <span><span class="co">#&gt; 2                                                                                 Royzman et al's non-replication potentially calls into question the reliability of previously reported links between having an other-sex sibling and moral opposition to third-party sibling incest.</span></span>
@@ -170,60 +170,60 @@ XML files, returning a list of scienceverse study objects, and
 <span><span class="co">#&gt; Processing prereg.pdf.tei.xml...</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/search_full_text.html">search_full_text</a></span><span class="op">(</span><span class="va">studies</span>, <span class="st">"hypothesi"</span>, section <span class="op">=</span> <span class="st">"intro"</span><span class="op">)</span></span>
-<span><span class="co">#&gt;    section_class section div  p  s</span></span>
-<span><span class="co">#&gt; 1          intro   div_1   1  3  3</span></span>
-<span><span class="co">#&gt; 2          intro   div_1   1  4  2</span></span>
-<span><span class="co">#&gt; 3          intro   div_1   1  4  3</span></span>
-<span><span class="co">#&gt; 4          intro   div_1   1  4  5</span></span>
-<span><span class="co">#&gt; 5          intro   div_1   1  4 12</span></span>
-<span><span class="co">#&gt; 6          intro   div_1   1  4 14</span></span>
-<span><span class="co">#&gt; 7          intro   div_1   1  4 21</span></span>
-<span><span class="co">#&gt; 8          intro   div_1   1  4 22</span></span>
-<span><span class="co">#&gt; 9          intro   div_1   1  4 24</span></span>
-<span><span class="co">#&gt; 10         intro   div_1   1  4 25</span></span>
-<span><span class="co">#&gt; 11         intro   div_1   1  2  2</span></span>
-<span><span class="co">#&gt; 12         intro   div_1   1  1  3</span></span>
-<span><span class="co">#&gt; 13         intro   div_1   1  5  1</span></span>
-<span><span class="co">#&gt; 14         intro   div_2   2  2  5</span></span>
-<span><span class="co">#&gt; 15         intro   div_2   2  2  6</span></span>
-<span><span class="co">#&gt; 16         intro   div_2   2  4  8</span></span>
-<span><span class="co">#&gt; 17         intro   div_3   3 11  7</span></span>
-<span><span class="co">#&gt;                                                                                                                                                                                                                                                                                                                                                                                                            text</span></span>
-<span><span class="co">#&gt; 1  However, this hypothesis is difficult to reconcile with consistent findings that the parent--child relationship affects the strength of preferences for faces that resemble one's other--sex parent and the strength of resemblance between that parent and one's spouse, as well as husband--father resemblance being observed even among adopted women who were not genetically related to their fathers .</span></span>
-<span><span class="co">#&gt; 2                                                                                 While the matching hypothesis predicts that the best predictor of partner's eye color will be own eye color, the sex--linked heritable preference hypothesis predicts this will be the other--sex parent's eye color and the positive sexual imprinting hypothesis predicts this will be the partner--sex parent's eye color.</span></span>
-<span><span class="co">#&gt; 3                                                                                                                                                            While these latter two predictions lead to the same pattern of results for heterosexual couples, here we also test same--sex couples to distinguish the sex-linked heritable preference hypothesis from the positive sexual imprinting hypothesis.</span></span>
-<span><span class="co">#&gt; 4                                                                                                                                                                                                                                        The best model supported the positive sexual imprinting hypothesis, where maternal eye color significantly predicted the eye color of female partners (B = 0.812, S.E.</span></span>
-<span><span class="co">#&gt; 5                                                                                                                                                                                                              This model was supported 7.455 times more strongly than the model corresponding to the matching hypothesis, where own eye color did not significantly predict partner eye color (B = 0.263, S.E.</span></span>
-<span><span class="co">#&gt; 6                                                                                                                                                                  The imprinting model was also supported 9.655 times more strongly than the model corresponding to the sex--linked heritable preference hypothesis, where maternal eye color did not predict the eye color of men's partners (B = 0.262, S.E.</span></span>
-<span><span class="co">#&gt; 7                                                                                                                                                                                                                                                                                                          The model supporting the positive sexual imprinting hypothesis remained the best model (see Table ).</span></span>
-<span><span class="co">#&gt; 8                                                                                                                                                                                                                         Our data provide clear evidence against the sex--linked heritable preferences hypothesis, which predicts a relationship between partner's eye color and other-sex parent's eye color.</span></span>
-<span><span class="co">#&gt; 9                                                                                                                                                                                                                                                           Our data also give little support to the matching hypothesis, as own eye color was positively but not significantly related to partner's eye color.</span></span>
-<span><span class="co">#&gt; 10                                                                                                                                                            Our data give clearest support to the positive sexual imprinting hypothesis, where we found that partner's eye color was predicted by maternal eye color for people with female partners and by paternal eye color for people with male partners.</span></span>
-<span><span class="co">#&gt; 11                                                                                                                                                                                                                                                                                                   Consequently, humans (like many other animals) are hypothesized to possess adaptions to reduce inbreeding.</span></span>
-<span><span class="co">#&gt; 12                                                                                                                                   Clearly specifying the rules that will be used to terminate the data collection, and specifying the analysis plan before data is collected, can prevent undesirable research practices such as inflated of Type 1 errors and "hypothesizing after the results are known" .</span></span>
-<span><span class="co">#&gt; 13                                                                                                                                                                                                                                                                               The hypothesis that more efficient study designs might increase the willingness to pre-register rests on several requirements.</span></span>
-<span><span class="co">#&gt; 14                                                                                                                                                                                                                          respond to the statement that "One should always use two-sided p-values" with a resounding "No!", indicating that when a hypothesis is directional, a one-tailed test is required .</span></span>
-<span><span class="co">#&gt; 15                                                                                                                                      Since one-sided tests are only appropriate whenever null-hypothesis significance tests are appropriate, we have to assume that a null-hypothesis test answers a question a researcher is interested in, and that the null-hypothesis is both plausible and interesting.</span></span>
-<span><span class="co">#&gt; 16                                                                                                                                                                                                  The difference between hypothesis testing and estimation is relevant here -an unexpected effect might not confirm a hypothesis, but the descriptives related to the effect size might still be interesting.</span></span>
-<span><span class="co">#&gt; 17                                                                                           Purely descriptive studies where all data is reported might not require pre-registration, small pilot studies to test the feasibility of a paradigm are not designed to test a hypothesis, and some researchers might only publish studies when they have directly replicated every test in an independent sample.</span></span>
-<span><span class="co">#&gt;                    file</span></span>
-<span><span class="co">#&gt; 1  eyecolor.pdf.tei.xml</span></span>
-<span><span class="co">#&gt; 2  eyecolor.pdf.tei.xml</span></span>
-<span><span class="co">#&gt; 3  eyecolor.pdf.tei.xml</span></span>
-<span><span class="co">#&gt; 4  eyecolor.pdf.tei.xml</span></span>
-<span><span class="co">#&gt; 5  eyecolor.pdf.tei.xml</span></span>
-<span><span class="co">#&gt; 6  eyecolor.pdf.tei.xml</span></span>
-<span><span class="co">#&gt; 7  eyecolor.pdf.tei.xml</span></span>
-<span><span class="co">#&gt; 8  eyecolor.pdf.tei.xml</span></span>
-<span><span class="co">#&gt; 9  eyecolor.pdf.tei.xml</span></span>
-<span><span class="co">#&gt; 10 eyecolor.pdf.tei.xml</span></span>
-<span><span class="co">#&gt; 11   incest.pdf.tei.xml</span></span>
-<span><span class="co">#&gt; 12   prereg.pdf.tei.xml</span></span>
-<span><span class="co">#&gt; 13   prereg.pdf.tei.xml</span></span>
-<span><span class="co">#&gt; 14   prereg.pdf.tei.xml</span></span>
-<span><span class="co">#&gt; 15   prereg.pdf.tei.xml</span></span>
-<span><span class="co">#&gt; 16   prereg.pdf.tei.xml</span></span>
-<span><span class="co">#&gt; 17   prereg.pdf.tei.xml</span></span></code></pre></div>
+<span><span class="co">#&gt;                         section_class section div  p  s</span></span>
+<span><span class="co">#&gt; eyecolor.pdf.tei.xml.1          intro   1_div   1  3  3</span></span>
+<span><span class="co">#&gt; eyecolor.pdf.tei.xml.2          intro   1_div   1  4  2</span></span>
+<span><span class="co">#&gt; eyecolor.pdf.tei.xml.3          intro   1_div   1  4  3</span></span>
+<span><span class="co">#&gt; eyecolor.pdf.tei.xml.4          intro   1_div   1  4  5</span></span>
+<span><span class="co">#&gt; eyecolor.pdf.tei.xml.5          intro   1_div   1  4 12</span></span>
+<span><span class="co">#&gt; eyecolor.pdf.tei.xml.6          intro   1_div   1  4 14</span></span>
+<span><span class="co">#&gt; eyecolor.pdf.tei.xml.7          intro   1_div   1  4 21</span></span>
+<span><span class="co">#&gt; eyecolor.pdf.tei.xml.8          intro   1_div   1  4 22</span></span>
+<span><span class="co">#&gt; eyecolor.pdf.tei.xml.9          intro   1_div   1  4 24</span></span>
+<span><span class="co">#&gt; eyecolor.pdf.tei.xml.10         intro   1_div   1  4 25</span></span>
+<span><span class="co">#&gt; incest.pdf.tei.xml              intro   1_div   1  2  2</span></span>
+<span><span class="co">#&gt; prereg.pdf.tei.xml.1            intro  01_div   1  1  3</span></span>
+<span><span class="co">#&gt; prereg.pdf.tei.xml.2            intro  01_div   1  5  1</span></span>
+<span><span class="co">#&gt; prereg.pdf.tei.xml.3            intro  02_div   2  2  5</span></span>
+<span><span class="co">#&gt; prereg.pdf.tei.xml.4            intro  02_div   2  2  6</span></span>
+<span><span class="co">#&gt; prereg.pdf.tei.xml.5            intro  02_div   2  4  8</span></span>
+<span><span class="co">#&gt; prereg.pdf.tei.xml.6            intro  03_div   3 11  7</span></span>
+<span><span class="co">#&gt;                                                                                                                                                                                                                                                                                                                                                                                                                                 text</span></span>
+<span><span class="co">#&gt; eyecolor.pdf.tei.xml.1  However, this hypothesis is difficult to reconcile with consistent findings that the parent--child relationship affects the strength of preferences for faces that resemble one's other--sex parent and the strength of resemblance between that parent and one's spouse, as well as husband--father resemblance being observed even among adopted women who were not genetically related to their fathers .</span></span>
+<span><span class="co">#&gt; eyecolor.pdf.tei.xml.2                                                                                 While the matching hypothesis predicts that the best predictor of partner's eye color will be own eye color, the sex--linked heritable preference hypothesis predicts this will be the other--sex parent's eye color and the positive sexual imprinting hypothesis predicts this will be the partner--sex parent's eye color.</span></span>
+<span><span class="co">#&gt; eyecolor.pdf.tei.xml.3                                                                                                                                                            While these latter two predictions lead to the same pattern of results for heterosexual couples, here we also test same--sex couples to distinguish the sex-linked heritable preference hypothesis from the positive sexual imprinting hypothesis.</span></span>
+<span><span class="co">#&gt; eyecolor.pdf.tei.xml.4                                                                                                                                                                                                                                        The best model supported the positive sexual imprinting hypothesis, where maternal eye color significantly predicted the eye color of female partners (B = 0.812, S.E.</span></span>
+<span><span class="co">#&gt; eyecolor.pdf.tei.xml.5                                                                                                                                                                                                              This model was supported 7.455 times more strongly than the model corresponding to the matching hypothesis, where own eye color did not significantly predict partner eye color (B = 0.263, S.E.</span></span>
+<span><span class="co">#&gt; eyecolor.pdf.tei.xml.6                                                                                                                                                                  The imprinting model was also supported 9.655 times more strongly than the model corresponding to the sex--linked heritable preference hypothesis, where maternal eye color did not predict the eye color of men's partners (B = 0.262, S.E.</span></span>
+<span><span class="co">#&gt; eyecolor.pdf.tei.xml.7                                                                                                                                                                                                                                                                                                          The model supporting the positive sexual imprinting hypothesis remained the best model (see Table ).</span></span>
+<span><span class="co">#&gt; eyecolor.pdf.tei.xml.8                                                                                                                                                                                                                         Our data provide clear evidence against the sex--linked heritable preferences hypothesis, which predicts a relationship between partner's eye color and other-sex parent's eye color.</span></span>
+<span><span class="co">#&gt; eyecolor.pdf.tei.xml.9                                                                                                                                                                                                                                                           Our data also give little support to the matching hypothesis, as own eye color was positively but not significantly related to partner's eye color.</span></span>
+<span><span class="co">#&gt; eyecolor.pdf.tei.xml.10                                                                                                                                                            Our data give clearest support to the positive sexual imprinting hypothesis, where we found that partner's eye color was predicted by maternal eye color for people with female partners and by paternal eye color for people with male partners.</span></span>
+<span><span class="co">#&gt; incest.pdf.tei.xml                                                                                                                                                                                                                                                                                                        Consequently, humans (like many other animals) are hypothesized to possess adaptions to reduce inbreeding.</span></span>
+<span><span class="co">#&gt; prereg.pdf.tei.xml.1                                                                                                                                      Clearly specifying the rules that will be used to terminate the data collection, and specifying the analysis plan before data is collected, can prevent undesirable research practices such as inflated of Type 1 errors and "hypothesizing after the results are known" .</span></span>
+<span><span class="co">#&gt; prereg.pdf.tei.xml.2                                                                                                                                                                                                                                                                                  The hypothesis that more efficient study designs might increase the willingness to pre-register rests on several requirements.</span></span>
+<span><span class="co">#&gt; prereg.pdf.tei.xml.3                                                                                                                                                                                                                             respond to the statement that "One should always use two-sided p-values" with a resounding "No!", indicating that when a hypothesis is directional, a one-tailed test is required .</span></span>
+<span><span class="co">#&gt; prereg.pdf.tei.xml.4                                                                                                                                         Since one-sided tests are only appropriate whenever null-hypothesis significance tests are appropriate, we have to assume that a null-hypothesis test answers a question a researcher is interested in, and that the null-hypothesis is both plausible and interesting.</span></span>
+<span><span class="co">#&gt; prereg.pdf.tei.xml.5                                                                                                                                                                                                     The difference between hypothesis testing and estimation is relevant here -an unexpected effect might not confirm a hypothesis, but the descriptives related to the effect size might still be interesting.</span></span>
+<span><span class="co">#&gt; prereg.pdf.tei.xml.6                                                                                              Purely descriptive studies where all data is reported might not require pre-registration, small pilot studies to test the feasibility of a paradigm are not designed to test a hypothesis, and some researchers might only publish studies when they have directly replicated every test in an independent sample.</span></span>
+<span><span class="co">#&gt;                                         file</span></span>
+<span><span class="co">#&gt; eyecolor.pdf.tei.xml.1  eyecolor.pdf.tei.xml</span></span>
+<span><span class="co">#&gt; eyecolor.pdf.tei.xml.2  eyecolor.pdf.tei.xml</span></span>
+<span><span class="co">#&gt; eyecolor.pdf.tei.xml.3  eyecolor.pdf.tei.xml</span></span>
+<span><span class="co">#&gt; eyecolor.pdf.tei.xml.4  eyecolor.pdf.tei.xml</span></span>
+<span><span class="co">#&gt; eyecolor.pdf.tei.xml.5  eyecolor.pdf.tei.xml</span></span>
+<span><span class="co">#&gt; eyecolor.pdf.tei.xml.6  eyecolor.pdf.tei.xml</span></span>
+<span><span class="co">#&gt; eyecolor.pdf.tei.xml.7  eyecolor.pdf.tei.xml</span></span>
+<span><span class="co">#&gt; eyecolor.pdf.tei.xml.8  eyecolor.pdf.tei.xml</span></span>
+<span><span class="co">#&gt; eyecolor.pdf.tei.xml.9  eyecolor.pdf.tei.xml</span></span>
+<span><span class="co">#&gt; eyecolor.pdf.tei.xml.10 eyecolor.pdf.tei.xml</span></span>
+<span><span class="co">#&gt; incest.pdf.tei.xml        incest.pdf.tei.xml</span></span>
+<span><span class="co">#&gt; prereg.pdf.tei.xml.1      prereg.pdf.tei.xml</span></span>
+<span><span class="co">#&gt; prereg.pdf.tei.xml.2      prereg.pdf.tei.xml</span></span>
+<span><span class="co">#&gt; prereg.pdf.tei.xml.3      prereg.pdf.tei.xml</span></span>
+<span><span class="co">#&gt; prereg.pdf.tei.xml.4      prereg.pdf.tei.xml</span></span>
+<span><span class="co">#&gt; prereg.pdf.tei.xml.5      prereg.pdf.tei.xml</span></span>
+<span><span class="co">#&gt; prereg.pdf.tei.xml.6      prereg.pdf.tei.xml</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>

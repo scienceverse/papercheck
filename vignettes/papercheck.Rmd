@@ -36,10 +36,10 @@ You can access a parsed table of the full text of the paper via `s$full_text`
 dplyr::count(s$full_text, section_class)
 ```
 
-However, you may find it more convenient to use the function `search_full_text()`.
+However, you may find it more convenient to use the function `search_text()`.
 
 ```{r}
-search_full_text(s, "significan[t|ce]")
+search_text(s, "significan[t|ce]")
 ```
 
 (Note that grobid is often bad at parsing sentences with statistics, and will break them into multiple sentences. We are working on ways of detecting and fixing this.)
@@ -47,17 +47,17 @@ search_full_text(s, "significan[t|ce]")
 References are omitted by default, but you can add them back in.
 
 ```{r}
-search_full_text(s, "third-party", section = "intro", refs = TRUE)
+search_text(s, "third-party", section = "intro", refs = TRUE)
 ```
 
 
 ## Batch Processing
 
-The function `study_from_xml()` also works on a folder of XML files, returning a list of scienceverse study objects, and `search_full_text()` works on such a list.
+The function `study_from_xml()` also works on a folder of XML files, returning a list of scienceverse study objects, and `search_text()` works on such a list.
 
 ```{r}
 studies <- study_from_xml(grobid_dir)
 
-search_full_text(studies, "hypothesi", section = "intro")
+search_text(studies, "hypothesi", section = "intro")
 ```
 

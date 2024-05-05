@@ -17,8 +17,8 @@
 #' grobid_dir <- system.file("grobid", package="scienceverse")
 #' filename <- file.path(grobid_dir, "eyecolor.pdf.tei.xml")
 #' study <- study_from_xml(filename)
-#' sig <- search_full_text(study, "significant", "results")
-search_full_text <- function(study, pattern = ".*", section = NULL,
+#' sig <- search_text(study, "significant", "results")
+search_text <- function(study, pattern = ".*", section = NULL,
                              return = c("sentence", "paragraph", "section", "match"),
                              refs = FALSE, ignore.case = TRUE, ...) {
   return <- match.arg(return)
@@ -30,14 +30,18 @@ search_full_text <- function(study, pattern = ".*", section = NULL,
       stop("Check the pattern argument:\n", e$message, call. = FALSE)
     })
 
-  # handle list of scivrs objects ----
-  if (!"scivrs_study" %in% class(study)) {
+  if (is.data.frame(study)) {
+    full_text <- study
+  } else if ("scivrs_study" %in% class(study)) {
+    full_text <- study$full_text
+  } else if (is.list(study)) {
     contains_scivrs <- lapply(study, class) |>
       sapply(\(x) "scivrs_study" %in% x)
+    # handle list of scivrs objects ----
     if (all(contains_scivrs)) {
       matches <- lapply(study, \(x) {
         tryCatch({
-          search_full_text(x, pattern, section, return, refs, ignore.case, ...)
+          search_text(x, pattern, section, return, refs, ignore.case, ...)
         }, error = function(e) {
           warning(e)
         })
@@ -47,15 +51,20 @@ search_full_text <- function(study, pattern = ".*", section = NULL,
     } else {
       stop("The study argument doesn't seem to be a scivrs_study object or a list of study objects")
     }
+  } else {
+    stop("The study argument doesn't seem to be a scivrs_study object or a list of study objects")
   }
 
   # filter full text----
-  section_filter <- seq_along(study$full_text$section_class)
+  section_filter <- seq_along(full_text$section_class)
   if (!is.null(section))
-    section_filter <- study$full_text$section_class %in% section
+    section_filter <- full_text$section_class %in% section
   ref_filter <- TRUE
-  if (!refs) ref_filter <- study$full_text$type != "ref"
-  ft <- study$full_text[section_filter & ref_filter, ]
+  if (!refs) ref_filter <- !((full_text$type == "ref") |>
+                               sapply(isTRUE))
+  ft <- full_text[section_filter & ref_filter, ]
+
+
 
   # get all rows with a match----
   match_rows <- tryCatch(
@@ -69,28 +78,36 @@ search_full_text <- function(study, pattern = ".*", section = NULL,
 
   if (return == "sentence") {
     ft_match_all <- dplyr::semi_join(ft, ft_match, by = c("section", "div", "p", "s"))
-    groups <- c("section_class", "section", "div", "p", "s")
+    groups <- c("section", "section_class", "header", "div", "p", "s", "file")
   } else if (return == "paragraph") {
     ft_match_all <- dplyr::semi_join(ft, ft_match, by = c("section", "div", "p"))
-    groups <- c("section_class", "section", "div", "p")
+    groups <- c("section", "section_class", "header", "div", "p", "file")
   } else if (return == "section") {
     ft_match_all <- dplyr::semi_join(ft, ft_match, by = c("section", "div"))
-    groups <- c("section_class", "section")
+    groups <- c("section", "section_class", "header", "file")
   } else if (return == "match") {
     ft_match_all <- ft_match
     matches <- regexpr(pattern, ft_match$text, ignore.case = ignore.case, ...)
     ft_match_all$text <- regmatches(ft_match$text, matches)
-    groups <- c("tag", "section_class", "section", "div", "p", "s")
+    groups <- c("section", "section_class", "header", "div", "p", "s", "tag", "file")
   }
 
   full_text_table <- dplyr::summarise(ft_match_all,
                                       text = paste(text, collapse = " "),
                                       .by = dplyr::all_of(groups))
 
+  all_cols <- c("text", "type", "section", "section_class", "header", "div", "p", "s", "tag", "file")
   if (nrow(full_text_table) > 0) {
     full_text_table$text <- gsub("\\s+", " ", full_text_table$text)
     full_text_table$text <- gsub(" , ", ", ", full_text_table$text)
-    full_text_table$file <- study$name
+    missing_cols <- setdiff(all_cols, names(full_text_table))
+    for (mc in missing_cols) {
+      full_text_table[[mc]] <- NA
+    }
+    full_text_table <- full_text_table[, all_cols]
+    full_text_table$type <- return
+  } else {
+    full_text_table <- data.frame(row.names = all_cols)
   }
 
   return(unique(full_text_table))

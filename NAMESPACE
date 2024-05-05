@@ -2,5 +2,5 @@
 
 export(if_nowt)
 export(is_nowt)
-export(search_full_text)
+export(search_text)
 export(study_from_xml)

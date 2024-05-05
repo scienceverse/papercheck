@@ -19,6 +19,7 @@ study_from_xml <- function(filename, xml_type = c("auto", "grobid")) {
   # handle list of files or a directory----
   if (length(filename) > 1) {
     s <- lapply(filename, study_from_xml, xml_type = xml_type)
+    names(s) <- basename(filename)
     return(s)
   } else if (file.info(filename)$isdir) {
     xmls <- list.files(filename, "\\.xml", full.names = TRUE)
@@ -102,6 +103,7 @@ study_from_xml <- function(filename, xml_type = c("auto", "grobid")) {
     body_table <- full_text_table_from_grobid(body)
 
     s$full_text <- rbind(abst_table, body_table)
+    s$full_text$file <- basename(filename)
     s$full_text$section_class <- factor(s$full_text$section_class,
                                         levels = unique(s$full_text$section_class))
   } else {

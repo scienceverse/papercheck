@@ -59,10 +59,10 @@ dplyr::count(s$full_text, section_class)
 ```
 
 However, you may find it more convenient to use the function
-`search_full_text()`.
+`search_text()`.
 
 ``` r
-search_full_text(s, "significan[t|ce]")
+search_text(s, "significan[t|ce]")
 #> # A tibble: 4 × 7
 #> # Groups:   section_class, section, div, p [3]
 #>   section_class section div   p     s     text                             study
@@ -80,7 +80,7 @@ detecting and fixing this.)
 References are omitted by default, but you can add them back in.
 
 ``` r
-search_full_text(s, "third-party", section = "intro", refs = TRUE)
+search_text(s, "third-party", section = "intro", refs = TRUE)
 #> # A tibble: 5 × 7
 #> # Groups:   section_class, section, div, p [3]
 #>   section_class section div   p     s     text                             study
@@ -95,7 +95,7 @@ search_full_text(s, "third-party", section = "intro", refs = TRUE)
 ## Batch Processing
 
 The function `study_from_xml()` also works on a folder of XML files,
-returning a list of scienceverse study objects, and `search_full_text()`
+returning a list of scienceverse study objects, and `search_text()`
 works on such a list.
 
 ``` r
@@ -104,7 +104,7 @@ studies <- study_from_xml(grobid_dir)
 #> Processing incest.pdf.tei.xml...
 #> Processing prereg.pdf.tei.xml...
 
-search_full_text(studies, "hypothesi", section = "intro")
+search_text(studies, "hypothesi", section = "intro")
 #> # A tibble: 13 × 7
 #> # Groups:   section_class, section, div, p [5]
 #>    section_class section div   p     s     text                            study

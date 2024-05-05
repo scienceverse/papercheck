@@ -37,6 +37,7 @@ test_that("iteration", {
   s <- study_from_xml(grobid_dir)
 
   expect_equal(length(s), 3)
+  expect_equal(names(s), list.files(grobid_dir, ".xml"))
   expect_s3_class(s[[1]], "scivrs_study")
   expect_s3_class(s[[2]], "scivrs_study")
   expect_s3_class(s[[3]], "scivrs_study")
@@ -51,5 +52,4 @@ test_that("iteration", {
 
 
 })
-
 

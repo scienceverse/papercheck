@@ -26,6 +26,7 @@ study_from_xml <- function(filename, xml_type = c("auto", "grobid")) {
       stop("There are no xml files in the directory ", filename)
     }
     s <- study_from_xml(xmls)
+    names(s) <- basename(xmls)
     return(s)
   }
 
@@ -87,11 +88,15 @@ study_from_xml <- function(filename, xml_type = c("auto", "grobid")) {
 
     # process text----
     abstract <- xlist$TEI$teiHeader$profileDesc$abstract
-    abst_table <- full_text_table_from_grobid(abstract)
-    abst_table$section_class <- "abstract"
-    abst_table$section <- "div_0"
-    abst_table$div <- 0
-    abst_table$tag <- gsub("div_1", "div_0", abst_table$tag)
+    if (length(abstract) > 0) {
+      abst_table <- full_text_table_from_grobid(abstract)
+      abst_table$section_class <- "abstract"
+      abst_table$section <- "00_div"
+      abst_table$div <- 0
+      abst_table$tag <- gsub("01_div", "00_div", abst_table$tag)
+    } else {
+      abst_table <- data.frame()
+    }
 
     body <- xlist$TEI$text$body
     body_table <- full_text_table_from_grobid(body)
@@ -118,11 +123,15 @@ full_text_table_from_grobid <- function(body) {
   empty <- grepl("^\\s*$", body)
   body <- body[!empty]
 
+  if (length(body) == 0) return(data.frame())
+
   # add indices to body
   add_name_index <- function(x) {
-    if (length(x) == 0 || is.null(names(x))) return(x)
+    n <- length(x)
+    if (n== 0 || is.null(names(x))) return(x)
 
-    names(x) <- paste0(names(x), "_", seq_along(x))
+    fmt <- paste0("%0", nchar(as.character(n)), "d")
+    names(x) <- paste0(sprintf(fmt, seq_along(x)), "_", names(x))
     lapply(x, \(x2) {
       if (is.list(x2)) {
         add_name_index(x2)
@@ -142,21 +151,21 @@ full_text_table_from_grobid <- function(body) {
   )
 
   # classify elements
-  ft$type <- regexpr("[a-z]+_(\\.|_|\\d)*$", ft$tag) |>
+  ft$type <- regexpr("[a-z]+(\\.\\d+_)?$", ft$tag) |>
     regmatches(ft$tag, m = _) |>
     gsub("[^a-z]", "", x = _)
 
-  ft$section <- regexpr("^[^\\.]+_\\d+", ft$tag) |>
+  ft$section <- regexpr("^\\d+_[^\\.]+", ft$tag) |>
     regmatches(ft$tag, m = _)
 
   add_tag <- function(df, tag) {
-    pattern <- paste0("(^|\\.)", tag, "_\\d+")
+    pattern <- paste0("(^|\\.)\\d+_", tag)
     rows <- grepl(pattern, df$tag)
     m <- regexpr(pattern, df$tag)
     df[rows, tag] <- regmatches(df$tag, m = m)
-    vals <- gsub(".+_", "", df[, tag])
+    vals <- gsub("\\D", "", df[, tag]) |> as.numeric()
 
-    return(as.numeric(vals))
+    return(vals)
   }
 
   ft$div <- add_tag(ft, "div")
@@ -203,7 +212,7 @@ full_text_table_from_grobid <- function(body) {
   }
 
   # add last to override non-div sections
-  sec_labels <- gsub("_\\d+$", "", sections$section)
+  sec_labels <- gsub("\\d+_", "", sections$section)
   notdivs <- sec_labels != "div"
   sections$section_class[notdivs] <- sec_labels[notdivs]
   tables <- grepl("table", sections$header, ignore.case = TRUE)

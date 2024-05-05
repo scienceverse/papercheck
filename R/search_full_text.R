@@ -3,12 +3,12 @@
 #' Search the full text of a study paper. Currently only works with study objects that have full text imported from grobid (e.g., using `study_from_xml()`).
 #'
 #' @param study a study object created by `study_from_xml` or a list of study objects
-#' @param term the regex term to search for
+#' @param pattern the regex pattern to search for
 #' @param section the section(s) to search in
 #' @param return the kind of text to return, the full sentence, paragraph, or section that the text is in, or just the (regex) match
 #' @param refs whether to include references
 #' @param ignore.case whether to ignore case when text searching
-#' @param ... additional arguments to pass to `grepl()`
+#' @param ... additional arguments to pass to `grep()` and `regexpr()`
 #'
 #' @return a data frame of matching sentences
 #' @export
@@ -18,11 +18,17 @@
 #' filename <- file.path(grobid_dir, "eyecolor.pdf.tei.xml")
 #' study <- study_from_xml(filename)
 #' sig <- search_full_text(study, "significant", "results")
-search_full_text <- function(study, term, section = NULL,
+search_full_text <- function(study, pattern = ".*", section = NULL,
                              return = c("sentence", "paragraph", "section", "match"),
                              refs = FALSE, ignore.case = TRUE, ...) {
-  # section_class <- text <- div <- p <- s <- NULL
   return <- match.arg(return)
+
+  # test pattern for errors(TODO: deal with warnings + errors)
+  test_pattern <- tryCatch(
+    grep(pattern, "test", ignore.case = ignore.case, ...),
+    error = function(e) {
+      stop("Check the pattern argument:\n", e$message, call. = FALSE)
+    })
 
   # handle list of scivrs objects ----
   if (!"scivrs_study" %in% class(study)) {
@@ -31,7 +37,7 @@ search_full_text <- function(study, term, section = NULL,
     if (all(contains_scivrs)) {
       matches <- lapply(study, \(x) {
         tryCatch({
-          search_full_text(x, term, section, return, refs, ignore.case, ...)
+          search_full_text(x, pattern, section, return, refs, ignore.case, ...)
         }, error = function(e) {
           warning(e)
         })
@@ -43,7 +49,7 @@ search_full_text <- function(study, term, section = NULL,
     }
   }
 
-  # filter full text
+  # filter full text----
   section_filter <- seq_along(study$full_text$section_class)
   if (!is.null(section))
     section_filter <- study$full_text$section_class %in% section
@@ -51,23 +57,28 @@ search_full_text <- function(study, term, section = NULL,
   if (!refs) ref_filter <- study$full_text$type != "ref"
   ft <- study$full_text[section_filter & ref_filter, ]
 
-  # get all sentences with at least 1 part matching term
-  match_term <- grepl(term, ft$text, ignore.case = ignore.case, ...)
-  ft_match <- ft[match_term, ]
-  # add back the other parts
+  # get all rows with a match----
+  match_rows <- tryCatch(
+    grep(pattern, ft$text, ignore.case = ignore.case, ...),
+    error = function(e) { stop(e) },
+    warning = function(w) {}
+  )
+  ft_match <- ft[match_rows, ]
+
+  # add back the other parts----
 
   if (return == "sentence") {
-    ft_match_all <- dplyr::semi_join(ft, ft_match, by = c("div", "p", "s"))
+    ft_match_all <- dplyr::semi_join(ft, ft_match, by = c("section", "div", "p", "s"))
     groups <- c("section_class", "section", "div", "p", "s")
   } else if (return == "paragraph") {
-    ft_match_all <- dplyr::semi_join(ft, ft_match, by = c("div", "p"))
+    ft_match_all <- dplyr::semi_join(ft, ft_match, by = c("section", "div", "p"))
     groups <- c("section_class", "section", "div", "p")
   } else if (return == "section") {
-    ft_match_all <- dplyr::semi_join(ft, ft_match, by = c("div"))
+    ft_match_all <- dplyr::semi_join(ft, ft_match, by = c("section", "div"))
     groups <- c("section_class", "section")
   } else if (return == "match") {
     ft_match_all <- ft_match
-    matches <- regexpr(term, ft_match$text)
+    matches <- regexpr(pattern, ft_match$text, ignore.case = ignore.case, ...)
     ft_match_all$text <- regmatches(ft_match$text, matches)
     groups <- c("tag", "section_class", "section", "div", "p", "s")
   }

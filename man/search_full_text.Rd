@@ -6,7 +6,7 @@
 \usage{
 search_full_text(
   study,
-  term,
+  pattern = ".*",
   section = NULL,
   return = c("sentence", "paragraph", "section", "match"),
   refs = FALSE,
@@ -17,7 +17,7 @@ search_full_text(
 \arguments{
 \item{study}{a study object created by \code{study_from_xml} or a list of study objects}
 
-\item{term}{the regex term to search for}
+\item{pattern}{the regex pattern to search for}
 
 \item{section}{the section(s) to search in}
 
@@ -27,7 +27,7 @@ search_full_text(
 
 \item{ignore.case}{whether to ignore case when text searching}
 
-\item{...}{additional arguments to pass to \code{grepl()}}
+\item{...}{additional arguments to pass to \code{grep()} and \code{regexpr()}}
 }
 \value{
 a data frame of matching sentences

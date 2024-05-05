@@ -1,13 +1,19 @@
 options(scienceverse.verbose = FALSE)
 grobid_dir <- system.file("grobid", package="papercheck")
 filename <- file.path(grobid_dir, "incest.pdf.tei.xml")
+s <- study_from_xml(filename)
 
 test_that("error", {
   expect_true(is.function(search_full_text))
+
+  expect_error(suppressWarnings(search_full_text(s, "(bad pattern")),
+               "Check the pattern argument")
+
+  expect_warning(search_full_text(s, "test", fixed = TRUE),
+               "argument 'ignore.case = TRUE' will be ignored")
 })
 
 test_that("default", {
-  s <- study_from_xml(filename)
   sig <- search_full_text(s, "significant")
 
   expect_true(all(grepl("significant", sig$text)))
@@ -20,8 +26,6 @@ test_that("default", {
 })
 
 test_that("return", {
-  s <- study_from_xml(filename)
-
   res_s1 <- search_full_text(s, "significant")
   res_s2 <- search_full_text(s, "significant", return = "sentence")
   res_p <- search_full_text(s, "significant", return = "paragraph")
@@ -49,4 +53,44 @@ test_that("iteration", {
   equal <- search_full_text(s, "=", section = "results")
   classes <- as.character(unique(equal$section_class))
   expect_equal(classes, "results")
+})
+
+test_that("private", {
+  skip("Private files")
+
+  psyarxiv_dir <- "~/rproj/scienceverse/grobid_test/psyarxiv.pdf.tei/"
+  collabra_dir   <- "~/rproj/scienceverse/grobid_test/collabra.pdf.tei/"
+
+  # fix error: replacement has 1 row, data has 0
+  filename <- list.files(collabra_dir, "collabra.77608.pdf.tei.xml", full.names = TRUE)
+  s <- study_from_xml(filename)
+
+  # long tests
+  psyarxiv <- study_from_xml(psyarxiv_dir)
+  collabra <- study_from_xml(collabra_dir)
+
+  studies <- collabra #psyarxiv
+  dir <- collabra_dir #psyarxiv_dir
+  files <- list.files(dir, ".xml")
+  expect_equal(names(studies), files)
+
+  pattern <- "p\\s+(=|<)\\s+[0-9\\.-]+"
+  p_sentence <- search_full_text(studies, pattern)
+  p_match <- search_full_text(studies, pattern, return = "match")
+  p_para <- search_full_text(studies, pattern, return = "paragraph")
+  p_sec <- search_full_text(studies, pattern, return = "section")
+
+  expect_true(nrow(p_match) > nrow(p_sentence))
+  expect_true(nrow(p_sentence) > nrow(p_para))
+  expect_true(nrow(p_para) > nrow(p_sec))
+
+  # all sentences are in full match
+  missing_s <- dplyr::anti_join(p_sentence, p_match,
+                                by = c("section", "div", "p", "s", "file"))
+  expect_equal(nrow(missing_s), 0)
+
+  # all paragraphs are in full match
+  missing_p <- dplyr::anti_join(p_para, p_match,
+                                by = c("section", "div", "p", "file"))
+  expect_equal(nrow(missing_p), 0)
 })

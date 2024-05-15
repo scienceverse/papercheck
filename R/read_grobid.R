@@ -1,24 +1,25 @@
-#' Get study from XML file
+#' Get study from grobid XML file
 #'
-#' Currently only works for XML created by grobid
+#' You can create a grobid XML file from a paper PDF at https://huggingface.co/spaces/kermitt2/grobid.
 #'
-#' @param filename the path to the XML file
-#' @param xml_type the type of xml file to parse
+#' @param filename the path to the XML file, a vector of file paths, or the path to a directory containing XML files
 #'
-#' @return A study object with class scivrs_study
+#' @return A study object with class scivrs_stud, or. list of study objects
 #' @export
 #'
 #' @examples
-#' grobid_dir <- system.file("grobid", package="papercheck")
-#' filename <- file.path(grobid_dir, "eyecolor.pdf.tei.xml")
-#' study <- study_from_xml(filename)
+#' filename <- system.file("grobid", "eyecolor.xml", package="papercheck")
+#' study <- read_grobid(filename)
 #'
-study_from_xml <- function(filename, xml_type = c("auto", "grobid")) {
-  xml_type <- match.arg(xml_type)
-
+read_grobid <- function(filename) {
   # handle list of files or a directory----
   if (length(filename) > 1) {
-    s <- lapply(filename, study_from_xml, xml_type = xml_type)
+    message("Processing ", length(filename), " files...")
+    s <- lapply(filename, \(x) {
+      message("- ", basename(x))
+      read_grobid(x)
+    })
+    message("Complete!")
     names(s) <- basename(filename)
     return(s)
   } else if (file.info(filename)$isdir) {
@@ -26,12 +27,11 @@ study_from_xml <- function(filename, xml_type = c("auto", "grobid")) {
     if (length(xmls) == 0) {
       stop("There are no xml files in the directory ", filename)
     }
-    s <- study_from_xml(xmls)
-    names(s) <- basename(xmls)
+    s <- read_grobid(xmls)
     return(s)
   }
 
-  message("Processing ", basename(filename), "...")
+  #message("Processing ", basename(filename), "...")
 
   if (!file.exists(filename)) {
     stop("The file ", filename, " does not exist.")
@@ -41,74 +41,66 @@ study_from_xml <- function(filename, xml_type = c("auto", "grobid")) {
     stop("The file ", filename, " could not be read as XML")
   })
 
-
-
-  # deal with XML types----
-  # TODO: support more than grobid?
-  xml_type_guess <- dplyr::case_when(
-    xml2::xml_name(xml) == "TEI" ~ "grobid",
-    .default = "unknown"
-  )
-
-  if (xml_type == "auto") xml_type <- xml_type_guess
-
-  if (xml_type == "grobid") {
-    if (xml2::xml_name(xml) != "TEI") {
-      stop("This XML file does not parse as a valid Grobid TEI.")
-    }
-
-    xlist <- xml2::as_list(xml)
-    s <- list() #study()
-    class(s) <- c("scivrs_study", "list")
-
-    s$name <- basename(filename)
-    s$info$title <- xlist$TEI$teiHeader$fileDesc$titleStmt$title[[1]]
-
-    # abstract ----
-    s$info$description <- xlist$TEI$teiHeader$profileDesc$abstract |>
-      unlist() |>
-      paste(collapse = " ") |>
-      trimws()
-
-    # get authors ----
-    # ana <- xlist$TEI$teiHeader$fileDesc$sourceDesc$biblStruct$analytic
-    # authors <- ana[names(ana) == "author"]
-    #
-    # for (a in authors) {
-    #   family <- a$persName$surname[[1]]
-    #   given <- a$persName$forename[[1]]
-    #   email <- a$email[[1]]
-    #   orcid <- a$idno[[1]]
-    #   # if (is.null(orcid) & !is.null(family)) {
-    #   #   orcid_lookup <- get_orcid(family, given)
-    #   #   if (length(orcid_lookup) == 1) orcid <- orcid_lookup
-    #   # }
-    #
-    #   s <- add_author(s, family, given, orcid, email = email)
-    # }
-
-    # process text----
-    abstract <- xlist$TEI$teiHeader$profileDesc$abstract
-    if (length(abstract) > 0) {
-      abst_table <- full_text_table_from_grobid(abstract)
-      abst_table$section_class <- "abstract"
-      abst_table$section <- "00_div"
-      abst_table$div <- 0
-      abst_table$tag <- gsub("01_div", "00_div", abst_table$tag)
-    } else {
-      abst_table <- data.frame()
-    }
-
-    body <- xlist$TEI$text$body
-    body_table <- full_text_table_from_grobid(body)
-
-    s$full_text <- rbind(abst_table, body_table)
-    s$full_text$file <- basename(filename)
-    s$full_text$section_class <- factor(s$full_text$section_class,
-                                        levels = unique(s$full_text$section_class))
-  } else {
-    stop("This function cannot yet handle an XML of type ", xml_type)
+  if (xml2::xml_name(xml) != "TEI") {
+    stop("This XML file does not parse as a valid Grobid TEI.")
   }
+
+  xlist <- xml2::as_list(xml)
+  if (requireNamespace("scienceverse", quietly = TRUE)) {
+    s <- scienceverse::study()
+  } else {
+    s <- list()
+    class(s) <- c("scivrs_study", "list")
+  }
+
+  s$name <- basename(filename)
+  s$info$title <- xlist$TEI$teiHeader$fileDesc$titleStmt$title[[1]]
+
+  # abstract ----
+  s$info$description <- xlist$TEI$teiHeader$profileDesc$abstract |>
+    unlist() |>
+    paste(collapse = " ") |>
+    trimws()
+
+  # get authors ----
+  if (requireNamespace("scienceverse", quietly = TRUE)) {
+
+    ana <- xlist$TEI$teiHeader$fileDesc$sourceDesc$biblStruct$analytic
+    authors <- ana[names(ana) == "author"]
+
+    for (a in authors) {
+      family <- a$persName$surname[[1]]
+      given <- a$persName$forename[[1]]
+      email <- a$email[[1]]
+      orcid <- a$idno[[1]]
+      # if (is.null(orcid) & !is.null(family)) {
+      #   orcid_lookup <- scienceverse::get_orcid(family, given)
+      #   if (length(orcid_lookup) == 1) orcid <- orcid_lookup
+      # }
+
+      s <- scienceverse::add_author(s, family, given, orcid, email = email)
+    }
+  }
+
+  # process text----
+  abstract <- xlist$TEI$teiHeader$profileDesc$abstract
+  if (length(abstract) > 0) {
+    abst_table <- full_text_table_from_grobid(abstract)
+    abst_table$section_class <- "abstract"
+    abst_table$section <- "00_div"
+    abst_table$div <- 0
+    abst_table$tag <- gsub("01_div", "00_div", abst_table$tag)
+  } else {
+    abst_table <- data.frame()
+  }
+
+  body <- xlist$TEI$text$body
+  body_table <- full_text_table_from_grobid(body)
+
+  s$full_text <- rbind(abst_table, body_table)
+  s$full_text$file <- basename(filename)
+  s$full_text$section_class <- factor(s$full_text$section_class,
+                                      levels = unique(s$full_text$section_class))
 
   return(s)
 }
@@ -153,7 +145,7 @@ full_text_table_from_grobid <- function(body) {
   )
 
   # classify elements
-  ft$type <- regexpr("[a-z]+(\\.\\d+_)?$", ft$tag) |>
+  ft$type <- regexpr("[a-zA-Z]+(\\.\\d+_)?$", ft$tag) |>
     regmatches(ft$tag, m = _) |>
     gsub("[^a-z]", "", x = _)
 

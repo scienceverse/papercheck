@@ -9,14 +9,3 @@
 
   invisible()
 }
-
-.onAttach <- function(libname, pkgname) {
-  # paste(
-  #   "\n************",
-  #   "Welcome to papercheck, a scienceverse package.",
-  #   "For support and examples visit:",
-  #   "http://scienceverse.github.io/papercheck/",
-  #   "************",
-  #   sep = "\n"
-  # ) %>% packageStartupMessage()
-}

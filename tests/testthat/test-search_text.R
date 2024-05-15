@@ -1,9 +1,10 @@
 options(scienceverse.verbose = FALSE)
 grobid_dir <- system.file("grobid", package="papercheck")
-filename <- file.path(grobid_dir, "incest.pdf.tei.xml")
-s <- study_from_xml(filename)
+filename <- file.path(grobid_dir, "incest.xml")
 
 test_that("error", {
+  s <- read_grobid(filename)
+
   expect_true(is.function(search_text))
 
   expect_error(suppressWarnings(search_text(s, "(bad pattern")),
@@ -14,6 +15,8 @@ test_that("error", {
 })
 
 test_that("default", {
+  s <- read_grobid(filename)
+
   sig <- search_text(s, "significant")
 
   expect_true(all(grepl("significant", sig$text)))
@@ -26,6 +29,8 @@ test_that("default", {
 })
 
 test_that("table as first argument", {
+  s <- read_grobid(filename)
+
   sig <- search_text(s, "significant")
   sig2 <- search_text(sig, "significant")
   expect_equal(sig, sig2)
@@ -35,6 +40,8 @@ test_that("table as first argument", {
 })
 
 test_that("return", {
+  s <- read_grobid(filename)
+
   res_s1 <- search_text(s, "significant")
   res_s2 <- search_text(s, "significant", return = "sentence")
   res_p <- search_text(s, "significant", return = "paragraph")
@@ -53,7 +60,7 @@ test_that("return", {
 })
 
 test_that("iteration", {
-  s <- study_from_xml(grobid_dir)
+  s <- read_grobid(grobid_dir)
 
   # search full text
   sig <- search_text(s, "significant")
@@ -67,23 +74,23 @@ test_that("iteration", {
 test_that("private", {
   skip("Private files")
 
-  psyarxiv_dir <- "~/rproj/scienceverse/grobid_test/psyarxiv.pdf.tei/"
-  collabra_dir   <- "~/rproj/scienceverse/grobid_test/collabra.pdf.tei/"
+  psyarxiv_dir <- "~/rproj/scienceverse/grobid_test/xml/psyarxiv-s/"
+  collabra_dir   <- "~/rproj/scienceverse/grobid_test/xml/collabra-s/"
 
   # fix error: replacement has 1 row, data has 0
-  filename <- list.files(collabra_dir, "collabra.77608.pdf.tei.xml", full.names = TRUE)
-  s <- study_from_xml(filename)
+  filename <- list.files(collabra_dir, "collabra.77608.xml", full.names = TRUE)
+  s <- read_grobid(filename)
 
   # long tests
-  psyarxiv <- study_from_xml(psyarxiv_dir)
-  collabra <- study_from_xml(collabra_dir)
+  psyarxiv <- read_grobid(psyarxiv_dir)
+  collabra <- read_grobid(collabra_dir)
 
   studies <- collabra #psyarxiv
   dir <- collabra_dir #psyarxiv_dir
   files <- list.files(dir, ".xml")
   expect_equal(names(studies), files)
 
-  pattern <- "p\\s+(=|<)\\s+[0-9\\.-]+"
+  pattern <- "p\\s+(<)\\s+[0-9\\.-]+"
   p_sentence <- search_text(studies, pattern)
   p_match <- search_text(studies, pattern, return = "match")
   p_para <- search_text(studies, pattern, return = "paragraph")
@@ -102,4 +109,8 @@ test_that("private", {
   missing_p <- dplyr::anti_join(p_para, p_match,
                                 by = c("section", "div", "p", "file"))
   expect_equal(nrow(missing_p), 0)
+
+  p_match |>
+    dplyr::group_by(section, div, p, s, file) |>
+    dplyr::filter(dplyr::n() > 1)
 })

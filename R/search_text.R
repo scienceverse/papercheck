@@ -1,8 +1,8 @@
 #' Search the full text
 #'
-#' Search the full text of a study paper. Currently only works with study objects that have full text imported from grobid (e.g., using `study_from_xml()`).
+#' Search the full text of a study paper. Currently only works with study objects that have full text imported from grobid (e.g., using `read_grobid()`).
 #'
-#' @param study a study object created by `study_from_xml` or a list of study objects
+#' @param study a study object created by `read_grobid` or a list of study objects
 #' @param pattern the regex pattern to search for
 #' @param section the section(s) to search in
 #' @param return the kind of text to return, the full sentence, paragraph, or section that the text is in, or just the (regex) match
@@ -15,8 +15,8 @@
 #'
 #' @examples
 #' grobid_dir <- system.file("grobid", package="scienceverse")
-#' filename <- file.path(grobid_dir, "eyecolor.pdf.tei.xml")
-#' study <- study_from_xml(filename)
+#' filename <- file.path(grobid_dir, "eyecolor.xml")
+#' study <- read_grobid(filename)
 #' sig <- search_text(study, "significant", "results")
 search_text <- function(study, pattern = ".*", section = NULL,
                              return = c("sentence", "paragraph", "section", "match"),

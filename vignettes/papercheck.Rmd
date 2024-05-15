@@ -20,12 +20,12 @@ library(papercheck)
 
 ## Load from XML
 
-The function `study_from_xml()` can read XML files in [TEI](https://tei-c.org/) format created by [grobid](https://grobid.readthedocs.io/). 
+The function `read_grobid()` can read XML files in [TEI](https://tei-c.org/) format created by [grobid](https://grobid.readthedocs.io/). 
 
 ```{r}
 grobid_dir <- system.file("grobid", package="papercheck")
-filename <- file.path(grobid_dir, "incest.pdf.tei.xml")
-s <- study_from_xml(filename)
+filename <- file.path(grobid_dir, "incest..xml")
+s <- read_grobid(filename)
 ```
 
 ## Full Text
@@ -53,10 +53,10 @@ search_text(s, "third-party", section = "intro", refs = TRUE)
 
 ## Batch Processing
 
-The function `study_from_xml()` also works on a folder of XML files, returning a list of scienceverse study objects, and `search_text()` works on such a list.
+The function `read_grobid()` also works on a folder of XML files, returning a list of scienceverse study objects, and `search_text()` works on such a list.
 
 ```{r}
-studies <- study_from_xml(grobid_dir)
+studies <- read_grobid(grobid_dir)
 
 search_text(studies, "hypothesi", section = "intro")
 ```

@@ -12,7 +12,6 @@ suppressPackageStartupMessages({
 
 source("R/constants.R")
 source("R/funcs.R")
-source("R/modules/section.R")
 source("i18n/trans.R")
 
 
@@ -63,17 +62,6 @@ server <- function(input, output, session) {
 
   my_study <- reactiveVal( scienceverse::study(name = "", description = "") )
   text_table <- reactiveVal( data.frame() )
-
-  # disable/enable buttons depending on presence of inputs
-  buttonable <- function(button, ...) {
-    blanks <- list(...) %>% trimws() == ""
-
-    if (any(blanks)) {
-      shinyjs::disable(button)
-    } else {
-      shinyjs::enable(button)
-    }
-  }
 
   ### return_study ----
   observeEvent(input$return_study, {
@@ -130,14 +118,15 @@ server <- function(input, output, session) {
 
     my_study(study)
     text_table(papercheck::search_text(study))
-    # TODO: reset search interface ----
 
-    # TODO: select study from list ----
+    # reset search interface
+    c("search_pattern",
+      "search_section",
+      "search_return",
+      "search_ignore_case",
+      "search_fixed") |> sapply(shinyjs::reset)
 
     updateSelectInput(session, "study_name", choices = names(study))
-    #updateTextInput(session, "study_name",
-    #                value = study[[1]]$name)
-
   }
 
   ### study_name ----

@@ -39,7 +39,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">papercheck</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9004</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9005</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -107,7 +107,7 @@
 <code class="sourceCode R"><span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html" class="external-link">count</a></span><span class="op">(</span><span class="va">s</span><span class="op">$</span><span class="va">full_text</span>, <span class="va">section</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      section  n</span></span>
 <span><span class="co">#&gt; 1   abstract  6</span></span>
-<span><span class="co">#&gt; 2 discussion 11</span></span>
+<span><span class="co">#&gt; 2 discussion 10</span></span>
 <span><span class="co">#&gt; 3      intro 13</span></span>
 <span><span class="co">#&gt; 4     method 20</span></span>
 <span><span class="co">#&gt; 5    results  7</span></span></code></pre></div>
@@ -143,8 +143,9 @@ files, returning a list of scienceverse study objects, and
 <span><span class="co">#&gt; - eyecolor.xml</span></span>
 <span><span class="co">#&gt; - incest.xml</span></span>
 <span><span class="co">#&gt; - prereg.xml</span></span>
-<span><span class="co">#&gt; Complete!</span></span>
-<span></span>
+<span><span class="co">#&gt; Complete!</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="va">hypotheses</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/search_text.html">search_text</a></span><span class="op">(</span><span class="va">studies</span>, <span class="st">"hypothesi"</span>, section <span class="op">=</span> <span class="st">"intro"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">hypotheses</span><span class="op">$</span><span class="va">text</span></span>

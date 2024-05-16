@@ -27,7 +27,7 @@ test_that("basics", {
 
   expect_equal(substr(s$info$description, 1, 5), "Moral")
 
-  expect_equal(nrow(s$full_text), 89)
+  expect_equal(nrow(s$full_text), 57)
 })
 
 test_that("iteration", {

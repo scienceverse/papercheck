@@ -25,7 +25,7 @@ test_that("default", {
   # section
   res <- search_text(s, "significant", "results")
   expect_equal(nrow(res), 3)
-  expect_true(all(res$section_class == "results"))
+  expect_true(all(res$section == "results"))
 })
 
 test_that("table as first argument", {
@@ -67,7 +67,7 @@ test_that("iteration", {
   expect_equal(nrow(sig), 13)
 
   equal <- search_text(s, "=", section = "results")
-  classes <- as.character(unique(equal$section_class))
+  classes <- as.character(unique(equal$section))
   expect_equal(classes, "results")
 })
 
@@ -78,7 +78,7 @@ test_that("private", {
   collabra_dir   <- "~/rproj/scienceverse/grobid_test/xml/collabra-s/"
 
   # fix error: replacement has 1 row, data has 0
-  filename <- list.files(collabra_dir, "collabra.77608.xml", full.names = TRUE)
+  filename <- list.files(collabra_dir, "collabra.77608", full.names = TRUE)
   s <- read_grobid(filename)
 
   # long tests
@@ -90,13 +90,13 @@ test_that("private", {
   files <- list.files(dir, ".xml")
   expect_equal(names(studies), files)
 
-  pattern <- "p\\s+(<)\\s+[0-9\\.-]+"
+  pattern <- "p\\s*<\\s*(0?\\.?\\d*|[0-9\\.]+e-\\d+)"
   p_sentence <- search_text(studies, pattern)
   p_match <- search_text(studies, pattern, return = "match")
   p_para <- search_text(studies, pattern, return = "paragraph")
   p_sec <- search_text(studies, pattern, return = "section")
 
-  expect_true(nrow(p_match) > nrow(p_sentence))
+  expect_true(nrow(p_match) == nrow(p_sentence))
   expect_true(nrow(p_sentence) > nrow(p_para))
   expect_true(nrow(p_para) > nrow(p_sec))
 

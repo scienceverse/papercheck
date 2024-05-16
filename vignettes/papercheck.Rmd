@@ -24,7 +24,7 @@ The function `read_grobid()` can read XML files in [TEI](https://tei-c.org/) for
 
 ```{r}
 grobid_dir <- system.file("grobid", package="papercheck")
-filename <- file.path(grobid_dir, "incest..xml")
+filename <- file.path(grobid_dir, "incest.xml")
 s <- read_grobid(filename)
 ```
 
@@ -33,21 +33,22 @@ s <- read_grobid(filename)
 You can access a parsed table of the full text of the paper via `s$full_text`
 
 ```{r}
-dplyr::count(s$full_text, section_class)
+dplyr::count(s$full_text, section)
 ```
 
 However, you may find it more convenient to use the function `search_text()`.
 
 ```{r}
-search_text(s, "significan[t|ce]")
+sig <- search_text(s, "signific")
+
+sig$text
 ```
 
-(Note that grobid is often bad at parsing sentences with statistics, and will break them into multiple sentences. We are working on ways of detecting and fixing this.)
-
-References are omitted by default, but you can add them back in.
+You can also return just the matched text from a regex search.
 
 ```{r}
-search_text(s, "third-party", section = "intro", refs = TRUE)
+pattern <- "[^\\s\\(\\)]+\\s*(=|<)\\s*[0-9\\.-]+"
+search_text(s, pattern, section = "results", return = "match", perl = TRUE)
 ```
 
 
@@ -58,6 +59,8 @@ The function `read_grobid()` also works on a folder of XML files, returning a li
 ```{r}
 studies <- read_grobid(grobid_dir)
 
-search_text(studies, "hypothesi", section = "intro")
+hypotheses <- search_text(studies, "hypothesi", section = "intro")
+
+hypotheses$text
 ```
 

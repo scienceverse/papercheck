@@ -1,26 +1,24 @@
 #' Search the full text
 #'
-#' Search the full text of a study paper. Currently only works with study objects that have full text imported from grobid (e.g., using `read_grobid()`).
+#' Search the full text of a study. Currently only works with study objects that have full text imported from grobid (e.g., using `read_grobid()`).
 #'
 #' @param study a study object created by `read_grobid` or a list of study objects
 #' @param pattern the regex pattern to search for
 #' @param section the section(s) to search in
 #' @param return the kind of text to return, the full sentence, paragraph, or section that the text is in, or just the (regex) match
-#' @param refs whether to include references
 #' @param ignore.case whether to ignore case when text searching
-#' @param ... additional arguments to pass to `grep()` and `regexpr()`
+#' @param ... additional arguments to pass to `grep()` and `regexpr()`, such as `fixed = TRUE`
 #'
-#' @return a data frame of matching sentences
+#' @return a data frame of matches
 #' @export
 #'
 #' @examples
-#' grobid_dir <- system.file("grobid", package="scienceverse")
-#' filename <- file.path(grobid_dir, "eyecolor.xml")
+#' filename <- system.file("grobid", "eyecolor.xml", package="papercheck")
 #' study <- read_grobid(filename)
-#' sig <- search_text(study, "significant", "results")
+#' search_text(study, "p\\s*(=|<)\\s*[0-9\\.]+", return = "match")
 search_text <- function(study, pattern = ".*", section = NULL,
                              return = c("sentence", "paragraph", "section", "match"),
-                             refs = FALSE, ignore.case = TRUE, ...) {
+                             ignore.case = TRUE, ...) {
   return <- match.arg(return)
 
   # test pattern for errors(TODO: deal with warnings + errors)
@@ -41,7 +39,7 @@ search_text <- function(study, pattern = ".*", section = NULL,
     if (all(contains_scivrs)) {
       matches <- lapply(study, \(x) {
         tryCatch({
-          search_text(x, pattern, section, return, refs, ignore.case, ...)
+          search_text(x, pattern, section, return, ignore.case, ...)
         }, error = function(e) {
           warning(e)
         })
@@ -56,15 +54,10 @@ search_text <- function(study, pattern = ".*", section = NULL,
   }
 
   # filter full text----
-  section_filter <- seq_along(full_text$section_class)
+  section_filter <- seq_along(full_text$section)
   if (!is.null(section))
-    section_filter <- full_text$section_class %in% section
-  ref_filter <- TRUE
-  if (!refs) ref_filter <- !((full_text$type == "ref") |>
-                               sapply(isTRUE))
-  ft <- full_text[section_filter & ref_filter, ]
-
-
+    section_filter <- full_text$section %in% section
+  ft <- full_text[section_filter, ]
 
   # get all rows with a match----
   match_rows <- tryCatch(
@@ -77,38 +70,44 @@ search_text <- function(study, pattern = ".*", section = NULL,
   # add back the other parts----
 
   if (return == "sentence") {
-    ft_match_all <- dplyr::semi_join(ft, ft_match, by = c("section", "div", "p", "s"))
-    groups <- c("section", "section_class", "header", "div", "p", "s", "file")
+    ft_match_all <- ft_match
   } else if (return == "paragraph") {
-    ft_match_all <- dplyr::semi_join(ft, ft_match, by = c("section", "div", "p"))
-    groups <- c("section", "section_class", "header", "div", "p", "file")
+    # add in other sentences from matched paragraphs
+    groups <- c("section", "header", "div", "p", "file")
+
+    ft_match_all <- dplyr::semi_join(ft, ft_match, by = groups) |>
+      dplyr::summarise(text = paste(text, collapse = " "),
+                       .by = dplyr::all_of(groups))
+
   } else if (return == "section") {
-    ft_match_all <- dplyr::semi_join(ft, ft_match, by = c("section", "div"))
-    groups <- c("section", "section_class", "header", "file")
+    # add in other sentences from matched sections
+
+    groups <- c("section", "header", "div", "file")
+    ft_match_all <- dplyr::semi_join(ft, ft_match, by = groups) |>
+      dplyr::summarise(text = paste(text, collapse = " "),
+                       .by = dplyr::all_of(groups))
+
   } else if (return == "match") {
     ft_match_all <- ft_match
     matches <- regexpr(pattern, ft_match$text, ignore.case = ignore.case, ...)
     ft_match_all$text <- regmatches(ft_match$text, matches)
-    groups <- c("section", "section_class", "header", "div", "p", "s", "tag", "file")
   }
 
-  full_text_table <- dplyr::summarise(ft_match_all,
-                                      text = paste(text, collapse = " "),
-                                      .by = dplyr::all_of(groups))
+  all_cols <- names(ft)
 
-  all_cols <- c("text", "type", "section", "section_class", "header", "div", "p", "s", "tag", "file")
-  if (nrow(full_text_table) > 0) {
-    full_text_table$text <- gsub("\\s+", " ", full_text_table$text)
-    full_text_table$text <- gsub(" , ", ", ", full_text_table$text)
-    missing_cols <- setdiff(all_cols, names(full_text_table))
+  if (nrow(ft_match_all) > 0) {
+    ft_match_all$text <- gsub("\\s+", " ", ft_match_all$text)
+    ft_match_all$text <- gsub(" , ", ", ", ft_match_all$text)
+    missing_cols <- setdiff(all_cols, names(ft_match_all))
     for (mc in missing_cols) {
-      full_text_table[[mc]] <- NA
+      ft_match_all[[mc]] <- NA
     }
-    full_text_table <- full_text_table[, all_cols]
-    full_text_table$type <- return
+    ft_match_all <- ft_match_all[, all_cols]
   } else {
-    full_text_table <- data.frame(row.names = all_cols)
+    ft_match_all <- data.frame(row.names = all_cols)
   }
 
-  return(unique(full_text_table))
+  rownames(ft_match_all) <- NULL
+
+  return(unique(ft_match_all))
 }

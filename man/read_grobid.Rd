@@ -16,8 +16,7 @@ A study object with class scivrs_stud, or. list of study objects
 You can create a grobid XML file from a paper PDF at https://huggingface.co/spaces/kermitt2/grobid.
 }
 \examples{
-grobid_dir <- system.file("grobid", package="papercheck")
-filename <- file.path(grobid_dir, "eyecolor.pdf.tei.xml")
+filename <- system.file("grobid", "eyecolor.xml", package="papercheck")
 study <- read_grobid(filename)
 
 }

@@ -9,7 +9,6 @@ search_text(
   pattern = ".*",
   section = NULL,
   return = c("sentence", "paragraph", "section", "match"),
-  refs = FALSE,
   ignore.case = TRUE,
   ...
 )
@@ -23,21 +22,18 @@ search_text(
 
 \item{return}{the kind of text to return, the full sentence, paragraph, or section that the text is in, or just the (regex) match}
 
-\item{refs}{whether to include references}
-
 \item{ignore.case}{whether to ignore case when text searching}
 
-\item{...}{additional arguments to pass to \code{grep()} and \code{regexpr()}}
+\item{...}{additional arguments to pass to \code{grep()} and \code{regexpr()}, such as \code{fixed = TRUE}}
 }
 \value{
-a data frame of matching sentences
+a data frame of matches
 }
 \description{
-Search the full text of a study paper. Currently only works with study objects that have full text imported from grobid (e.g., using \code{read_grobid()}).
+Search the full text of a study. Currently only works with study objects that have full text imported from grobid (e.g., using \code{read_grobid()}).
 }
 \examples{
-grobid_dir <- system.file("grobid", package="scienceverse")
-filename <- file.path(grobid_dir, "eyecolor.pdf.tei.xml")
+filename <- system.file("grobid", "eyecolor.xml", package="papercheck")
 study <- read_grobid(filename)
-sig <- search_text(study, "significant", "results")
+search_text(study, "p\\\\s*(=|<)\\\\s*[0-9\\\\.]+", return = "match")
 }

@@ -22,7 +22,7 @@ read_grobid <- function(filename) {
     message("Complete!")
     names(s) <- basename(filename)
     return(s)
-  } else if (file.info(filename)$isdir) {
+  } else if (file.exists(filename) & file.info(filename)$isdir) {
     xmls <- list.files(filename, "\\.xml", full.names = TRUE)
     if (length(xmls) == 0) {
       stop("There are no xml files in the directory ", filename)
@@ -37,15 +37,27 @@ read_grobid <- function(filename) {
     stop("The file ", filename, " does not exist.")
   }
 
-  xml <- tryCatch(xml2::read_xml(filename), error = function(e) {
+  xml_text <- filename |>
+    readLines(warn = FALSE) |>
+    paste(collapse = "\n") |>
+    gsub("</s><s>", " ", x = _) |> # get rid of sentence tags
+    gsub("</?s>", "", x = _) |> # get rid of sentence tags
+    #gsub("</ref>", "[/ref]", x = _) |>
+    #gsub("<ref ", "[ref ", x = _) |>
+    # fixes a glitch that stopped xml from being read
+    gsub(' xmlns="http://www.tei-c.org/ns/1.0"', "", x = _, fixed = TRUE)
+
+  xml <- tryCatch(xml2::read_xml(xml_text), error = function(e) {
     stop("The file ", filename, " could not be read as XML")
   })
+
+
 
   if (xml2::xml_name(xml) != "TEI") {
     stop("This XML file does not parse as a valid Grobid TEI.")
   }
 
-  xlist <- xml2::as_list(xml)
+  #xlist <- xml2::as_list(xml)
   if (requireNamespace("scienceverse", quietly = TRUE)) {
     s <- scienceverse::study()
   } else {
@@ -54,183 +66,125 @@ read_grobid <- function(filename) {
   }
 
   s$name <- basename(filename)
-  s$info$title <- xlist$TEI$teiHeader$fileDesc$titleStmt$title[[1]]
-
-  # abstract ----
-  s$info$description <- xlist$TEI$teiHeader$profileDesc$abstract |>
-    unlist() |>
-    paste(collapse = " ") |>
-    trimws()
+  s$info$title <- xml2::xml_find_first(xml, "//titleStmt //title") |>
+    xml2::xml_text()
 
   # get authors ----
   if (requireNamespace("scienceverse", quietly = TRUE)) {
 
-    ana <- xlist$TEI$teiHeader$fileDesc$sourceDesc$biblStruct$analytic
-    authors <- ana[names(ana) == "author"]
+    authors <- xml2::xml_find_all(xml, "//sourceDesc //author[persName]")
 
     for (a in authors) {
-      family <- a$persName$surname[[1]]
-      given <- a$persName$forename[[1]]
-      email <- a$email[[1]]
-      orcid <- a$idno[[1]]
+      family <- xml2::xml_find_all(a, ".//surname") |> xml2::xml_text() |> paste(collapse = " ")
+      given <- xml2::xml_find_all(a, ".//forename") |> xml2::xml_text() |> paste(collapse = " ")
+      email <- xml2::xml_find_all(a, ".//email") |> xml2::xml_text() |> paste(collapse = ";")
+      orcid <- xml2::xml_find_all(a, ".//idno[@type='ORCID']") |> xml2::xml_text()
       # if (is.null(orcid) & !is.null(family)) {
       #   orcid_lookup <- scienceverse::get_orcid(family, given)
       #   if (length(orcid_lookup) == 1) orcid <- orcid_lookup
       # }
+      if (length(orcid) == 0) orcid = NULL
 
       s <- scienceverse::add_author(s, family, given, orcid, email = email)
     }
   }
 
   # process text----
-  abstract <- xlist$TEI$teiHeader$profileDesc$abstract
+
+  ## abstract ----
+  abstract <- xml2::xml_find_all(xml, "//abstract //p") |>
+    xml2::xml_text()
+  s$info$description <- paste(abstract, collapse = "\n\n")
+
   if (length(abstract) > 0) {
-    abst_table <- full_text_table_from_grobid(abstract)
-    abst_table$section_class <- "abstract"
-    abst_table$section <- "00_div"
-    abst_table$div <- 0
-    abst_table$tag <- gsub("01_div", "00_div", abst_table$tag)
+    abst_table <- data.frame(
+      header = "Abstract",
+      text = abstract,
+      div = 0,
+      p = seq_along(abstract)
+    )
   } else {
     abst_table <- data.frame()
   }
 
-  body <- xlist$TEI$text$body
-  body_table <- full_text_table_from_grobid(body)
+  ## body ----
+  divs <- xml2::xml_find_all(xml, "//text //body //div")
+  div_text <- lapply(seq_along(divs), \(i){
+    div <- divs[[i]]
+    header <- xml2::xml_find_first(div, ".//head") |> xml2::xml_text()
+    if (is.na(header)) header <- sprintf("[div-%02d]", i)
+    paragraphs <- xml2::xml_find_all(div, ".//p") |>
+      xml2::xml_text()
+    df <- data.frame(
+      header = header,
+      text = c(header, paragraphs),
+      div = i,
+      p = c(0, seq_along(paragraphs))
+    )
+  })
 
-  s$full_text <- rbind(abst_table, body_table)
-  s$full_text$file <- basename(filename)
-  s$full_text$section_class <- factor(s$full_text$section_class,
-                                      levels = unique(s$full_text$section_class))
+  body_table <- do.call(rbind, c(list(abst_table), div_text)) |>
+    tidytext::unnest_sentences(text, text, to_lower = FALSE) |>
+    dplyr::mutate(s = dplyr::row_number(), .by = c(div, p))
+
+  body_table$file <- basename(filename)
+  rownames(body_table) <- NULL
+
+  s$full_text <- full_text_sections(body_table)
+
+  # TODO: figures ----
+  divs <- xml2::xml_find_all(xml, "//figure")
+
+  # keywords ----
+  s$info$keywords <- xml2::xml_find_all(xml, "//keywords") |> xml2::xml_text()
 
   return(s)
 }
 
 
-#' Get full text table from grobid
+#' Add section info to full text table
 #'
-#' @param body body section of grobid xml as list (e.g., `xml2::as_list(xml)$TEI$text$body`)
+#' @param ft full text table
 #'
 #' @return a data frame of the classified full text
 #' @keywords internal
 #'
-full_text_table_from_grobid <- function(body) {
-  empty <- grepl("^\\s*$", body)
-  body <- body[!empty]
+full_text_sections <- function(ft) {
+  # classify headers ----
+  abstract <- grepl("abstract", ft$header, ignore.case = TRUE)
+  intro <- grepl("intro", ft$header, ignore.case = TRUE)
+  method <- grepl("method", ft$header, ignore.case = TRUE)
+  results <- grepl("result", ft$header, ignore.case = TRUE)
+  discussion <- grepl("discuss", ft$header, ignore.case = TRUE)
+  ft$section <- NA
+  ft$section[abstract] <- "abstract"
+  ft$section[intro] <- "intro"
+  ft$section[method] <- "method"
+  ft$section[discussion] <- "discussion"
+  ft$section[results] <- "results"
 
-  if (length(body) == 0) return(data.frame())
-
-  # add indices to body
-  add_name_index <- function(x) {
-    n <- length(x)
-    if (n== 0 || is.null(names(x))) return(x)
-
-    fmt <- paste0("%0", nchar(as.character(n)), "d")
-    names(x) <- paste0(sprintf(fmt, seq_along(x)), "_", names(x))
-    lapply(x, \(x2) {
-      if (is.list(x2)) {
-        add_name_index(x2)
-      } else {
-        x2
-      }
-    })
+  # assume sections are the same class as previous if unclassified (after abstract)
+  for (i in seq_along(ft$section)) {
+    if (i > 1 &
+        !abstract[i] &
+        isFALSE(abstract[i-1]) &
+        is.na(ft$section[i]) ) {
+      ft$section[i] <- ft$section[i-1]
+    }
   }
 
-  b <- add_name_index(body)
-
-  # put text into a data frame
-  bflat <- unlist(b)
-  ft <- data.frame(
-    tag = names(bflat),
-    text = unname(bflat)
-  )
-
-  # classify elements
-  ft$type <- regexpr("[a-zA-Z]+(\\.\\d+_)?$", ft$tag) |>
-    regmatches(ft$tag, m = _) |>
-    gsub("[^a-z]", "", x = _)
-
-  ft$section <- regexpr("^\\d+_[^\\.]+", ft$tag) |>
-    regmatches(ft$tag, m = _)
-
-  add_tag <- function(df, tag) {
-    pattern <- paste0("(^|\\.)\\d+_", tag)
-    rows <- grepl(pattern, df$tag)
-    m <- regexpr(pattern, df$tag)
-    df[rows, tag] <- regmatches(df$tag, m = m)
-    vals <- gsub("\\D", "", df[, tag]) |> as.numeric()
-
-    return(vals)
-  }
-
-  ft$div <- add_tag(ft, "div")
-  ft$p <- add_tag(ft, "p")
-  ft$s <- add_tag(ft, "s")
-
-  # make table of sections and classify
-  sections <- dplyr::summarise(ft, .by = "section",
-                header = ifelse(type == "head", text, "") |>
-                         paste(collapse = ""))
-
-  # headers <- ft[grepl("head", ft$tag), c("section", "text")]
-  # names(headers)[[2]] <- "header"
-  # sections <- data.frame(
-  #   section = unique(ft$section)
-  # ) |>
-  #   merge(headers, by = "section", all.x = TRUE)
-
-  sections$header <- gsub("\\s*\\.$", "", sections$header)
-
-  intro <- grepl("intro", sections$header, ignore.case = TRUE)
-  method <- grepl("method", sections$header, ignore.case = TRUE)
-  results <- grepl("result", sections$header, ignore.case = TRUE)
-  discussion <- grepl("discuss", sections$header, ignore.case = TRUE)
-  sections$section_class <- NA
-  sections$section_class[intro] <- "intro"
-  sections$section_class[method] <- "method"
-  sections$section_class[discussion] <- "discussion"
-  sections$section_class[results] <- "results"
-
-
-  # assume sections are the same class as previous if unclassified
-  for (i in seq_along(sections$section_class)) {
-    if (is.na(sections$section_class[i]) & i > 1)
-      sections$section_class[i] <- sections$section_class[i-1]
-  }
-
-  # beginning sections with no header labelled intro
-  non_blanks <- which(!is.na(sections$section_class))
+  # beginning sections after abstract with no header labelled intro
+  non_blanks <- which(!is.na(ft$section) & ft$section != "abstract")
   if (length(non_blanks) > 0) {
     blank_start <- non_blanks[[1]] - 1
-    blanks <- rep(c(TRUE, FALSE), c(blank_start, length(sections$section_class) - blank_start))
-    sections$section_class[blanks] <- "intro"
+    blanks <- rep(c(TRUE, FALSE), c(blank_start, length(ft$section) - blank_start))
+    blanks[abstract] <- FALSE
+    ft$section[blanks] <- "intro"
   }
 
-  # add last to override non-div sections
-  sec_labels <- gsub("\\d+_", "", sections$section)
-  notdivs <- sec_labels != "div"
-  sections$section_class[notdivs] <- sec_labels[notdivs]
-  tables <- grepl("table", sections$header, ignore.case = TRUE)
-  sections$section_class[notdivs & tables] <- "table"
+  colorder <- c("text", "section", "header", "div", "p", "s", "file")
 
-  # add sections to full text
-  ft <- merge(ft, sections[, c("section", "section_class", "header")],
-              by = "section", all.x = TRUE)
-
-  ft <- ft[, c("text", "type", "section", "section_class",
-               "header", "div", "p", "s", "tag")]
-
-  # try to fix bad sentence parsing
-  # start_equal <- grepl("^\\s*=", ft$text)
-  # is_sentence <- ft$type == "s"
-  # bad_start <- which(start_equal & is_sentence)
-  # sentence_n <- ft$s[bad_start]
-  # prev_sentence <- ft$s[bad_start - 1]
-  # is_new_sentence <- (sentence_n != prev_sentence) |> sapply(isTRUE)
-  # ft$merge_prev = FALSE
-  # ft$merge_prev[bad_start[is_new_sentence]] <- TRUE
-
-  # TODO: process table sections
-
-  return(ft)
+  return(ft[, colorder])
 }
+
 

@@ -135,12 +135,22 @@ server <- function(input, output, session) {
 
     info <- my_study()[[input$study_name]]$info
 
-    updateTextInput(session, "study_title",
-                    value = info$title)
-    updateTextAreaInput(session, "study_desc",
-                        value = info$description)
-    updateTextInput(session, "study_keywords",
-                    value = paste(info$keywords, collapse = "; "))
+    #updateTextInput(session, "study_title", value = info$title)
+    # updateTextAreaInput(session, "study_desc",
+    #                     value = info$description)
+    # updateTextInput(session, "study_keywords",
+    #                 value = paste(info$keywords, collapse = "; "))
+  })
+
+  output$study_title <- renderText({
+    my_study()[[input$study_name]]$info$title
+  })
+  output$study_desc <- renderText({
+    my_study()[[input$study_name]]$info$description
+  })
+  output$study_keywords <- renderText({
+    my_study()[[input$study_name]]$info$keywords |>
+      paste(collapse = "; ")
   })
 
   ## text ----
@@ -164,18 +174,33 @@ server <- function(input, output, session) {
     tryCatch({
       sec <- input$search_section
       if (sec == "all") sec <- NULL
-      tt <- search_text(my_study(),
+
+      s <- text_table()
+      if (!"table" %in% input$search_options | nrow(s) == 0) {
+        s <- my_study()
+      }
+      tt <- search_text(s,
                         pattern = input$search_pattern,
                         section = sec,
                         return = input$search_return,
-                        ignore.case = input$search_ignore_case,
-                        fixed = input$search_fixed
+                        ignore.case = "ignore.case" %in% input$search_options,
+                        fixed = "fixed" %in% input$search_options
                         )
       text_table(tt)
     }, error = function(e) {
       shinyjs::alert(e$message)
     })
   }, ignoreNULL = TRUE)
+
+  ### search_reset ----
+  observeEvent(input$search_reset, {
+    debug_msg("search_reset")
+
+    updateTextInput(session, "search_pattern", value = "*")
+    my_study() |>
+      papercheck::search_text() |>
+      text_table()
+  })
 
   ### search presets ----
 

@@ -6,9 +6,13 @@ load_tab <- tabItem(
   box(width = 12, collapsible = TRUE, collapsed = FALSE,
       title = "Info",
       selectInput("study_name", "Study Name", c()),
-      textInput("study_title", "Study Title", "", "100%"),
-      textAreaInput("study_desc", "Study Description", "", "100%"),
-      textInput("study_keywords", "Keywords (separate with semicolons)", "", "100%", )
+      textOutput("study_title"),
+      h4("Abstract"),
+      textOutput("study_desc"),
+      textOutput("study_keywords")
+      # textInput("study_title", "Study Title", "", "100%"),
+      # textAreaInput("study_desc", "Study Description", "", "100%"),
+      # textInput("study_keywords", "Keywords (separate with semicolons)", "", "100%", )
   )
 )
 

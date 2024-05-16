@@ -249,16 +249,10 @@
       "nl": "Nederlands"
     },
     {
+      "en": "Abstract"
+    },
+    {
       "en": "Demo"
-    },
-    {
-      "en": "Fixed"
-    },
-    {
-      "en": "Ignore Case"
-    },
-    {
-      "en": "Keywords (separate with semicolons)"
     },
     {
       "en": "p-values"
@@ -270,6 +264,9 @@
       "en": "Quit & Return"
     },
     {
+      "en": "Reset"
+    },
+    {
       "en": "sample size"
     },
     {
@@ -277,9 +274,6 @@
     },
     {
       "en": "Section"
-    },
-    {
-      "en": "Study Title"
     },
     {
       "en": "This shiny app is under development; all materials created should be carefully checked."

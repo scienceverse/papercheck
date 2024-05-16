@@ -160,7 +160,7 @@ read_grobid <- function(filename) {
   divs <- xml2::xml_find_all(xml, "//figure")
 
   # keywords ----
-  s$info$keywords <- xml2::xml_find_all(xml, "//keywords") |> xml2::xml_text()
+  s$info$keywords <- xml2::xml_find_all(xml, "//keywords //term") |> xml2::xml_text()
 
   return(s)
 }

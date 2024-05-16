@@ -10,7 +10,7 @@
 #' @returns A study object created or edited by the app
 #'
 #' @examples
-#' \dontrun{ s <- scivrs_app() }
+#' \dontrun{ s <- papercheck_app() }
 #'
 papercheck_app <- function(study = NULL, ...) {
   # check study
@@ -19,8 +19,8 @@ papercheck_app <- function(study = NULL, ...) {
   }
 
   # check required packages
-  pckgs <- c("shiny", "shinydashboard", "shinyjs", "scienceverse",
-             "shiny.i18n", "DT", "dplyr", "tidyr")
+  pckgs <- c("shiny", "shinydashboard", "shinyjs",
+             "scienceverse", "shiny.i18n", "DT")
   names(pckgs) <- pckgs
   req_pckgs <- sapply(pckgs, requireNamespace, quietly = TRUE)
 

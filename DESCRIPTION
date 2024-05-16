@@ -21,7 +21,12 @@ Suggests:
     knitr,
     rmarkdown,
     scienceverse (>= 0.0.0.9021),
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    shiny,
+    shinydashboard,
+    shinyjs
+    shiny.i18n,
+    DT
 Config/testthat/edition: 3
 Imports: 
     dplyr,

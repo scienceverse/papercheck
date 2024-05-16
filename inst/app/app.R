@@ -7,7 +7,6 @@ suppressPackageStartupMessages({
   library(scienceverse)
   library(papercheck)
   library(dplyr)
-  library(tidyr)
   library(shiny.i18n)
 })
 
@@ -35,7 +34,7 @@ ui <- dashboardPage(
     ),
     actionButton("demo", "Demo"),
     #actionButton("reset_study", "Reset"),
-    #actionButton("return_study", "Quit & Return"),
+    actionButton("return_study", "Quit & Return"),
     tags$br(),
 
     selectInput("lang", "Change language",
@@ -75,6 +74,17 @@ server <- function(input, output, session) {
       shinyjs::enable(button)
     }
   }
+
+  ### return_study ----
+  observeEvent(input$return_study, {
+    debug_msg("return_study")
+
+    # just return sv object if only one study
+    s <- my_study()
+    if (length(s) == 1) s <- s[[1]]
+
+    stopApp(s)
+  })
 
   ## load ----
   debug_msg("---- load ----")
@@ -235,6 +245,15 @@ server <- function(input, output, session) {
   save_trans(trans_text, trans_labels)
 
   debug_msg("server functions created")
+
+  # .app.study ----
+  if (exists(".app.study.") && !is.null(.app.study.)) {
+    if ("scivrs_study" %in% class(.app.study.)) {
+      .app.study. <- list(.app.study.)
+      names(.app.study.) <- .app.study.[[1]]$name
+    }
+    update_from_study( .app.study. )
+  }
 
 } # end server()
 

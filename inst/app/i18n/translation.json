@@ -1,0 +1,247 @@
+{
+  "cultural_date_format": "%Y-%m-%d",
+  "languages": [
+    "en",
+    "nl"
+  ],
+  "translation": [
+    {
+      "en": "Add",
+      "nl": "Toevoeg"
+    },
+    {
+      "en": "Delete",
+      "nl": "Verwijder"
+    },
+    {
+      "en": "Clear",
+      "nl": "Ruim Op"
+    },
+    {
+      "en": "Change language",
+      "nl": "Verander de taal"
+    },
+    {
+      "en": "Study Info",
+      "nl": "Studie-informatie"
+    },
+    {
+      "en": "Study Name",
+      "nl": "Studienaam"
+    },
+    {
+      "en": "Study Description",
+      "nl": "Studiebeschrijving"
+    },
+    {
+      "en": "Custom Info",
+      "nl": "Aangepaste Info"
+    },
+    {
+      "en": "Custom Info Name",
+      "nl": "Aangepaste Info Naam"
+    },
+    {
+      "en": "Custom Info Value",
+      "nl": "Aangepaste Info Waarde"
+    },
+    {
+      "en": "Add Custom Info",
+      "nl": "Aangepaste Info Toevoegen"
+    },
+    {
+      "en": "Authors",
+      "nl": "Auteurs"
+    },
+    {
+      "en": "Reorder Authors",
+      "nl": "Auteurs opnieuw ordenen"
+    },
+    {
+      "en": "Author Number",
+      "nl": "Auteur nummer"
+    },
+    {
+      "en": "Given Name(s) including initials",
+      "nl": "Gegeven naam / namen inclusief initialen"
+    },
+    {
+      "en": "Last Name(s)",
+      "nl": "Achternaam/namen"
+    },
+    {
+      "en": "ORCiD",
+      "nl": "ORCiD"
+    },
+    {
+      "en": "Contributor Roles",
+      "nl": "Bijdragersrollen"
+    },
+    {
+      "en": "Add Author",
+      "nl": "Auteur toevoegen"
+    },
+    {
+      "en": "Hypotheses",
+      "nl": "Hypothesen"
+    },
+    {
+      "en": "Add Hypothesis",
+      "nl": "Hypothese toegevoen"
+    },
+    {
+      "en": "Update Hypothesis",
+      "nl": "Hypothese bijwerken"
+    },
+    {
+      "en": "Hypothesis ID",
+      "nl": "Hypothese-ID"
+    },
+    {
+      "en": "Hypothesis Description",
+      "nl": "Hypothese Beschrijving"
+    },
+    {
+      "en": "Criterion ID",
+      "nl": "Criterium-ID"
+    },
+    {
+      "en": "Add Criterion",
+      "nl": "Criterium toevoegen"
+    },
+    {
+      "en": "Evaluation",
+      "nl": "Evaluatie"
+    },
+    {
+      "en": "What combination of criteria will corroborate or falsify your hypothesis? Use the criteria IDs above and any of the following symbols: ()&|!"
+    },
+    {
+      "en": "Corroboration Description",
+      "nl": "Bevestiging Beschrijving"
+    },
+    {
+      "en": "Corroboration Evaluation",
+      "nl": "Bevestiging Evaluatie"
+    },
+    {
+      "en": "Falsification Description",
+      "nl": "Vervalsing Beschrijving"
+    },
+    {
+      "en": "Falsification Evaluation",
+      "nl": "Vervalsingsevaluatie"
+    },
+    {
+      "en": "Add an analysis first to be able to add criteria.",
+      "nl": "Voeg eerst een analyse toe om criteria toe te kunnen voegen."
+    },
+    {
+      "en": "No analyses have been specified",
+      "nl": "Er zijn geen analyses gespecificeerd"
+    },
+    {
+      "en": "Most of the phrases have not been translated; this is just a proof of concept.",
+      "nl": "De meeste zinnen zijn niet vertaald; dit is slechts een proof of concept."
+    },
+    {
+      "en": "Analyses",
+      "nl": "Analyses"
+    },
+    {
+      "en": "Data",
+      "nl": "Gegevens"
+    },
+    {
+      "en": "Results",
+      "nl": "Resultaten"
+    },
+    {
+      "en": "CRediT",
+      "nl": "CRediT"
+    },
+    {
+      "en": "edit",
+      "nl": "uitgeven"
+    },
+    {
+      "en": "delete",
+      "nl": "verwijderen"
+    },
+    {
+      "en": "Analyse Data",
+      "nl": "Analyseer Gegevens"
+    },
+    {
+      "en": "Reset Study",
+      "nl": "Reset Studie"
+    },
+    {
+      "en": "%d ORCiDs found",
+      "nl": "%d ORCiD's gevonden"
+    },
+    {
+      "en": "Add Analysis"
+    },
+    {
+      "en": "Add Data"
+    },
+    {
+      "en": "Add Return Value"
+    },
+    {
+      "en": "Analysis Code"
+    },
+    {
+      "en": "Analysis ID"
+    },
+    {
+      "en": "analysis_id"
+    },
+    {
+      "en": "comparator"
+    },
+    {
+      "en": "CRediT in JATS 1.2 format as described at <a href='https://jats4r.org/credit-taxonomy'>https://jats4r.org/credit-taxonomy<\/a>"
+    },
+    {
+      "en": "Data ID"
+    },
+    {
+      "en": "Email"
+    },
+    {
+      "en": "id"
+    },
+    {
+      "en": "If your code doesn't return a named list, add each object to be returned below. E.g., if your code creates two objects named `my_mean` and `my_sd`, you can refer to them in the criteria as `m` and `s` if you set name to `m` and `s` and object to `my_mean` and `my_sd`. You can also add a constant value (e.g., data from an archive paper or another software program)."
+    },
+    {
+      "en": "Include Data"
+    },
+    {
+      "en": "Look up ORCiD"
+    },
+    {
+      "en": "Methods"
+    },
+    {
+      "en": "operator"
+    },
+    {
+      "en": "result"
+    },
+    {
+      "en": "Return"
+    },
+    {
+      "en": "We will add the ability to edit codebooks soon"
+    },
+    {
+      "en": "What combination of criteria will corroborate or falsify your hypothesis? Use the criteria IDs above and any of the following symbols: ( ) & | !"
+    },
+    {"en": "English", "nl": "Engels"},
+    {"en": "Dutch", "nl": "Nederlands"}
+  ]
+}
+

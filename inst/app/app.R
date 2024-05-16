@@ -198,6 +198,18 @@ server <- function(input, output, session) {
     updateTextInput(session, "search_pattern", value = "N\\s*=\\s*[0-9,\\.]*\\d")
   })
 
+
+  ### download_table ----
+  output$download_table <- downloadHandler(
+    filename = function() {
+      debug_msg("download_table")
+      paste0("table.csv")
+    },
+    content = function(file) {
+      write.csv(text_table(), file, row.names = FALSE)
+    }
+  )
+
   ## translation ----
   debug_msg("----translation ----")
 

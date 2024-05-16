@@ -20,7 +20,7 @@ RoxygenNote: 7.3.1
 Suggests: 
     knitr,
     rmarkdown,
-    scienceverse,
+    scienceverse (>= 0.0.0.9021),
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Imports: 
@@ -30,3 +30,5 @@ Imports:
 VignetteBuilder: knitr
 URL: https://github.com/debruine/papercheck, https://scienceverse.github.io/papercheck/
 BugReports: https://github.com/debruine/papercheck/issues
+Remotes:  
+    https://github.com/scienceverse/scienceverse

@@ -22,24 +22,18 @@
     <loc>https://scienceverse.github.io/papercheck/index.html</loc>
   </url>
   <url>
-    <loc>https://scienceverse.github.io/papercheck/reference/full_text_table_from_grobid.html</loc>
-  </url>
-  <url>
-    <loc>https://scienceverse.github.io/papercheck/reference/if_nowt.html</loc>
+    <loc>https://scienceverse.github.io/papercheck/reference/full_text_sections.html</loc>
   </url>
   <url>
     <loc>https://scienceverse.github.io/papercheck/reference/index.html</loc>
   </url>
   <url>
-    <loc>https://scienceverse.github.io/papercheck/reference/is_nowt.html</loc>
-  </url>
-  <url>
     <loc>https://scienceverse.github.io/papercheck/reference/message.html</loc>
   </url>
   <url>
-    <loc>https://scienceverse.github.io/papercheck/reference/search_text.html</loc>
+    <loc>https://scienceverse.github.io/papercheck/reference/read_grobid.html</loc>
   </url>
   <url>
-    <loc>https://scienceverse.github.io/papercheck/reference/study_from_xml.html</loc>
+    <loc>https://scienceverse.github.io/papercheck/reference/search_text.html</loc>
   </url>
 </urlset>

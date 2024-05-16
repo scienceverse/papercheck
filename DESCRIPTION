@@ -24,7 +24,7 @@ Suggests:
     testthat (>= 3.0.0),
     shiny,
     shinydashboard,
-    shinyjs
+    shinyjs,
     shiny.i18n,
     DT
 Config/testthat/edition: 3

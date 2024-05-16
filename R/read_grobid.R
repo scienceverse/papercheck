@@ -15,15 +15,34 @@ read_grobid <- function(filename) {
   # handle list of files or a directory----
   if (length(filename) > 1) {
     message("Processing ", length(filename), " files...")
+
+    # get unique names
+    dirs <- filename |>
+      sapply(strsplit, split = "/")
+    maxlen <- sapply(dirs, length) |> max()
+    dir_df <- lapply(dirs, \(x) {
+        x[1:maxlen]
+      }) |>
+      as.data.frame() |>
+      t()
+    distinct_vals <- apply(dir_df, 2, unique) |> lapply(length) > 1
+    unique_names <- dir_df[ , distinct_vals, drop = FALSE] |>
+      apply(1, paste0, collapse = "/")
+
     s <- lapply(filename, \(x) {
       message("- ", basename(x))
       read_grobid(x)
     })
     message("Complete!")
-    names(s) <- basename(filename)
+    names(s) <- unique_names
+    for (un in unique_names) {
+      s[[un]]$full_text$file <- un
+    }
     return(s)
   } else if (file.exists(filename) & file.info(filename)$isdir) {
-    xmls <- list.files(filename, "\\.xml", full.names = TRUE)
+    xmls <- list.files(filename, "\\.xml",
+                       full.names = TRUE,
+                       recursive = TRUE)
     if (length(xmls) == 0) {
       stop("There are no xml files in the directory ", filename)
     }
@@ -51,12 +70,11 @@ read_grobid <- function(filename) {
     stop("The file ", filename, " could not be read as XML")
   })
 
-
-
   if (xml2::xml_name(xml) != "TEI") {
     stop("This XML file does not parse as a valid Grobid TEI.")
   }
 
+  # set up study object ----
   #xlist <- xml2::as_list(xml)
   if (requireNamespace("scienceverse", quietly = TRUE)) {
     s <- scienceverse::study()
@@ -65,7 +83,9 @@ read_grobid <- function(filename) {
     class(s) <- c("scivrs_study", "list")
   }
 
+  # general info ----
   s$name <- basename(filename)
+  s$info$filename <- basename(filename)
   s$info$title <- xml2::xml_find_first(xml, "//titleStmt //title") |>
     xml2::xml_text()
 
@@ -130,7 +150,11 @@ read_grobid <- function(filename) {
   body_table$file <- basename(filename)
   rownames(body_table) <- NULL
 
-  s$full_text <- full_text_sections(body_table)
+  body_table <- full_text_sections(body_table)
+
+  blank_divs <- grepl("\\[div-\\d+\\]", body_table$text)
+
+  s$full_text <- body_table[!blank_divs, ]
 
   # TODO: figures ----
   divs <- xml2::xml_find_all(xml, "//figure")

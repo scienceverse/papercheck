@@ -27,7 +27,7 @@ test_that("basics", {
 
   expect_equal(substr(s$info$description, 1, 5), "Moral")
 
-  expect_equal(nrow(s$full_text), 57)
+  expect_equal(nrow(s$full_text), 56)
 })
 
 test_that("iteration", {
@@ -60,6 +60,10 @@ test_that("iteration", {
 
   s <- read_grobid(filenames[3:1])
   expect_equal(names(s), file_list[3:1])
+
+  # recursive file search
+  s <- read_grobid(system.file(package="papercheck"))
+  expect_equal(names(s), file_list)
 
   # messages
   options(scienceverse.verbose = TRUE)

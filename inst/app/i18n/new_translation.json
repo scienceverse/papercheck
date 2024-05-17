@@ -2,281 +2,301 @@
   "cultural_date_format": "%Y-%m-%d",
   "languages": [
     "en",
-    "nl"
+    "nl",
+    "zh",
+    "es"
   ],
   "translation": [
     {
       "en": "Add",
-      "nl": "Toevoeg"
+      "nl": "Toevoeg",
+      "zh": "添加",
+      "es": "Añadir"
     },
     {
       "en": "Delete",
-      "nl": "Verwijder"
+      "nl": "Verwijder",
+      "zh": "删除",
+      "es": "Eliminar"
     },
     {
       "en": "Clear",
-      "nl": "Ruim Op"
+      "nl": "Ruim Op",
+      "zh": "清除",
+      "es": "Limpiar"
     },
     {
       "en": "Change language",
-      "nl": "Verander de taal"
+      "nl": "Verander de taal",
+      "zh": "更改语言",
+      "es": "Cambiar idioma"
     },
     {
       "en": "Study Info",
-      "nl": "Studie-informatie"
+      "nl": "Studie-informatie",
+      "zh": "研究信息",
+      "es": "Información del estudio"
     },
     {
       "en": "Study Name",
-      "nl": "Studienaam"
+      "nl": "Studienaam",
+      "zh": "研究名称",
+      "es": "Nombre del estudio"
     },
     {
       "en": "Study Description",
-      "nl": "Studiebeschrijving"
+      "nl": "Studiebeschrijving",
+      "zh": "研究描述",
+      "es": "Descripción del estudio"
     },
     {
       "en": "Custom Info",
-      "nl": "Aangepaste Info"
+      "nl": "Aangepaste Info",
+      "zh": "自定义信息",
+      "es": "Información personalizada"
     },
     {
       "en": "Custom Info Name",
-      "nl": "Aangepaste Info Naam"
+      "nl": "Aangepaste Info Naam",
+      "zh": "自定义信息名称",
+      "es": "Nombre de información personalizada"
     },
     {
       "en": "Custom Info Value",
-      "nl": "Aangepaste Info Waarde"
+      "nl": "Aangepaste Info Waarde",
+      "zh": "自定义信息值",
+      "es": "Valor de información personalizada"
     },
     {
       "en": "Add Custom Info",
-      "nl": "Aangepaste Info Toevoegen"
+      "nl": "Aangepaste Info Toevoegen",
+      "zh": "添加自定义信息",
+      "es": "Añadir información personalizada"
     },
     {
       "en": "Authors",
-      "nl": "Auteurs"
+      "nl": "Auteurs",
+      "zh": "作者",
+      "es": "Autores"
     },
     {
       "en": "Reorder Authors",
-      "nl": "Auteurs opnieuw ordenen"
+      "nl": "Auteurs opnieuw ordenen",
+      "zh": "重新排序作者",
+      "es": "Reordenar autores"
     },
     {
       "en": "Author Number",
-      "nl": "Auteur nummer"
+      "nl": "Auteur nummer",
+      "zh": "作者编号",
+      "es": "Número de autor"
     },
     {
       "en": "Given Name(s) including initials",
-      "nl": "Gegeven naam / namen inclusief initialen"
+      "nl": "Gegeven naam / namen inclusief initialen",
+      "zh": "名字（包括首字母）",
+      "es": "Nombre(s) incluyendo iniciales"
     },
     {
       "en": "Last Name(s)",
-      "nl": "Achternaam/namen"
+      "nl": "Achternaam/namen",
+      "zh": "姓氏",
+      "es": "Apellido(s)"
     },
     {
       "en": "ORCiD",
-      "nl": "ORCiD"
+      "nl": "ORCiD",
+      "zh": "ORCiD",
+      "es": "ORCiD"
     },
     {
       "en": "Contributor Roles",
-      "nl": "Bijdragersrollen"
+      "nl": "Bijdragersrollen",
+      "zh": "贡献者角色",
+      "es": "Roles de los contribuyentes"
     },
     {
       "en": "Add Author",
-      "nl": "Auteur toevoegen"
+      "nl": "Auteur toevoegen",
+      "zh": "添加作者",
+      "es": "Añadir autor"
     },
     {
       "en": "Hypotheses",
-      "nl": "Hypothesen"
+      "nl": "Hypothesen",
+      "zh": "假设",
+      "es": "Hipótesis"
     },
     {
       "en": "Add Hypothesis",
-      "nl": "Hypothese toegevoen"
+      "nl": "Hypothese toevoegen",
+      "zh": "添加假设",
+      "es": "Añadir hipótesis"
     },
     {
       "en": "Update Hypothesis",
-      "nl": "Hypothese bijwerken"
+      "nl": "Hypothese bijwerken",
+      "zh": "更新假设",
+      "es": "Actualizar hipótesis"
     },
     {
       "en": "Hypothesis ID",
-      "nl": "Hypothese-ID"
+      "nl": "Hypothese-ID",
+      "zh": "假设ID",
+      "es": "ID de hipótesis"
     },
     {
       "en": "Hypothesis Description",
-      "nl": "Hypothese Beschrijving"
+      "nl": "Hypothese Beschrijving",
+      "zh": "假设描述",
+      "es": "Descripción de la hipótesis"
     },
     {
       "en": "Criterion ID",
-      "nl": "Criterium-ID"
+      "nl": "Criterium-ID",
+      "zh": "标准ID",
+      "es": "ID de criterio"
     },
     {
       "en": "Add Criterion",
-      "nl": "Criterium toevoegen"
-    },
-    {
-      "en": "Evaluation",
-      "nl": "Evaluatie"
-    },
-    {
-      "en": "What combination of criteria will corroborate or falsify your hypothesis? Use the criteria IDs above and any of the following symbols: ()&|!"
-    },
-    {
-      "en": "Corroboration Description",
-      "nl": "Bevestiging Beschrijving"
-    },
-    {
-      "en": "Corroboration Evaluation",
-      "nl": "Bevestiging Evaluatie"
-    },
-    {
-      "en": "Falsification Description",
-      "nl": "Vervalsing Beschrijving"
-    },
-    {
-      "en": "Falsification Evaluation",
-      "nl": "Vervalsingsevaluatie"
-    },
-    {
-      "en": "Add an analysis first to be able to add criteria.",
-      "nl": "Voeg eerst een analyse toe om criteria toe te kunnen voegen."
-    },
-    {
-      "en": "No analyses have been specified",
-      "nl": "Er zijn geen analyses gespecificeerd"
+      "nl": "Criterium toevoegen",
+      "zh": "添加标准",
+      "es": "Añadir criterio"
     },
     {
       "en": "Most of the phrases have not been translated; this is just a proof of concept.",
-      "nl": "De meeste zinnen zijn niet vertaald; dit is slechts een proof of concept."
+      "nl": "De meeste zinnen zijn niet vertaald; dit is slechts een proof of concept.",
+      "zh": "大多数短语尚未翻译; 这只是一个概念验证。",
+      "es": "La mayoría de las frases no han sido traducidas; esto es solo una prueba de concepto."
     },
     {
       "en": "Analyses",
-      "nl": "Analyses"
+      "nl": "Analyses",
+      "zh": "分析",
+      "es": "Análisis"
     },
     {
       "en": "Data",
-      "nl": "Gegevens"
+      "nl": "Gegevens",
+      "zh": "数据",
+      "es": "Datos"
     },
     {
       "en": "Results",
-      "nl": "Resultaten"
+      "nl": "Resultaten",
+      "zh": "结果",
+      "es": "Resultados"
     },
     {
       "en": "CRediT",
-      "nl": "CRediT"
+      "nl": "CRediT",
+      "zh": "CRediT",
+      "es": "CRediT"
     },
     {
       "en": "edit",
-      "nl": "uitgeven"
+      "nl": "uitgeven",
+      "zh": "编辑",
+      "es": "editar"
     },
     {
       "en": "delete",
-      "nl": "verwijderen"
-    },
-    {
-      "en": "Analyse Data",
-      "nl": "Analyseer Gegevens"
+      "nl": "verwijderen",
+      "zh": "删除",
+      "es": "eliminar"
     },
     {
       "en": "Reset Study",
-      "nl": "Reset Studie"
+      "nl": "Reset Studie",
+      "zh": "重置研究",
+      "es": "Reiniciar estudio"
     },
     {
       "en": "%d ORCiDs found",
-      "nl": "%d ORCiD's gevonden"
-    },
-    {
-      "en": "Add Analysis"
-    },
-    {
-      "en": "Add Data"
-    },
-    {
-      "en": "Add Return Value"
-    },
-    {
-      "en": "Analysis Code"
-    },
-    {
-      "en": "Analysis ID"
-    },
-    {
-      "en": "analysis_id"
-    },
-    {
-      "en": "comparator"
-    },
-    {
-      "en": "CRediT in JATS 1.2 format as described at <a href='https://jats4r.org/credit-taxonomy'>https://jats4r.org/credit-taxonomy<\/a>"
-    },
-    {
-      "en": "Data ID"
-    },
-    {
-      "en": "Email"
-    },
-    {
-      "en": "id"
-    },
-    {
-      "en": "If your code doesn't return a named list, add each object to be returned below. E.g., if your code creates two objects named `my_mean` and `my_sd`, you can refer to them in the criteria as `m` and `s` if you set name to `m` and `s` and object to `my_mean` and `my_sd`. You can also add a constant value (e.g., data from an archive paper or another software program)."
-    },
-    {
-      "en": "Include Data"
-    },
-    {
-      "en": "Look up ORCiD"
-    },
-    {
-      "en": "Methods"
-    },
-    {
-      "en": "operator"
-    },
-    {
-      "en": "result"
-    },
-    {
-      "en": "Return"
-    },
-    {
-      "en": "We will add the ability to edit codebooks soon"
-    },
-    {
-      "en": "What combination of criteria will corroborate or falsify your hypothesis? Use the criteria IDs above and any of the following symbols: ( ) & | !"
+      "nl": "%d ORCiD's gevonden",
+      "zh": "找到%d个ORCiD",
+      "es": "Se encontraron %d ORCiD"
     },
     {
       "en": "English",
-      "nl": "Engels"
+      "nl": "Engels",
+      "zh": "英语",
+      "es": "Inglés"
     },
     {
       "en": "Dutch",
-      "nl": "Nederlands"
+      "nl": "Nederlands",
+      "zh": "荷兰语",
+      "es": "Holandés"
     },
     {
-      "en": "Abstract"
+      "en": "Abstract",
+      "nl": "Samenvatting",
+      "zh": "摘要",
+      "es": "Resumen"
     },
     {
-      "en": "Demo"
+      "en": "Demo",
+      "nl": "Demo",
+      "zh": "演示",
+      "es": "Demostración"
     },
     {
-      "en": "p-values"
+      "en": "p-values",
+      "nl": "p-waarden",
+      "zh": "p值",
+      "es": "valores p"
     },
     {
-      "en": "Pattern"
+      "en": "Pattern",
+      "nl": "Patroon",
+      "zh": "模式",
+      "es": "Patrón"
     },
     {
-      "en": "Quit & Return"
+      "en": "Quit & Return",
+      "nl": "Stoppen & Terugkeren",
+      "zh": "退出并返回",
+      "es": "Salir y regresar"
     },
     {
-      "en": "Reset"
+      "en": "Reset",
+      "nl": "Herstellen",
+      "zh": "重置",
+      "es": "Reiniciar"
     },
     {
-      "en": "sample size"
+      "en": "Return",
+      "nl": "Terugkeren",
+      "zh": "返回",
+      "es": "Regresar"
     },
     {
-      "en": "Search"
+      "en": "sample size",
+      "nl": "steekproefgrootte",
+      "zh": "样本量",
+      "es": "tamaño de la muestra"
     },
     {
-      "en": "Section"
+      "en": "Search",
+      "nl": "Zoeken",
+      "zh": "搜索",
+      "es": "Buscar"
     },
     {
-      "en": "This shiny app is under development; all materials created should be carefully checked."
+      "en": "Section",
+      "nl": "Sectie",
+      "zh": "部分",
+      "es": "Sección"
+    },
+    {
+      "en": "This shiny app is under development; all materials created should be carefully checked.",
+      "nl": "Deze shiny app is in ontwikkeling; alle gemaakte materialen moeten zorgvuldig worden gecontroleerd.",
+      "zh": "这个shiny应用程序正在开发中; 所有创建的材料应仔细检查。",
+      "es": "Esta aplicación shiny está en desarrollo; todos los materiales creados deben ser cuidadosamente revisados."
+    },
+    {
+      "en": "Load from XML"
     }
   ]
 }

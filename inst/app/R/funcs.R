@@ -16,3 +16,14 @@ makeReactiveTrigger <- function() {
     }
   )
 }
+
+debug_msg <- function(...) {
+  is_local <- Sys.getenv('SHINY_PORT') == ""
+  if (is_local) {
+    message(...)
+    #} else {
+    list(...) %>%
+      toString() %>%
+      shinyjs::logjs()
+  }
+}

@@ -10,6 +10,7 @@ trans_labels <- list(
   updateCheckboxInput = c(),
   updateCheckboxGroupInput = c(),
   updateActionButton = c()
+  #updateFileInput = c()
 )
 
 h2 <- function(x, ...) {
@@ -23,6 +24,10 @@ h3 <- function(x, ...) {
 h4 <- function(x, ...) {
   trans_text[x] <<- x
   shiny::h4(x, en = x, ...)
+}
+h5 <- function(x, ...) {
+  trans_text[x] <<- x
+  shiny::h5(x, en = x, ...)
 }
 p <- function(x, ...) {
   trans_text[x] <<- x
@@ -70,6 +75,16 @@ actionButton <- function(inputId, label, ...) {
     trans_labels$updateActionButton[inputId] <<- label
   shiny::actionButton(inputId, label, ...)
 }
+
+# fileInput <- function(inputId, label, ...) {
+#   if (!is.null(label))
+#     trans_labels$updatefileInput[inputId] <<- label
+#   shiny::fileInput(inputId, label, ...)
+# }
+#
+# updateFileInput <- function(session, inputId, label = NULL) {
+#   # TODO
+# }
 
 
 save_trans <- function(trans_text, trans_labels) {

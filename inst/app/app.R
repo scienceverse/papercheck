@@ -37,7 +37,10 @@ ui <- dashboardPage(
     tags$br(),
 
     selectInput("lang", "Change language",
-                choices = c(English = "en", Dutch = "nl"),
+                choices = c(English = "en",
+                            Dutch = "nl",
+                            Spanish = "es",
+                            Chinese = "zh"),
                 selected = "en"),
     p("Most of the phrases have not been translated; this is just a proof of concept.", style="margin: 0 1em;")
   ),

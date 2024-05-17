@@ -33,7 +33,7 @@ papercheck_app <- function(study = NULL, ...) {
     # ss <- lapply(all, class) |> sapply(\(x) "scivrs_study" %in% x)
     # sss <- all[ss]
 
-    shiny::runApp(appDir = system.file("app", package = "papercheck"), ...)
+    shiny::runApp(appDir = system.file("app", package = "papercheck"), ...) |> invisible()
   } else {
     warning("You need to install the following packages to run the app: ",
             paste(names(req_pckgs[!req_pckgs]), collapse = ", "))

@@ -18,6 +18,7 @@ source("i18n/trans.R")
 ## Interface Tab Items ----
 source("tabs/load.R")
 source("tabs/text.R")
+source("tabs/gpt.R")
 
 ## UI ----
 ui <- dashboardPage(
@@ -29,7 +30,9 @@ ui <- dashboardPage(
       menuItem("Load", tabName = "load_tab",
                icon = icon("yin-yang")),
       menuItem("Text", tabName = "text_tab",
-               icon = icon("table"))
+               icon = icon("table")),
+      menuItem("ChatGPT", tabName = "gpt_tab",
+               icon = icon("robot"))
     ),
     actionButton("demo", "Demo"),
     #actionButton("reset_study", "Reset"),
@@ -52,7 +55,8 @@ ui <- dashboardPage(
     ),
     tabItems(
       load_tab,
-      text_tab
+      text_tab,
+      gpt_tab
     )
   )
 )
@@ -65,6 +69,8 @@ server <- function(input, output, session) {
 
   my_study <- reactiveVal( scienceverse::study(name = "", description = "") )
   text_table <- reactiveVal( data.frame() )
+  gpt_table <- reactiveVal( data.frame() )
+  total_cost <- reactiveVal(0)
 
   ### return_study ----
   observeEvent(input$return_study, {
@@ -121,6 +127,7 @@ server <- function(input, output, session) {
 
     my_study(study)
     text_table(papercheck::search_text(study))
+    shinyjs::click("search_text") # trigger search
 
     # reset search interface
     c("search_pattern",
@@ -165,9 +172,9 @@ server <- function(input, output, session) {
 
     text_table()
   },
-  selection = 'none',
-  rownames = FALSE,
-  options = dt_options
+    selection = 'none',
+    rownames = FALSE,
+    options = dt_options
   )
 
   ### search_text ----
@@ -190,6 +197,10 @@ server <- function(input, output, session) {
                         fixed = "fixed" %in% input$search_options
                         )
       text_table(tt)
+      updateCheckboxGroupInput(session, "gpt_group_by",
+                               choices = names(tt),
+                               selected = "file",
+                               inline = TRUE)
     }, error = function(e) {
       shinyjs::alert(e$message)
     })
@@ -224,6 +235,52 @@ server <- function(input, output, session) {
     },
     content = function(file) {
       write.csv(text_table(), file, row.names = FALSE)
+    }
+  )
+
+  ## gpt ----
+
+  output$total_cost <- renderValueBox({
+    valueBox(
+      round(total_cost(), 5),
+      "total cost",
+      icon = icon("dollar-sign"),
+      color = "green"
+    )
+  })
+
+  ### gpt_submit----
+  observeEvent(input$gpt_submit, {
+    res <- gpt(text_table(), input$gpt_query, input$gpt_context)
+    gpt_table(res)
+  })
+
+  ### gpt_table ----
+  output$gpt_table <- renderDT({
+    debug_msg("gpt_table")
+
+    gt <- gpt_table()
+
+    if (!is.null(gt$cost)) {
+      total_cost(sum(gt$cost))
+      gt$cost <- round(gt$cost, 5)
+    }
+
+    gt
+  },
+    selection = 'none',
+    rownames = FALSE,
+    options = dt_options
+  )
+
+  ### download_gpt ----
+  output$download_gpt <- downloadHandler(
+    filename = function() {
+      debug_msg("download_gpt")
+      paste0("gpt.csv")
+    },
+    content = function(file) {
+      write.csv(gpt_table(), file, row.names = FALSE)
     }
   )
 

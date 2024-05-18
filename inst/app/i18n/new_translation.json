@@ -296,7 +296,13 @@
       "es": "Esta aplicación shiny está en desarrollo; todos los materiales creados deben ser cuidadosamente revisados."
     },
     {
-      "en": "Load from XML"
+      "en": "Context"
+    },
+    {
+      "en": "Group By"
+    },
+    {
+      "en": "Query"
     }
   ]
 }

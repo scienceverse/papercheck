@@ -1,6 +1,6 @@
 Package: papercheck
 Title: Check Scientific Papers for Best Practices
-Version: 0.0.0.9006
+Version: 0.0.0.9007
 Authors@R: c(
   person(  given = "Lisa",
            family = "DeBruine",
@@ -30,10 +30,12 @@ Suggests:
 Config/testthat/edition: 3
 Imports: 
     dplyr,
+    progress,
     tidytext,
-    xml2
+    xml2,
+    reticulate
 VignetteBuilder: knitr
 URL: https://github.com/debruine/papercheck, https://scienceverse.github.io/papercheck/
 BugReports: https://github.com/debruine/papercheck/issues
-Remotes:  
+Remotes: 
     https://github.com/scienceverse/scienceverse

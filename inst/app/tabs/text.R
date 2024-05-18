@@ -14,9 +14,6 @@ text_tab <- tabItem(
           checkboxGroupInput("search_options", NULL, c("Ignore Case" = "ignore.case",
                                                        "Fixed" = "fixed",
                                                        "Search this table" = "table"), selected = "ignore.case")
-          #checkboxInput("search_ignore_case", "Ignore Case", TRUE),
-          #checkboxInput("search_fixed", "Fixed", FALSE),
-          #checkboxInput("search_table", "Search this table", FALSE),
         ))
       ),
       actionButton("search_text", "Search"),

@@ -52,11 +52,12 @@ gpt <- function(text, query,
   }
 
   # check if internet is available
-    internet_down <- as.logical(system("ping -c 1 chat.openai.com",
-                                       ignore.stdout = TRUE,
-                                       ignore.stderr = TRUE))
+  internet_down <- system("ping -c 1 chat.openai.com",
+                          ignore.stdout = TRUE,
+                          ignore.stderr = TRUE) |>
+      as.logical()
   if (internet_down) {
-    stop("The internet seems to be not connected")
+    warning("The internet seems to be not connected")
   }
 
   # #load/check python stuff ----
@@ -75,7 +76,7 @@ gpt <- function(text, query,
     for (x in group_by) text[[x]] = x
   }
 
-  if (options("scienceverse.verbose")) {
+  if (getOption("scienceverse.verbose")) {
     ngroups <- text[, group_by, drop = FALSE] |> unique() |> nrow()
     pb <- progress::progress_bar$new(
       total = ngroups, clear = FALSE,
@@ -91,15 +92,34 @@ gpt <- function(text, query,
   response <- by(text, indices, \(x) {
     write(x[[text_col]], file)
 
-    resp <- py_gpt(file, query, context, CHATGPT_KEY,
+    resp <- tryCatch({
+      py_gpt(file, query, context, CHATGPT_KEY,
            chunk_size = chunk_size,
            chunk_overlap = chunk_overlap,
            temperature = temperature)
+    }, error = function(e) {
+      return(list(result = list(answer = NA),
+                  callback = list(total_cost = NA),
+                  error = e$message))
+    })
 
-    if (options("scienceverse.verbose")) pb$tick()
+    if (getOption("scienceverse.verbose")) pb$tick()
 
     return(resp)
   })
+
+  errors <- lapply(response, \(x) x$error)
+  error_indices <- !sapply(errors, is.null)
+  if (any(error_indices)) {
+    warn <- paste(names(errors)[error_indices], collapse = ", ") |>
+      paste("There were errors in the following:", x = _)
+
+    errors[error_indices] |>
+      unique()|>
+      paste("\n  * ", x = _) |>
+      paste(warn, x = _) |>
+      warning()
+  }
 
   res <- data.frame(
     index = names(response),

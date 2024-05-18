@@ -11,7 +11,7 @@ def py_gpt(file, query, context, APIKEY, chunk_size = 500, chunk_overlap = 100, 
   # Loads personal texts for model
   loader = TextLoader(file)
   documents = loader.load()
-
+  
   # Text splitters are needed to split long texts into chunks
   # Must experiment to figure out the best chunk_size and chunk_overlap!
   # (params of RecursiveCharacterTextSplitter)

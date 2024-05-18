@@ -51,7 +51,7 @@ gpt <- function(text, query,
     stop("The argument `temperature` must be between 0.0 and 2.0")
   }
 
-  # check if internet is available
+  # check if internet is available----
   internet_down <- system("ping -c 1 chat.openai.com",
                           ignore.stdout = TRUE,
                           ignore.stderr = TRUE) |>
@@ -65,6 +65,8 @@ gpt <- function(text, query,
     stop("You need to install Python to use the chatGPT functions")
   }
 
+  py_gpt <- NULL # stops annoying cmdcheck warning
+
   # load script
   pyscript <- system.file("python/gpt.py", package = "papercheck")
   reticulate::source_python(pyscript)
@@ -76,6 +78,7 @@ gpt <- function(text, query,
     for (x in group_by) text[[x]] = x
   }
 
+  # set up progress bar ----
   if (getOption("scienceverse.verbose")) {
     ngroups <- text[, group_by, drop = FALSE] |> unique() |> nrow()
     pb <- progress::progress_bar$new(
@@ -87,6 +90,7 @@ gpt <- function(text, query,
     pb$tick(0)
   }
 
+  # call chatgpt ----
   file <- tempfile(fileext = ".txt")
   indices <- text[, group_by, drop = FALSE] |> as.list()
   response <- by(text, indices, \(x) {
@@ -108,6 +112,7 @@ gpt <- function(text, query,
     return(resp)
   })
 
+  # check for errors ----
   errors <- lapply(response, \(x) x$error)
   error_indices <- !sapply(errors, is.null)
   if (any(error_indices)) {
@@ -121,6 +126,7 @@ gpt <- function(text, query,
       warning()
   }
 
+  # set up return data frame ----
   res <- data.frame(
     index = names(response),
     answer = sapply(response, \(x) x$result$answer),

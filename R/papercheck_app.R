@@ -26,7 +26,7 @@ papercheck_app <- function(study = NULL, ...) {
 
   if (all(req_pckgs)) {
     .GlobalEnv$.app.study. <- study
-    on.exit(rm(.app.study., envir=.GlobalEnv))
+    on.exit(rm(".app.study.", envir=.GlobalEnv))
 
     # # get all local scivrs study objects
     # all <- mget(ls(), envir = globalenv())

@@ -20,6 +20,7 @@ search_text <- function(study, pattern = ".*", section = NULL,
                              return = c("sentence", "paragraph", "section", "match"),
                              ignore.case = TRUE, ...) {
   return <- match.arg(return)
+  text <- NULL # hack to stop cmdcheck warning :(
 
   # test pattern for errors(TODO: deal with warnings + errors)
   test_pattern <- tryCatch(

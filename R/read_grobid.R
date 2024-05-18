@@ -14,7 +14,17 @@
 read_grobid <- function(filename) {
   # handle list of files or a directory----
   if (length(filename) > 1) {
-    message("Processing ", length(filename), " files...")
+    #message("Processing ", length(filename), " files...")
+    # set up progress bar ----
+    if (getOption("scienceverse.verbose")) {
+      pb <- progress::progress_bar$new(
+        total = length(filename), clear = FALSE,
+        format = "Processing XMLs [:bar] :current/:total :elapsedfull"
+      )
+      pb$tick(0)
+      Sys.sleep(0.2)
+      pb$tick(0)
+    }
 
     # get unique names
     dirs <- filename |>
@@ -30,10 +40,12 @@ read_grobid <- function(filename) {
       apply(1, paste0, collapse = "/")
 
     s <- lapply(filename, \(x) {
-      message("- ", basename(x))
-      read_grobid(x)
+      #message("- ", basename(x))
+      s1 <- read_grobid(x)
+      if (getOption("scienceverse.verbose")) pb$tick()
+      s1
     })
-    message("Complete!")
+    #message("Complete!")
     names(s) <- unique_names
     for (un in unique_names) {
       s[[un]]$full_text$file <- un
@@ -143,9 +155,15 @@ read_grobid <- function(filename) {
     )
   })
 
+  text <- NULL # hack to stop cmdcheck warning :(
   body_table <- do.call(rbind, c(list(abst_table), div_text)) |>
     tidytext::unnest_sentences(text, text, to_lower = FALSE) |>
-    dplyr::mutate(s = dplyr::row_number(), .by = c(div, p))
+    dplyr::mutate(s = dplyr::row_number(), .by = c("div", "p"))
+
+  # body_table <- by(body_table,
+  #                  list(body_table$div, body_table$p),
+  #                  \(x) { x$s = seq_along(x); x }) |>
+  #   do.call(rbind, args = _)
 
   body_table$file <- basename(filename)
   rownames(body_table) <- NULL

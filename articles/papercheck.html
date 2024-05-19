@@ -39,7 +39,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">papercheck</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9009</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9010</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -87,49 +87,416 @@
 
     
     
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/debruine/papercheck" class="external-link">papercheck</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
-<h2 id="load-from-xml">Load from XML<a class="anchor" aria-label="anchor" href="#load-from-xml"></a>
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>The function <code><a href="../reference/read_grobid.html">read_grobid()</a></code> can read XML files in <a href="https://tei-c.org/" class="external-link">TEI</a> format created by <a href="https://grobid.readthedocs.io/" class="external-link">grobid</a>.</p>
+<p>You can install the development version of papercheck from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"scienceverse/papercheck"</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/debruine/papercheck" class="external-link">papercheck</a></span><span class="op">)</span></span></code></pre></div>
+<div class="section level3">
+<h3 id="load-from-xml">Load from XML<a class="anchor" aria-label="anchor" href="#load-from-xml"></a>
+</h3>
+<p>The function <code><a href="../reference/read_grobid.html">read_grobid()</a></code> can read XML files in <a href="https://tei-c.org/" class="external-link">TEI</a> format created by <a href="https://grobid.readthedocs.io/" class="external-link">grobid</a>.</p>
+<p>The example below uses some previously created XML files that are
+included with papercheck. You can <a href="https://huggingface.co/spaces/kermitt2/grobid" class="external-link">use grobid on your
+own paper</a> here.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">grobid_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"grobid"</span>, package<span class="op">=</span><span class="st">"papercheck"</span><span class="op">)</span></span>
 <span><span class="va">filename</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">grobid_dir</span>, <span class="st">"incest.xml"</span><span class="op">)</span></span>
 <span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_grobid.html">read_grobid</a></span><span class="op">(</span><span class="va">filename</span><span class="op">)</span></span></code></pre></div>
+</div>
 </div>
 <div class="section level2">
 <h2 id="full-text">Full Text<a class="anchor" aria-label="anchor" href="#full-text"></a>
 </h2>
 <p>You can access a parsed table of the full text of the paper via
-<code>s$full_text</code></p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html" class="external-link">count</a></span><span class="op">(</span><span class="va">s</span><span class="op">$</span><span class="va">full_text</span>, <span class="va">section</span><span class="op">)</span></span>
-<span><span class="co">#&gt;      section  n</span></span>
-<span><span class="co">#&gt; 1   abstract  6</span></span>
-<span><span class="co">#&gt; 2 discussion 10</span></span>
-<span><span class="co">#&gt; 3      intro 13</span></span>
-<span><span class="co">#&gt; 4     method 20</span></span>
-<span><span class="co">#&gt; 5    results  7</span></span></code></pre></div>
-<p>However, you may find it more convenient to use the function
-<code><a href="../reference/search_text.html">search_text()</a></code>.</p>
+<code>s$full_text</code>, but you may find it more convenient to use the
+function <code><a href="../reference/search_text.html">search_text()</a></code>. The defaults return a data table of
+each sentence, with the section type, header, div, paragraph and
+sentence numbers, and file name. (The section type is a best guess from
+the headers, so may not always be accurate.)</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sig</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/search_text.html">search_text</a></span><span class="op">(</span><span class="va">s</span>, <span class="st">"signific"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">sig</span><span class="op">$</span><span class="va">text</span></span>
-<span><span class="co">#&gt; [1] "Our main, omnibus analysis showed a significant three-way interaction among incest type, participant sex, and sibling type (Estimate = 0.285, t(578.003) = 2.359, p = 0.019)."                            </span></span>
-<span><span class="co">#&gt; [2] "Our analysis of moral wrongness scores for sibling incest scores showed a significant interaction between participant sex and sibling type (Estimate = -0.559, t(578) = -2.84, p = 0.005)."               </span></span>
-<span><span class="co">#&gt; [3] "In contrast, our analysis of moral wrongness scores for parental incest scores showed no significant interaction between participant sex and sibling type (Estimate = -0.268, t(578) = -1.373, p = 0.17)."</span></span>
-<span><span class="co">#&gt; [4] "In contrast, having other-sex siblings was not significantly associated with greater moral opposition to parent-child incest."</span></span></code></pre></div>
-<p>You can also return just the matched text from a regex search.</p>
+<code class="sourceCode R"><span><span class="va">text</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/search_text.html">search_text</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<colgroup>
+<col width="79%">
+<col width="5%">
+<col width="5%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="5%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">text</th>
+<th align="left">section</th>
+<th align="left">header</th>
+<th align="right">div</th>
+<th align="right">p</th>
+<th align="right">s</th>
+<th align="left">file</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">Moral opposition to incest is thought to play an
+important role in preventing inbreeding.</td>
+<td align="left">abstract</td>
+<td align="left">Abstract</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="left">incest.xml</td>
+</tr>
+<tr class="even">
+<td align="left">Inbreeding is damaging to reproductive fitness.</td>
+<td align="left">intro</td>
+<td align="left">Introduction</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="left">incest.xml</td>
+</tr>
+<tr class="odd">
+<td align="left">Participants 1998 participants took part in this online
+study (see online supplemental materials, <a href="https://osf.io/mwzuq/" class="external-link uri">https://osf.io/mwzuq/</a>).</td>
+<td align="left">method</td>
+<td align="left">Methods</td>
+<td align="right">2</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="left">incest.xml</td>
+</tr>
+<tr class="even">
+<td align="left">Participants completed the same moral wrongness task
+that had been used by Lieberman and colleagues.</td>
+<td align="left">method</td>
+<td align="left">Procedure</td>
+<td align="right">3</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="left">incest.xml</td>
+</tr>
+<tr class="odd">
+<td align="left">Following Lieberman et al.</td>
+<td align="left">method</td>
+<td align="left">Analysis</td>
+<td align="right">4</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="left">incest.xml</td>
+</tr>
+<tr class="even">
+<td align="left">Our main, omnibus analysis showed a significant
+three-way interaction among incest type, participant sex, and sibling
+type (Estimate = 0.285, t(578.003) = 2.359, p = 0.019).</td>
+<td align="left">results</td>
+<td align="left">Results</td>
+<td align="right">5</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="left">incest.xml</td>
+</tr>
+<tr class="odd">
+<td align="left">We found that having other-sex siblings is associated
+with greater moral opposition to sibling incest.</td>
+<td align="left">discussion</td>
+<td align="left">Discussion</td>
+<td align="right">6</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="left">incest.xml</td>
+</tr>
+<tr class="even">
+<td align="left">Figure 1: The three-way interaction among incest type,
+participant sex, and sibling type.</td>
+<td align="left">figure</td>
+<td align="left">[div-07]</td>
+<td align="right">7</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="left">incest.xml</td>
+</tr>
+</tbody>
+</table>
+<div class="section level3">
+<h3 id="pattern">Pattern<a class="anchor" aria-label="anchor" href="#pattern"></a>
+</h3>
+<p>You can search for a specific word or phrase by setting the
+<code>pattern</code> argument. The pattern is a regex string by default;
+set <code>fixed = TRUE</code> if you want to find exact text
+matches.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">text</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/search_text.html">search_text</a></span><span class="op">(</span><span class="va">s</span>, pattern <span class="op">=</span> <span class="st">"signific"</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<colgroup>
+<col width="82%">
+<col width="4%">
+<col width="4%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="4%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">text</th>
+<th align="left">section</th>
+<th align="left">header</th>
+<th align="right">div</th>
+<th align="right">p</th>
+<th align="right">s</th>
+<th align="left">file</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">Our main, omnibus analysis showed a significant
+three-way interaction among incest type, participant sex, and sibling
+type (Estimate = 0.285, t(578.003) = 2.359, p = 0.019).</td>
+<td align="left">results</td>
+<td align="left">Results</td>
+<td align="right">5</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="left">incest.xml</td>
+</tr>
+<tr class="even">
+<td align="left">Our analysis of moral wrongness scores for sibling
+incest scores showed a significant interaction between participant sex
+and sibling type (Estimate = -0.559, t(578) = -2.84, p = 0.005).</td>
+<td align="left">results</td>
+<td align="left">Results</td>
+<td align="right">5</td>
+<td align="right">2</td>
+<td align="right">1</td>
+<td align="left">incest.xml</td>
+</tr>
+<tr class="odd">
+<td align="left">In contrast, our analysis of moral wrongness scores for
+parental incest scores showed no significant interaction between
+participant sex and sibling type (Estimate = -0.268, t(578) = -1.373, p
+= 0.17).</td>
+<td align="left">results</td>
+<td align="left">Results</td>
+<td align="right">5</td>
+<td align="right">2</td>
+<td align="right">3</td>
+<td align="left">incest.xml</td>
+</tr>
+<tr class="even">
+<td align="left">In contrast, having other-sex siblings was not
+significantly associated with greater moral opposition to parent-child
+incest.</td>
+<td align="left">discussion</td>
+<td align="left">Discussion</td>
+<td align="right">6</td>
+<td align="right">2</td>
+<td align="right">1</td>
+<td align="left">incest.xml</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level3">
+<h3 id="section">Section<a class="anchor" aria-label="anchor" href="#section"></a>
+</h3>
+<p>Set <code>section</code> to a vector of the sections to search
+in.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">text</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/search_text.html">search_text</a></span><span class="op">(</span><span class="va">s</span>, <span class="st">"signific"</span>, </span>
+<span>                    section <span class="op">=</span> <span class="st">"results"</span><span class="op">)</span></span></code></pre></div>
+<table style="width:100%;" class="table">
+<colgroup>
+<col width="84%">
+<col width="3%">
+<col width="3%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="4%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">text</th>
+<th align="left">section</th>
+<th align="left">header</th>
+<th align="right">div</th>
+<th align="right">p</th>
+<th align="right">s</th>
+<th align="left">file</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">Our main, omnibus analysis showed a significant
+three-way interaction among incest type, participant sex, and sibling
+type (Estimate = 0.285, t(578.003) = 2.359, p = 0.019).</td>
+<td align="left">results</td>
+<td align="left">Results</td>
+<td align="right">5</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="left">incest.xml</td>
+</tr>
+<tr class="even">
+<td align="left">Our analysis of moral wrongness scores for sibling
+incest scores showed a significant interaction between participant sex
+and sibling type (Estimate = -0.559, t(578) = -2.84, p = 0.005).</td>
+<td align="left">results</td>
+<td align="left">Results</td>
+<td align="right">5</td>
+<td align="right">2</td>
+<td align="right">1</td>
+<td align="left">incest.xml</td>
+</tr>
+<tr class="odd">
+<td align="left">In contrast, our analysis of moral wrongness scores for
+parental incest scores showed no significant interaction between
+participant sex and sibling type (Estimate = -0.268, t(578) = -1.373, p
+= 0.17).</td>
+<td align="left">results</td>
+<td align="left">Results</td>
+<td align="right">5</td>
+<td align="right">2</td>
+<td align="right">3</td>
+<td align="left">incest.xml</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level3">
+<h3 id="return">Return<a class="anchor" aria-label="anchor" href="#return"></a>
+</h3>
+<p>Set <code>return</code> to one of “sentence”, “paragraph”, “section”,
+or “match” to control what gets returned.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">text</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/search_text.html">search_text</a></span><span class="op">(</span><span class="va">s</span>, <span class="st">"signific"</span>, </span>
+<span>                    section <span class="op">=</span> <span class="st">"results"</span>, </span>
+<span>                    return <span class="op">=</span> <span class="st">"paragraph"</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<colgroup>
+<col width="94%">
+<col width="1%">
+<col width="1%">
+<col width="0%">
+<col width="0%">
+<col width="0%">
+<col width="1%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">text</th>
+<th align="left">section</th>
+<th align="left">header</th>
+<th align="right">div</th>
+<th align="right">p</th>
+<th align="left">s</th>
+<th align="left">file</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">Our main, omnibus analysis showed a significant
+three-way interaction among incest type, participant sex, and sibling
+type (Estimate = 0.285, t(578.003) = 2.359, p = 0.019). This interaction
+is illustrated in Figure 1. Next we analyzed scores for sibling and
+parent-child incest separately.</td>
+<td align="left">results</td>
+<td align="left">Results</td>
+<td align="right">5</td>
+<td align="right">1</td>
+<td align="left">NA</td>
+<td align="left">incest.xml</td>
+</tr>
+<tr class="even">
+<td align="left">Our analysis of moral wrongness scores for sibling
+incest scores showed a significant interaction between participant sex
+and sibling type (Estimate = -0.559, t(578) = -2.84, p = 0.005). Women
+with brothers only tended to view sibling incest more negatively than
+did women with sisters only (Estimate = 0.179, t(452) = 2.022, p =
+0.044) while men with brothers only tended to view sibling incest less
+negatively than did men with sisters only (Estimate = -0.38, t(126) =
+-1.933, p = 0.055). In contrast, our analysis of moral wrongness scores
+for parental incest scores showed no significant interaction between
+participant sex and sibling type (Estimate = -0.268, t(578) = -1.373, p
+= 0.17).</td>
+<td align="left">results</td>
+<td align="left">Results</td>
+<td align="right">5</td>
+<td align="right">2</td>
+<td align="left">NA</td>
+<td align="left">incest.xml</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level3">
+<h3 id="regex-matches">Regex matches<a class="anchor" aria-label="anchor" href="#regex-matches"></a>
+</h3>
+<p>You can also return just the matched text from a regex search by
+setting <code>return = "match"</code>. The extra <code>...</code>
+arguments in <code><a href="../reference/search_text.html">search_text()</a></code> are passed to
+<code><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep()</a></code>, so <code>perl = TRUE</code> allows you to use more
+complex regex, like below.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pattern</span> <span class="op">&lt;-</span> <span class="st">"[^\\s\\(\\)]+\\s*(=|&lt;)\\s*[0-9\\.-]+"</span></span>
-<span><span class="fu"><a href="../reference/search_text.html">search_text</a></span><span class="op">(</span><span class="va">s</span>, <span class="va">pattern</span>, section <span class="op">=</span> <span class="st">"results"</span>, return <span class="op">=</span> <span class="st">"match"</span>, perl <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt;                text section  header div p s       file</span></span>
-<span><span class="co">#&gt; 1  Estimate = 0.285 results Results   5 1 1 incest.xml</span></span>
-<span><span class="co">#&gt; 2 Estimate = -0.559 results Results   5 2 1 incest.xml</span></span>
-<span><span class="co">#&gt; 3  Estimate = 0.179 results Results   5 2 2 incest.xml</span></span>
-<span><span class="co">#&gt; 4 Estimate = -0.268 results Results   5 2 3 incest.xml</span></span></code></pre></div>
+<span><span class="va">text</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/search_text.html">search_text</a></span><span class="op">(</span><span class="va">s</span>, <span class="va">pattern</span>, return <span class="op">=</span> <span class="st">"match"</span>, perl <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<thead><tr class="header">
+<th align="left">text</th>
+<th align="left">section</th>
+<th align="left">header</th>
+<th align="right">div</th>
+<th align="right">p</th>
+<th align="right">s</th>
+<th align="left">file</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">N=313</td>
+<td align="left">abstract</td>
+<td align="left">Abstract</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">4</td>
+<td align="left">incest.xml</td>
+</tr>
+<tr class="even">
+<td align="left">Estimate = 0.285</td>
+<td align="left">results</td>
+<td align="left">Results</td>
+<td align="right">5</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="left">incest.xml</td>
+</tr>
+<tr class="odd">
+<td align="left">Estimate = -0.559</td>
+<td align="left">results</td>
+<td align="left">Results</td>
+<td align="right">5</td>
+<td align="right">2</td>
+<td align="right">1</td>
+<td align="left">incest.xml</td>
+</tr>
+<tr class="even">
+<td align="left">Estimate = 0.179</td>
+<td align="left">results</td>
+<td align="left">Results</td>
+<td align="right">5</td>
+<td align="right">2</td>
+<td align="right">2</td>
+<td align="left">incest.xml</td>
+</tr>
+<tr class="odd">
+<td align="left">Estimate = -0.268</td>
+<td align="left">results</td>
+<td align="left">Results</td>
+<td align="right">5</td>
+<td align="right">2</td>
+<td align="right">3</td>
+<td align="left">incest.xml</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 <div class="section level2">
 <h2 id="batch-processing">Batch Processing<a class="anchor" aria-label="anchor" href="#batch-processing"></a>
@@ -137,29 +504,71 @@
 <p>The function <code><a href="../reference/read_grobid.html">read_grobid()</a></code> also works on a folder of XML
 files, returning a list of scienceverse study objects, and
 <code><a href="../reference/search_text.html">search_text()</a></code> works on such a list.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">studies</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_grobid.html">read_grobid</a></span><span class="op">(</span><span class="va">grobid_dir</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">hypotheses</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/search_text.html">search_text</a></span><span class="op">(</span><span class="va">studies</span>, <span class="st">"hypothesi"</span>, section <span class="op">=</span> <span class="st">"intro"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">hypotheses</span><span class="op">$</span><span class="va">text</span></span>
-<span><span class="co">#&gt;  [1] "However, this hypothesis is difficult to reconcile with consistent findings that the parent--child relationship affects the strength of preferences for faces that resemble one's other--sex parent 17 and the strength of resemblance between that parent and one's spouse 8,9, as well as husband--father resemblance being observed even among adopted women who were not genetically related to their fathers 9 ."</span></span>
-<span><span class="co">#&gt;  [2] "While the matching hypothesis predicts that the best predictor of partner's eye color will be own eye color, the sex--linked heritable preference hypothesis predicts this will be the other--sex parent's eye color and the positive sexual imprinting hypothesis predicts this will be the partner--sex parent's eye color."                                                                                        </span></span>
-<span><span class="co">#&gt;  [3] "While these latter two predictions lead to the same pattern of results for heterosexual couples, here we also test same--sex couples to distinguish the sex-linked heritable preference hypothesis from the positive sexual imprinting hypothesis."                                                                                                                                                                   </span></span>
-<span><span class="co">#&gt;  [4] "The best model supported the positive sexual imprinting hypothesis, where maternal eye color significantly predicted the eye color of female partners (B = 0.812, S.E."                                                                                                                                                                                                                                               </span></span>
-<span><span class="co">#&gt;  [5] "This model was supported 7.455 times more strongly than the model corresponding to the matching hypothesis, where own eye color did not significantly predict partner eye color (B = 0.263, S.E."                                                                                                                                                                                                                     </span></span>
-<span><span class="co">#&gt;  [6] "The imprinting model was also supported 9.655 times more strongly than the model corresponding to the sex--linked heritable preference hypothesis, where maternal eye color did not predict the eye color of men's partners (B = 0.262, S.E."                                                                                                                                                                         </span></span>
-<span><span class="co">#&gt;  [7] "The model supporting the positive sexual imprinting hypothesis remained the best model (see Table 2)."                                                                                                                                                                                                                                                                                                                </span></span>
-<span><span class="co">#&gt;  [8] "Our data provide clear evidence against the sex--linked heritable preferences hypothesis 3, which predicts a relationship between partner's eye color and other-sex parent's eye color."                                                                                                                                                                                                                              </span></span>
-<span><span class="co">#&gt;  [9] "Our data also give little support to the matching hypothesis, as own eye color was positively but not significantly related to partner's eye color."                                                                                                                                                                                                                                                                  </span></span>
-<span><span class="co">#&gt; [10] "Our data give clearest support to the positive sexual imprinting hypothesis, where we found that partner's eye color was predicted by maternal eye color for people with female partners and by paternal eye color for people with male partners."                                                                                                                                                                    </span></span>
-<span><span class="co">#&gt; [11] "Consequently, humans (like many other animals) are hypothesized to possess adaptions to reduce inbreeding."                                                                                                                                                                                                                                                                                                           </span></span>
-<span><span class="co">#&gt; [12] "Clearly specifying the rules that will be used to terminate the data collection, and specifying the analysis plan before data is collected, can prevent undesirable research practices such as inflated of Type 1 errors and \"hypothesizing after the results are known\" (Kerr, 1998)."                                                                                                                             </span></span>
-<span><span class="co">#&gt; [13] "The hypothesis that more efficient study designs might increase the willingness to pre-register rests on several requirements."                                                                                                                                                                                                                                                                                       </span></span>
-<span><span class="co">#&gt; [14] "Greenland, Senn, Rothman, Carlin, Poole, Goodman, and Altman (2016) respond to the statement that \"One should always use two-sided p-values\" with a resounding \"No!\", indicating that when a hypothesis is directional, a one-tailed test is required3 ."                                                                                                                                                         </span></span>
-<span><span class="co">#&gt; [15] "Since one-sided tests are only appropriate whenever null-hypothesis significance tests are appropriate, we have to assume that a null-hypothesis test answers a question a researcher is interested in, and that the null-hypothesis is both plausible and interesting."                                                                                                                                              </span></span>
-<span><span class="co">#&gt; [16] "The difference between hypothesis testing and estimation is relevant here -an unexpected effect might not confirm a hypothesis, but the descriptives related to the effect size might still be interesting."                                                                                                                                                                                                          </span></span>
-<span><span class="co">#&gt; [17] "Purely descriptive studies where all data is reported might not require pre-registration, small pilot studies to test the feasibility of a paradigm are not designed to test a hypothesis, and some researchers might only publish studies when they have directly replicated every test in an independent sample."</span></span></code></pre></div>
+<span><span class="va">hypotheses</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/search_text.html">search_text</a></span><span class="op">(</span><span class="va">studies</span>, <span class="st">"hypothesi"</span>, </span>
+<span>                          section <span class="op">=</span> <span class="st">"intro"</span>, </span>
+<span>                          return <span class="op">=</span> <span class="st">"paragraph"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="chatgpt">ChatGPT<a class="anchor" aria-label="anchor" href="#chatgpt"></a>
+</h2>
+<p>You can query the extracted text of papers with chatGPT.</p>
+<div class="section level3">
+<h3 id="setup">Setup<a class="anchor" aria-label="anchor" href="#setup"></a>
+</h3>
+<p>You will need to provide your own <a href="https://platform.openai.com/api-keys" class="external-link">API key</a>. You can enter
+it manually for each call to <code><a href="../reference/gpt.html">gpt()</a></code>, or add the following
+line in the .Renviron file for your user or project.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="va">CHATGPT_KEY</span><span class="op">=</span><span class="st">"sk-proj-abcdefghijklmnopqrs0123456789ABCDEFGHIJKLMNOPQRS"</span></span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># useful if you aren't sure where this file is</span></span>
+<span><span class="fu">usethis</span><span class="fu">::</span><span class="fu">edit_r_environ</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="gpt-queries">GPT Queries<a class="anchor" aria-label="anchor" href="#gpt-queries"></a>
+</h3>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">query</span> <span class="op">&lt;-</span> <span class="st">"What is the hypothesis of this study?"</span></span>
+<span><span class="va">gpt_hypo</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gpt.html">gpt</a></span><span class="op">(</span><span class="va">hypotheses</span>, <span class="va">query</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<colgroup>
+<col width="5%">
+<col width="90%">
+<col width="4%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">file</th>
+<th align="left">answer</th>
+<th align="right">cost</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">eyecolor.xml</td>
+<td align="left">The hypothesis of this study is to test the matching
+hypothesis, sex-linked heritable preference hypothesis, and positive
+sexual imprinting hypothesis in relation to eye color and partner
+selection.</td>
+<td align="right">0.000612</td>
+</tr>
+<tr class="even">
+<td align="left">incest.xml</td>
+<td align="left">The hypothesis of this study is that humans possess
+adaptations to reduce inbreeding, and that the strong moral opposition
+to incest plays an important role in preventing inbreeding.</td>
+<td align="right">0.000216</td>
+</tr>
+<tr class="odd">
+<td align="left">prereg.xml</td>
+<td align="left">The hypothesis of this study is that more efficient
+study designs might increase the willingness to pre-register in
+psychological science.</td>
+<td align="right">0.000608</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>

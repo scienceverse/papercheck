@@ -1,11 +1,13 @@
 ## set default options
 .onLoad <- function(libname, pkgname) {
   op <- options()
-  op.scienceverse <- list(
-    scienceverse.verbose = TRUE
+  op.pkg <- list(
+    scienceverse.verbose = TRUE,
+    papercheck.gpt_max_calls = 100L
   )
-  toset <- !(names(op.scienceverse) %in% names(op))
-  if(any(toset)) options(op.scienceverse[toset])
+  # only set if not already set
+  toset <- !(names(op.pkg) %in% names(op))
+  if(any(toset)) options(op.pkg[toset])
 
   invisible()
 }

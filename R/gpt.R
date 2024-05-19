@@ -85,12 +85,17 @@ gpt <- function(text, query,
   # set up answer data frame to return ----
   answer_df <- unique(text[, group_by, drop = FALSE])
   rownames(answer_df) <- NULL
+  ncalls <- nrow(answer_df)
+  if (ncalls == 0) stop("No calls to chatGPT")
+  maxcalls <- getOption("papercheck.gpt_max_calls")
+  if (ncalls > maxcalls) {
+    stop("This would make ", ncalls, " calls to chatGPT, but your maximum number of calls is set to ", maxcalls, ". Use `set_gpt_max_calls() to change this.")
+  }
 
   # set up progress bar ----
   if (getOption("scienceverse.verbose")) {
-    ngroups <- nrow(answer_df)
     pb <- progress::progress_bar$new(
-      total = ngroups, clear = FALSE,
+      total = ncalls, clear = FALSE,
       format = "Querying ChatGPT [:bar] :current/:total :elapsedfull"
     )
     pb$tick(0)
@@ -102,7 +107,7 @@ gpt <- function(text, query,
   file <- tempfile(fileext = ".txt")
   response <- replicate(nrow(answer_df), list(), simplify = FALSE)
 
-  for (i in 1:nrow(answer_df)) {
+  for (i in 1:ncalls) {
     subtext <- dplyr::semi_join(text,
                                 answer_df[i, , drop = FALSE],
                                 by = group_by)
@@ -149,4 +154,23 @@ gpt <- function(text, query,
   message("Total cost: $", sum(answer_df$cost) |> round(5))
 
   return(answer_df)
+}
+
+#' Set the maximum number of calls to ChatGPT
+#'
+#' @param n The maximum number of calls to ChatGPT that the gpt() function can make
+#'
+#' @return NULL
+#' @export
+#'
+set_gpt_max_calls <- function(n = 10) {
+  if (!is.numeric(n)) stop("n must be a number")
+  n <- as.integer(n)
+  if (n < 1) {
+    warning("n must be greater than 0; it was not changed from ", getOption("papercheck.gpt_max_calls"))
+  } else {
+    options(papercheck.gpt_max_calls = n)
+  }
+
+  invisible()
 }

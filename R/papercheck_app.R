@@ -3,6 +3,7 @@
 #' Create a meta-study file interactively in a shiny app that runs locally in RStudio or your web browser (recommended). It does not connect to the web at all, so your data are completely private.
 #'
 #' @param study optional study to load
+#' @param quiet whether to show the debugging messages in the console
 #' @param ... arguments to pass to shiny::runApp
 #'
 #' @export
@@ -12,7 +13,7 @@
 #' @examples
 #' \dontrun{ s <- papercheck_app() }
 #'
-papercheck_app <- function(study = NULL, ...) {
+papercheck_app <- function(study = NULL, quiet = FALSE, ...) {
   # check study
   if (!is.null(study) && !"scivrs_study" %in% class(study)) {
     stop("The argument study must be a study object created by scienceverse, or NULL to create it entirely in the app.")
@@ -33,7 +34,7 @@ papercheck_app <- function(study = NULL, ...) {
     # ss <- lapply(all, class) |> sapply(\(x) "scivrs_study" %in% x)
     # sss <- all[ss]
 
-    shiny::runApp(appDir = system.file("app", package = "papercheck"), ...) |> invisible()
+    shiny::runApp(appDir = system.file("app", package = "papercheck"), quiet = quiet, ...) |> invisible()
   } else {
     warning("You need to install the following packages to run the app: ",
             paste(names(req_pckgs[!req_pckgs]), collapse = ", "))

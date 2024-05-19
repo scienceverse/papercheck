@@ -27,6 +27,33 @@ test_that("exists", {
                fixed = TRUE)
 })
 
+test_that("max calls", {
+  expect_true(is.function(set_gpt_max_calls))
+
+  n <- getOption("papercheck.gpt_max_calls")
+  expect_true(is.integer(n))
+  expect_true(n > 0)
+
+  expect_error(set_gpt_max_calls("a"), "n must be a number")
+  expect_equal(getOption("papercheck.gpt_max_calls"), n)
+
+  expect_warning(set_gpt_max_calls(0), "n must be greater than 0")
+  expect_equal(getOption("papercheck.gpt_max_calls"), n)
+
+  expect_no_error(set_gpt_max_calls(8))
+  expect_equal(getOption("papercheck.gpt_max_calls"), 8)
+
+  text <- data.frame(
+    text = 1:20,
+    file = 1:20
+  )
+  expect_error(gpt(text, "summarise"),
+               "This would make 20 calls to chatGPT")
+
+  # return to original value
+  expect_no_error(set_gpt_max_calls(n))
+})
+
 test_that("basic", {
   skip_on_cran()
   skip_if_offline(host = "chat.openai.com")

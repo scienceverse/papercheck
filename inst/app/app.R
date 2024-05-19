@@ -64,6 +64,8 @@ ui <- dashboardPage(
 
 ## server ----
 server <- function(input, output, session) {
+  updateNumericInput(session, "gpt_max_calls", value = getOption("papercheck.gpt_max_callsl"))
+
   ## reactiveVals ----
   debug_msg("----reactiveVals----")
 
@@ -81,6 +83,46 @@ server <- function(input, output, session) {
     if (length(s) == 1) s <- s[[1]]
 
     stopApp(s)
+  })
+
+  observe({
+    study <- my_study()
+
+    if (length(study) > 0) {
+      text_table(search_text(study))
+
+    # reset search interface
+    # c("search_pattern",
+    #   "search_section",
+    #   "search_return",
+    #   "search_ignore_case",
+    #   "search_fixed") |> sapply(shinyjs::reset)
+      choices <- names(study)
+    } else {
+      choices <- c()
+    }
+    updateSelectInput(session, "study_name", choices = choices)
+  })
+
+  ### on text_table() change ----
+  observe({
+    needs_text_table <- c("download_table", "gpt_submit", "search_text")
+    if (nrow(text_table()) == 0) {
+      lapply(needs_text_table, shinyjs::disable)
+    } else {
+      lapply(needs_text_table, shinyjs::enable)
+      shinyjs::click("search_text") # trigger search
+    }
+  })
+
+  ### on gpt_table() change ----
+  observe({
+    needs_gpt_table <- "download_gpt"
+    if (nrow(gpt_table()) == 0) {
+      lapply(needs_gpt_table, shinyjs::disable)
+    } else {
+      lapply(needs_gpt_table, shinyjs::enable)
+    }
   })
 
   ## load ----
@@ -126,17 +168,6 @@ server <- function(input, output, session) {
     debug_msg("update_from_study")
 
     my_study(study)
-    text_table(papercheck::search_text(study))
-    shinyjs::click("search_text") # trigger search
-
-    # reset search interface
-    c("search_pattern",
-      "search_section",
-      "search_return",
-      "search_ignore_case",
-      "search_fixed") |> sapply(shinyjs::reset)
-
-    updateSelectInput(session, "study_name", choices = names(study))
   }
 
   ### n_papers_loaded ----
@@ -256,8 +287,19 @@ server <- function(input, output, session) {
     )
   })
 
+  ### gpt_max_calls----
+  observeEvent(input$gpt_max_calls, {
+    debug_msg("gpt_max_calls")
+    if (is.numeric(input$gpt_max_calls)) {
+      set_gpt_max_calls(input$gpt_max_calls)
+      newmax <- getOption("papercheck.gpt_max_calls")
+      updateNumericInput(session, "gpt_max_calls", value = newmax)
+    }
+  })
   ### gpt_submit----
   observeEvent(input$gpt_submit, {
+    debug_msg("gpt_submit")
+
     text <- text_table()
     groups <- unique(text[, input$gpt_group_by, drop = FALSE])
     if (nrow(groups) > input$gpt_max_calls) {

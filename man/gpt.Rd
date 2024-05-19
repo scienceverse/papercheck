@@ -13,7 +13,8 @@ gpt(
   CHATGPT_KEY = Sys.getenv("CHATGPT_KEY"),
   chunk_size = 500,
   chunk_overlap = 100,
-  temperature = 0
+  temperature = 0,
+  include_query = FALSE
 )
 }
 \arguments{
@@ -34,6 +35,8 @@ gpt(
 \item{chunk_overlap}{overlap between text chunks for embeddings}
 
 \item{temperature}{temperature value for ChatGPT (0.0 to 2.0)}
+
+\item{include_query}{Whether to include the query and context strings in the returned table}
 }
 \value{
 a list of results

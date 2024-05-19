@@ -66,7 +66,8 @@
 <span>  CHATGPT_KEY <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"CHATGPT_KEY"</span><span class="op">)</span>,</span>
 <span>  chunk_size <span class="op">=</span> <span class="fl">500</span>,</span>
 <span>  chunk_overlap <span class="op">=</span> <span class="fl">100</span>,</span>
-<span>  temperature <span class="op">=</span> <span class="fl">0</span></span>
+<span>  temperature <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  include_query <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -106,6 +107,10 @@
 
 <dt>temperature</dt>
 <dd><p>temperature value for ChatGPT (0.0 to 2.0)</p></dd>
+
+
+<dt>include_query</dt>
+<dd><p>Whether to include the query and context strings in the returned table</p></dd>
 
 </dl></div>
     <div class="section level2">

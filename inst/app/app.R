@@ -27,14 +27,14 @@ ui <- dashboardPage(
   dashboardSidebar(
     sidebarMenu(
       id = "tabs",
-      menuItem("Load", tabName = "load_tab",
-               icon = icon("yin-yang")),
-      menuItem("Text", tabName = "text_tab",
-               icon = icon("table")),
+      menuItem("Load Files", tabName = "load_tab",
+               icon = icon("file")),
+      menuItem("Search Text", tabName = "text_tab",
+               icon = icon("magnifying-glass")),
       menuItem("ChatGPT", tabName = "gpt_tab",
                icon = icon("robot"))
     ),
-    actionButton("demo", "Demo"),
+    actionButton("demo", "Load Demo Files"),
     #actionButton("reset_study", "Reset"),
     actionButton("return_study", "Quit & Return"),
     tags$br(),
@@ -67,7 +67,7 @@ server <- function(input, output, session) {
   ## reactiveVals ----
   debug_msg("----reactiveVals----")
 
-  my_study <- reactiveVal( scienceverse::study(name = "", description = "") )
+  my_study <- reactiveVal( list() )
   text_table <- reactiveVal( data.frame() )
   gpt_table <- reactiveVal( data.frame() )
   total_cost <- reactiveVal(0)
@@ -139,6 +139,13 @@ server <- function(input, output, session) {
     updateSelectInput(session, "study_name", choices = names(study))
   }
 
+  ### n_papers_loaded ----
+  output$n_papers_loaded <- renderText({
+    n <- length(my_study())
+    p <- ifelse(n==1, "paper", "papers")
+    paste(n, p, "loaded")
+  })
+
   ### study_name ----
   observeEvent(input$study_name, {
     debug_msg("study_name")
@@ -152,11 +159,11 @@ server <- function(input, output, session) {
     #                 value = paste(info$keywords, collapse = "; "))
   })
 
-  output$study_title <- renderText({
-    my_study()[[input$study_name]]$info$title
+  output$study_title <- renderUI({
+    h4(my_study()[[input$study_name]]$info$title)
   })
-  output$study_desc <- renderText({
-    my_study()[[input$study_name]]$info$description
+  output$study_desc <- renderUI({
+    p(my_study()[[input$study_name]]$info$description)
   })
   output$study_keywords <- renderText({
     my_study()[[input$study_name]]$info$keywords |>
@@ -251,7 +258,7 @@ server <- function(input, output, session) {
 
   ### gpt_submit----
   observeEvent(input$gpt_submit, {
-    res <- gpt(text_table(), input$gpt_query, input$gpt_context)
+    res <- papercheck::gpt(text_table(), input$gpt_query, input$gpt_context)
     gpt_table(res)
   })
 

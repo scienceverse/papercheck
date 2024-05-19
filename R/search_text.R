@@ -1,6 +1,6 @@
-#' Search the full text
+#' Search text
 #'
-#' Search the full text of a study. Currently only works with study objects that have full text imported from grobid (e.g., using `read_grobid()`).
+#' Search the text of a study or list of study objects. Also works on the table results of a `search_text()` call.
 #'
 #' @param study a study object created by `read_grobid` or a list of study objects
 #' @param pattern the regex pattern to search for
@@ -15,14 +15,15 @@
 #' @examples
 #' filename <- system.file("grobid", "eyecolor.xml", package="papercheck")
 #' study <- read_grobid(filename)
+#'
 #' search_text(study, "p\\s*(=|<)\\s*[0-9\\.]+", return = "match")
 search_text <- function(study, pattern = ".*", section = NULL,
-                             return = c("sentence", "paragraph", "section", "match"),
-                             ignore.case = TRUE, ...) {
+                        return = c("sentence", "paragraph", "section", "match"),
+                        ignore.case = TRUE, ...) {
   return <- match.arg(return)
   text <- NULL # hack to stop cmdcheck warning :(
 
-  # test pattern for errors(TODO: deal with warnings + errors)
+  # test pattern for errors (TODO: deal with warnings + errors)
   test_pattern <- tryCatch(
     grep(pattern, "test", ignore.case = ignore.case, ...),
     error = function(e) {
@@ -102,13 +103,15 @@ search_text <- function(study, pattern = ".*", section = NULL,
     missing_cols <- setdiff(all_cols, names(ft_match_all))
     for (mc in missing_cols) {
       ft_match_all[[mc]] <- NA
+      #ft_match_all[[mc]] <- methods::as(ft_match_all[[mc]], typeof(ft[[mc]]))
     }
     ft_match_all <- ft_match_all[, all_cols]
   } else {
-    ft_match_all <- data.frame(row.names = all_cols)
+    # empty df with same structure
+    ft_match_all <- ft[c(), ]
   }
 
-  rownames(ft_match_all) <- NULL
+  ft_match_unique <- unique(ft_match_all) |> dplyr::tibble()
 
-  return(unique(ft_match_all))
+  return(ft_match_unique)
 }

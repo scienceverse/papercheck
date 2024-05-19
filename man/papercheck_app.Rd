@@ -4,10 +4,12 @@
 \alias{papercheck_app}
 \title{Launch Shiny App}
 \usage{
-papercheck_app(study = NULL, ...)
+papercheck_app(study = NULL, quiet = FALSE, ...)
 }
 \arguments{
 \item{study}{optional study to load}
+
+\item{quiet}{whether to show the debugging messages in the console}
 
 \item{...}{arguments to pass to shiny::runApp}
 }

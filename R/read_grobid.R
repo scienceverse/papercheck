@@ -71,8 +71,6 @@ read_grobid <- function(filename) {
     paste(collapse = "\n") |>
     gsub("</s><s>", " ", x = _) |> # get rid of sentence tags
     gsub("</?s>", "", x = _) |> # get rid of sentence tags
-    #gsub("</ref>", "[/ref]", x = _) |>
-    #gsub("<ref ", "[ref ", x = _) |>
     # fixes a glitch that stopped xml from being read
     gsub(' xmlns="http://www.tei-c.org/ns/1.0"', "", x = _, fixed = TRUE)
 
@@ -158,17 +156,13 @@ read_grobid <- function(filename) {
     tidytext::unnest_sentences(text, text, to_lower = FALSE) |>
     dplyr::mutate(s = dplyr::row_number(), .by = c("div", "p"))
 
-  # body_table <- by(body_table,
-  #                  list(body_table$div, body_table$p),
-  #                  \(x) { x$s = seq_along(x); x }) |>
-  #   do.call(rbind, args = _)
-
   body_table$file <- basename(filename)
   rownames(body_table) <- NULL
 
   body_table <- full_text_sections(body_table)
 
   blank_divs <- grepl("\\[div-\\d+\\]", body_table$text)
+  #blank_divs <- body_table$p == 0
 
   s$full_text <- body_table[!blank_divs, ]
 
@@ -203,6 +197,27 @@ full_text_sections <- function(ft) {
   ft$section[discussion] <- "discussion"
   ft$section[results] <- "results"
 
+  # beginning sections after abstract with no header labelled intro
+  non_blanks <- which(!is.na(ft$section) & ft$section != "abstract")
+  if (length(non_blanks) > 0) {
+    blank_start <- non_blanks[[1]] - 1
+    blanks <- rep(c(TRUE, FALSE), c(blank_start, length(ft$section) - blank_start))
+    blanks[abstract] <- FALSE
+    ft$section[blanks] <- "intro"
+  }
+
+  # check if sections with no label are Figure or Table
+  first_s <- ft$p == 1 & ft$s == 1
+  no_header <- substr(ft$header, 0, 4) == "[div"
+
+  fig_n <- grepl("^Figure\\s*\\d+", ft$text)
+  fig_divs <- ft[first_s & no_header & fig_n, "div"]
+  ft[ft$div %in% fig_divs, "section"] <- "figure"
+
+  tab_n <- grepl("^Table\\s*\\d+", ft$text)
+  tab_divs <- ft[first_s & no_header & tab_n, "div"]
+  ft[ft$div %in% tab_divs, "section"] <- "table"
+
   # assume sections are the same class as previous if unclassified (after abstract)
   for (i in seq_along(ft$section)) {
     if (i > 1 &
@@ -211,15 +226,6 @@ full_text_sections <- function(ft) {
         is.na(ft$section[i]) ) {
       ft$section[i] <- ft$section[i-1]
     }
-  }
-
-  # beginning sections after abstract with no header labelled intro
-  non_blanks <- which(!is.na(ft$section) & ft$section != "abstract")
-  if (length(non_blanks) > 0) {
-    blank_start <- non_blanks[[1]] - 1
-    blanks <- rep(c(TRUE, FALSE), c(blank_start, length(ft$section) - blank_start))
-    blanks[abstract] <- FALSE
-    ft$section[blanks] <- "intro"
   }
 
   colorder <- c("text", "section", "header", "div", "p", "s", "file")

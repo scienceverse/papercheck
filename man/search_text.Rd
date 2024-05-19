@@ -2,7 +2,7 @@
 % Please edit documentation in R/search_text.R
 \name{search_text}
 \alias{search_text}
-\title{Search the full text}
+\title{Search text}
 \usage{
 search_text(
   study,
@@ -30,10 +30,11 @@ search_text(
 a data frame of matches
 }
 \description{
-Search the full text of a study. Currently only works with study objects that have full text imported from grobid (e.g., using \code{read_grobid()}).
+Search the text of a study or list of study objects. Also works on the table results of a \code{search_text()} call.
 }
 \examples{
 filename <- system.file("grobid", "eyecolor.xml", package="papercheck")
 study <- read_grobid(filename)
+
 search_text(study, "p\\\\s*(=|<)\\\\s*[0-9\\\\.]+", return = "match")
 }

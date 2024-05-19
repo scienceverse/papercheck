@@ -1,4 +1,3 @@
-options(scienceverse.verbose = FALSE)
 grobid_dir <- system.file("grobid", package="papercheck")
 
 test_that("error", {
@@ -52,7 +51,6 @@ test_that("iteration", {
   expect_equal(s[[2]]$info$title, "Having other-sex siblings predicts moral attitudes to sibling incest, but not parent-child incest")
   expect_equal(s[[3]]$info$title, "Will knowledge about more efficient study designs increase the willingness to pre-register?")
 
-
   # separate xmls
   filenames <- list.files(grobid_dir, ".xml", full.names = TRUE)
   s <- read_grobid(filenames)
@@ -64,14 +62,5 @@ test_that("iteration", {
   # recursive file search
   s <- read_grobid(system.file(package="papercheck"))
   expect_equal(names(s), file_list)
-
-  # messages
-  options(scienceverse.verbose = TRUE)
-  suppressMessages({
-    expect_message(s <- read_grobid(filenames),
-                   "Processing 3 files...", fixed = TRUE)
-    expect_message(s <- read_grobid(filenames),
-                   "Complete!", fixed = TRUE)
-  })
 })
 

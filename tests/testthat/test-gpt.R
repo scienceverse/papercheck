@@ -75,7 +75,7 @@ test_that("basic", {
   expect_equal(res$file, c("eyecolor.xml", "incest.xml"))
 
   ## text vector
-  text_vector <- text$text[1:7]
+  text_vector <- text$text[text$file == text$file[[1]]]
   expect_message( res2 <- gpt(text_vector, query, context) )
   expect_equal(names(res2), c("file", "answer", "cost"))
   expect_equal(res2$answer[[1]], res$answer[[1]])

@@ -62,8 +62,6 @@ read_grobid <- function(filename) {
     return(s)
   }
 
-  #message("Processing ", basename(filename), "...")
-
   if (!file.exists(filename)) {
     stop("The file ", filename, " does not exist.")
   }

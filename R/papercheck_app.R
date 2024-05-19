@@ -29,11 +29,6 @@ papercheck_app <- function(study = NULL, quiet = FALSE, ...) {
     .GlobalEnv$.app.study. <- study
     on.exit(rm(".app.study.", envir=.GlobalEnv))
 
-    # # get all local scivrs study objects
-    # all <- mget(ls(), envir = globalenv())
-    # ss <- lapply(all, class) |> sapply(\(x) "scivrs_study" %in% x)
-    # sss <- all[ss]
-
     shiny::runApp(appDir = system.file("app", package = "papercheck"), quiet = quiet, ...) |> invisible()
   } else {
     warning("You need to install the following packages to run the app: ",

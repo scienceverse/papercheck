@@ -142,11 +142,22 @@ server <- function(input, output, session) {
     debug_msg("load_xml")
 
     tryCatch({
-      s <- read_grobid(input$load_xml$datapath)
+      n <- length(input$load_xml$datapath)
+      s <- vector("list", n)
+      withProgress(message = 'Processing files', value = 0, {
+        detail <- paste("1/", n, " (", input$load_xml$name[[1]], ")")
+        incProgress(0, detail = detail)
 
-      if (length(input$load_xml$datapath) == 1) {
-        s <- list(s)
-      }
+        for (i in seq_along(input$load_xml$datapath)) {
+          path <- input$load_xml$datapath[[i]]
+          s[[i]] <- read_grobid(path)
+          if (i < n) {
+            detail <- paste(i+1, "/", n, " (",
+                            input$load_xml$name[[i+1]], ")")
+          }
+          incProgress(1/n, detail = detail)
+        }
+      })
 
       # fix filename because of shiny upload
       names(s) <- basename(input$load_xml$name)
@@ -302,6 +313,7 @@ server <- function(input, output, session) {
 
     text <- text_table()
     groups <- unique(text[, input$gpt_group_by, drop = FALSE])
+
     if (nrow(groups) > input$gpt_max_calls) {
       showModal(modalDialog(
         title = "Too many calls",
@@ -312,11 +324,29 @@ server <- function(input, output, session) {
         )
       ))
     } else {
-      res <- papercheck::gpt(text = text,
-                             query = input$gpt_query,
-                             context = input$gpt_context,
-                             group_by = input$gpt_group_by,
-                             CHATGPT_KEY = input$gpt_api)
+      n <- nrow(groups)
+      res <- vector("list", n)
+      withProgress(message = 'Querying ChatGPT', value = 0, {
+        detail <- paste(groups[1, ], collapse = ":") |>
+          paste("1/", n, " (", x = _, ")")
+        incProgress(0, detail = detail)
+        for (i in 1:n) {
+          subtext <- dplyr::semi_join(text, groups[i, ,drop = FALSE],
+                                      by = input$gpt_group_by)
+          res[[i]] <- gpt(text = subtext,
+                          query = input$gpt_query,
+                          context = input$gpt_context,
+                          group_by = input$gpt_group_by,
+                          CHATGPT_KEY = input$gpt_api)
+          if (i < n) {
+            detail <- paste(groups[i+1, ], collapse = ":") |>
+              paste(i+1, "/", n, " (", x = _, ")")
+          }
+          incProgress(1/n, detail = detail)
+        }
+      })
+
+      res <- do.call(rbind, res)
       gpt_table(res)
     }
   })

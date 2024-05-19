@@ -17,6 +17,8 @@
 #' @param temperature temperature value for ChatGPT (0.0 to 2.0)
 #'
 #' @return a list of results
+#'
+#' @export
 gpt <- function(text, query,
                 context = "You are a scientist",
                 text_col = "text",

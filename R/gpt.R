@@ -15,6 +15,7 @@
 #' @param chunk_size text chunk size for embeddings
 #' @param chunk_overlap overlap between text chunks for embeddings
 #' @param temperature temperature value for ChatGPT (0.0 to 2.0)
+#' @param include_query Whether to include the query and context strings in the returned table
 #'
 #' @return a list of results
 #'
@@ -26,7 +27,8 @@ gpt <- function(text, query,
                 CHATGPT_KEY = Sys.getenv("CHATGPT_KEY"),
                 chunk_size = 500,
                 chunk_overlap = 100,
-                temperature = 0) {
+                temperature = 0,
+                include_query = FALSE) {
   ## error detection ----
 
   if (CHATGPT_KEY == "") {
@@ -80,9 +82,13 @@ gpt <- function(text, query,
     for (x in group_by) text[[x]] = x
   }
 
+  # set up answer data frame to return ----
+  answer_df <- unique(text[, group_by, drop = FALSE])
+  rownames(answer_df) <- NULL
+
   # set up progress bar ----
   if (getOption("scienceverse.verbose")) {
-    ngroups <- text[, group_by, drop = FALSE] |> unique() |> nrow()
+    ngroups <- nrow(answer_df)
     pb <- progress::progress_bar$new(
       total = ngroups, clear = FALSE,
       format = "Querying ChatGPT [:bar] :current/:total :elapsedfull"
@@ -94,15 +100,19 @@ gpt <- function(text, query,
 
   # call chatgpt ----
   file <- tempfile(fileext = ".txt")
-  indices <- text[, group_by, drop = FALSE] |> as.list()
-  response <- by(text, indices, \(x) {
-    write(x[[text_col]], file)
+  response <- replicate(nrow(answer_df), list(), simplify = FALSE)
 
-    resp <- tryCatch({
+  for (i in 1:nrow(answer_df)) {
+    subtext <- dplyr::semi_join(text,
+                                answer_df[i, , drop = FALSE],
+                                by = group_by)
+    write(subtext[[text_col]], file)
+
+    response[[i]] <- tryCatch({
       py_gpt(file, query, context, CHATGPT_KEY,
-           chunk_size = chunk_size,
-           chunk_overlap = chunk_overlap,
-           temperature = temperature)
+             chunk_size = chunk_size,
+             chunk_overlap = chunk_overlap,
+             temperature = temperature)
     }, error = function(e) {
       return(list(result = list(answer = NA),
                   callback = list(total_cost = NA),
@@ -110,14 +120,22 @@ gpt <- function(text, query,
     })
 
     if (getOption("scienceverse.verbose")) pb$tick()
+  }
 
-    return(resp)
-  })
+  answer_df$answer <- sapply(response, \(x) x$result$answer)
+  answer_df$cost <- sapply(response, \(x) x$callback$total_cost)
+
+  if (include_query) {
+    answer_df$query = query
+    answer_df$context = context
+  }
 
   # check for errors ----
   errors <- lapply(response, \(x) x$error)
   error_indices <- !sapply(errors, is.null)
   if (any(error_indices)) {
+    answer_df$error <- error_indices
+
     warn <- paste(names(errors)[error_indices], collapse = ", ") |>
       paste("There were errors in the following:", x = _)
 
@@ -128,21 +146,7 @@ gpt <- function(text, query,
       warning()
   }
 
-  # set up return data frame ----
-  res <- data.frame(
-    index = names(response),
-    answer = sapply(response, \(x) x$result$answer),
-    cost = sapply(response, \(x) x$callback$total_cost)
-  )
-  #res$query = query
-  #res$context = context
-  rownames(res) <- NULL
+  message("Total cost: $", sum(answer_df$cost) |> round(5))
 
-  message("Total cost: $", sum(res$cost) |> round(5))
-
-  return(res)
-}
-
-get_embeddings <- function(text, CHATGPT_KEY = Sys.getenv("CHATGPT_KEY")) {
-
+  return(answer_df)
 }

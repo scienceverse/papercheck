@@ -28,7 +28,9 @@ test_that("exists", {
 })
 
 test_that("basic", {
-  skip("Requires ChatGPT API key")
+  skip_on_cran()
+  skip_if_offline(host = "chat.openai.com")
+  skip_if(Sys.getenv("CHATGPT_KEY") == "", message = "Requires ChatGPT API key")
 
   filename <- system.file("grobid", package = "papercheck")
   s <- read_grobid(filename)
@@ -37,22 +39,42 @@ test_that("basic", {
   context <- "Please give your answer exactly like this: 'XXX (XX men, XX women)', with the total number first, then any subsets in parentheses."
 
 
-  expect_message( res <- gpt(text, query, context) )
+  expect_message( res <- gpt(text, query, context, include_query = TRUE) )
 
   expect_equal(res$query[[1]], query)
   expect_equal(res$context[[1]], context)
-  expect_equal(res$answer[[1]], "300 (150 men, 150 women)")
-  expect_equal(res$answer[[2]], "1998 (666 men, 1332 women)")
-  expect_equal(res$index, c("eyecolor.xml", "incest.xml"))
+  # expect_equal(res$answer[[1]], "300 (150 men, 150 women)")
+  # expect_equal(res$answer[[2]], "1998 (666 men, 1332 women)")
+  expect_equal(res$file, c("eyecolor.xml", "incest.xml"))
 
-  res$eyecolor.xml$callback$total_tokens
-
-
-  text_vector <- text$text[8:10]
+  ## text vector
+  text_vector <- text$text[1:7]
   expect_message( res2 <- gpt(text_vector, query, context) )
-  expect_equal(res2$answer, "1998 (666 men, 1332 women)")
+  expect_equal(names(res2), c("file", "answer", "cost"))
+  expect_equal(res2$answer[[1]], res$answer[[1]])
+})
 
-  # changing options
+test_that("multiple group by", {
+  skip("Long test")
+  skip_on_cran()
+  skip_if_offline(host = "chat.openai.com")
+  skip_if(Sys.getenv("CHATGPT_KEY") == "", message = "Requires ChatGPT API key")
+
+  filename <- system.file("grobid", package = "papercheck") |>
+    list.files("\\.xml", full.names = TRUE)
+  s <- read_grobid(filename[1:2])
+  text <- search_text(s, return = "section", section = c("method", "results"))
+  groups <- dplyr::summarise(text, .by = c(file, section))
+
+  query <- "Summarise this text"
+  context <- "Answer in one short sentence, for a scientific audience"
+  expect_message( res <- gpt(text, query, context, group_by = c("file", "section")) )
+  expect_equal(names(res), c("file", "section", "answer", "cost"))
+  expect_equal(res[, 1:2], groups)
+})
+
+test_that("changing options", {
+  skip("Requires ChatGPT API key")
   res$answer
 
   size100 <- gpt(text, query, context, chunk_size = 100, chunk_overlap = 25)

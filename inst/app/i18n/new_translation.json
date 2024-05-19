@@ -296,6 +296,9 @@
       "es": "Esta aplicación shiny está en desarrollo; todos los materiales creados deben ser cuidadosamente revisados."
     },
     {
+      "en": "ChatGPT API Key"
+    },
+    {
       "en": "Context"
     },
     {
@@ -303,6 +306,9 @@
     },
     {
       "en": "Load Demo Files"
+    },
+    {
+      "en": "Maximum allowed calls"
     },
     {
       "en": "Query"

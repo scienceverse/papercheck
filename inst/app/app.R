@@ -258,8 +258,25 @@ server <- function(input, output, session) {
 
   ### gpt_submit----
   observeEvent(input$gpt_submit, {
-    res <- papercheck::gpt(text_table(), input$gpt_query, input$gpt_context)
-    gpt_table(res)
+    text <- text_table()
+    groups <- unique(text[, input$gpt_group_by, drop = FALSE])
+    if (nrow(groups) > input$gpt_max_calls) {
+      showModal(modalDialog(
+        title = "Too many calls",
+        paste("This will create", nrow(groups), "calls to ChatGPT. Set the maximum number allowed higher if this is OK."),
+        easyClose = TRUE,
+        footer = tagList(
+          modalButton("Dismiss")
+        )
+      ))
+    } else {
+      res <- papercheck::gpt(text = text,
+                             query = input$gpt_query,
+                             context = input$gpt_context,
+                             group_by = input$gpt_group_by,
+                             CHATGPT_KEY = input$gpt_api)
+      gpt_table(res)
+    }
   })
 
   ### gpt_table ----

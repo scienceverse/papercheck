@@ -56,13 +56,13 @@ gpt <- function(text, query,
   }
 
   # check if internet is available----
-  internet_down <- system("ping -c 1 chat.openai.com",
-                          ignore.stdout = TRUE,
-                          ignore.stderr = TRUE) |>
-      as.logical()
-  if (internet_down) {
-    warning("The internet seems to be not connected")
-  }
+  # internet_down <- system("ping -c 1 chat.openai.com",
+  #                         ignore.stdout = TRUE,
+  #                         ignore.stderr = TRUE) |>
+  #     as.logical()
+  # if (internet_down) {
+  #   warning("The internet seems to be not connected")
+  # }
 
   # #load/check python stuff ----
   if (!reticulate::py_available(TRUE)) {

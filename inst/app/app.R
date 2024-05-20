@@ -66,6 +66,8 @@ ui <- dashboardPage(
 server <- function(input, output, session) {
   updateNumericInput(session, "gpt_max_calls", value = getOption("papercheck.gpt_max_callsl"))
 
+  if (Sys.getenv("CHATGPT_KEY") != "") hide("gpt_api")
+
   ## reactiveVals ----
   debug_msg("----reactiveVals----")
 
@@ -243,7 +245,8 @@ server <- function(input, output, session) {
                         section = sec,
                         return = input$search_return,
                         ignore.case = "ignore.case" %in% input$search_options,
-                        fixed = "fixed" %in% input$search_options
+                        fixed = "fixed" %in% input$search_options,
+                        perl = "perl" %in% input$search_options
                         )
       text_table(tt)
       updateCheckboxGroupInput(session, "gpt_group_by",

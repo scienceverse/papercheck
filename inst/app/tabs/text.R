@@ -2,7 +2,7 @@
 text_tab <- tabItem(
   tabName = "text_tab",
 
-  box(width = 12, collapsible = TRUE, collapsed = TRUE,
+  box(width = 12, collapsible = TRUE, collapsed = FALSE,
       title = "Search",
       fluidRow(
         column(width = 12, textInput("search_pattern", "Pattern", "*", "100%"))
@@ -11,9 +11,10 @@ text_tab <- tabItem(
         column(width = 4, selectInput("search_section", "Section", c("all", "abstract", "intro", "method", "results", "discussion"))),
         column(width = 4, selectInput("search_return", "Return", c("sentence", "paragraph", "section", "match"))),
         column(width = 4, div(
-          checkboxGroupInput("search_options", NULL, c("Ignore Case" = "ignore.case",
+          checkboxGroupInput("search_options", NULL, c("Search this table" = "table",
+                                                       "Ignore Case" = "ignore.case",
                                                        "Fixed" = "fixed",
-                                                       "Search this table" = "table"), selected = "ignore.case")
+                                                       "PERL regex" = "perl"), selected = "ignore.case")
         ))
       ),
       actionButton("search_text", "Search"),

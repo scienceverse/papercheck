@@ -14,3 +14,14 @@ dt_options <- list(
   #scrollX = TRUE,
   #columnDefs = list(list(width = "6em", targets = 7))
 )
+
+dt_search_options <- list(
+  info = TRUE,
+  lengthChange = TRUE,
+  paging = TRUE,
+  ordering = FALSE,
+  searching = TRUE,
+  pageLength = 10,
+  keys = FALSE,
+  dom = '<"top" ip>'
+)

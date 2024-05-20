@@ -13,6 +13,11 @@ osf_check <- function(text) {
   found_osf <- search_text(found_urls, "osf\\.io")
   unique_urls <- unique(found_osf["text"]) # check https://
 
+  if (nrow(unique_urls) == 0) {
+    message("No OSF URLs found")
+    return(data.frame())
+  }
+
   # set up progress bar ----
   if (getOption("scienceverse.verbose")) {
     pb <- progress::progress_bar$new(

@@ -19,6 +19,8 @@ source("i18n/trans.R")
 source("tabs/load.R")
 source("tabs/text.R")
 source("tabs/gpt.R")
+source("tabs/osf.R")
+source("tabs/statcheck.R")
 
 ## UI ----
 ui <- dashboardPage(
@@ -31,6 +33,10 @@ ui <- dashboardPage(
                icon = icon("file")),
       menuItem("Search Text", tabName = "text_tab",
                icon = icon("magnifying-glass")),
+      menuItem("OSF Links", tabName = "osf_tab",
+               icon = icon("database")),
+      menuItem("Statcheck", tabName = "statcheck_tab",
+               icon = icon("database")),
       menuItem("ChatGPT", tabName = "gpt_tab",
                icon = icon("robot"))
     ),
@@ -56,7 +62,9 @@ ui <- dashboardPage(
     tabItems(
       load_tab,
       text_tab,
-      gpt_tab
+      osf_tab,
+      gpt_tab,
+      statcheck_tab
     )
   )
 )
@@ -74,6 +82,8 @@ server <- function(input, output, session) {
   my_study <- reactiveVal( list() )
   text_table <- reactiveVal( data.frame() )
   gpt_table <- reactiveVal( data.frame() )
+  osf_table <- reactiveVal( data.frame() )
+  statcheck_table <- reactiveVal( data.frame() )
   total_cost <- reactiveVal(0)
 
   ### return_study ----
@@ -93,12 +103,12 @@ server <- function(input, output, session) {
     if (length(study) > 0) {
       text_table(search_text(study))
 
-    # reset search interface
-    # c("search_pattern",
-    #   "search_section",
-    #   "search_return",
-    #   "search_ignore_case",
-    #   "search_fixed") |> sapply(shinyjs::reset)
+      # reset search interface
+      # c("search_pattern",
+      #   "search_section",
+      #   "search_return",
+      #   "search_ignore_case",
+      #   "search_fixed") |> sapply(shinyjs::reset)
       choices <- names(study)
     } else {
       choices <- c()
@@ -108,12 +118,13 @@ server <- function(input, output, session) {
 
   ### on text_table() change ----
   observe({
-    needs_text_table <- c("download_table", "gpt_submit", "search_text")
+    needs_text_table <- c("download_table", "gpt_submit", "search_text",
+                          "run_statcheck", "check_p_values")
     if (nrow(text_table()) == 0) {
       lapply(needs_text_table, shinyjs::disable)
     } else {
       lapply(needs_text_table, shinyjs::enable)
-      shinyjs::click("search_text") # trigger search
+      #shinyjs::click("search_text") # trigger search
     }
   })
 
@@ -180,6 +191,11 @@ server <- function(input, output, session) {
   update_from_study <- function(study) {
     debug_msg("update_from_study")
 
+    text_table(data.frame())
+    osf_table(data.frame())
+    gpt_table(data.frame())
+    statcheck_table(data.frame())
+
     my_study(study)
   }
 
@@ -223,31 +239,33 @@ server <- function(input, output, session) {
 
     text_table()
   },
-    selection = 'none',
-    rownames = FALSE,
-    options = dt_options
+  selection = 'none',
+  rownames = FALSE,
+  options = dt_options
   )
 
   ### search_text ----
   observeEvent(input$search_text, {
     debug_msg("search_text")
 
+    text <- text_table()
+    if (!"table" %in% input$search_options | nrow(text) == 0) {
+      text <- my_study()
+    }
+    text_table(data.frame()) # clear table
+
     tryCatch({
       sec <- input$search_section
       if (sec == "all") sec <- NULL
 
-      s <- text_table()
-      if (!"table" %in% input$search_options | nrow(s) == 0) {
-        s <- my_study()
-      }
-      tt <- search_text(s,
+      tt <- search_text(text,
                         pattern = input$search_pattern,
                         section = sec,
                         return = input$search_return,
                         ignore.case = "ignore.case" %in% input$search_options,
                         fixed = "fixed" %in% input$search_options,
                         perl = "perl" %in% input$search_options
-                        )
+      )
       text_table(tt)
       updateCheckboxGroupInput(session, "gpt_group_by",
                                choices = names(tt),
@@ -258,24 +276,49 @@ server <- function(input, output, session) {
     })
   }, ignoreNULL = TRUE)
 
+  ### input$search_options ----
+  observeEvent(input$search_options, {
+    debug_msg("search_options")
+    debug_msg(input$search_options)
+
+    selected <- input$search_options
+    choices <- c("Search this table" = "table",
+                 "Fixed" = "fixed",
+                 "Ignore Case" = "ignore.case",
+                 "PERL regex" = "perl")
+    if ("fixed" %in% selected) {
+      selected <- base::setdiff(selected, c("ignore.case", "perl"))
+      choices <- choices[1:2]
+    }
+    updateCheckboxGroupInput(session, "search_options",
+                             choices = choices,
+                             selected = selected)
+  }, ignoreNULL = FALSE)
+
   ### search_reset ----
   observeEvent(input$search_reset, {
     debug_msg("search_reset")
 
-    updateTextInput(session, "search_pattern", value = "*")
-    my_study() |>
-      papercheck::search_text() |>
-      text_table()
+    updateTextAreaInput(session, "search_pattern", value = "*")
+    s <- my_study()
+
+    if (length(s) > 0) {
+      search_text(s) |> text_table()
+    }
   })
 
   ### search presets ----
 
   observeEvent(input$search_preset_p, {
-    updateTextInput(session, "search_pattern", value = "p\\s*(=|<|>)+\\s*[0-9\\.,-]*\\d")
+    updateTextAreaInput(session, "search_pattern", value = "p\\s*(=|<|>)+\\s*[0-9\\.,-]*\\d")
   })
 
   observeEvent(input$search_preset_n, {
-    updateTextInput(session, "search_pattern", value = "N\\s*=\\s*[0-9,\\.]*\\d")
+    updateTextAreaInput(session, "search_pattern", value = "N\\s*=\\s*[0-9,\\.]*\\d")
+  })
+
+  observeEvent(input$search_marginal, {
+    updateTextAreaInput(session, "search_pattern", value = "margin\\w* (?:\\w+\\s+){0,5}significan\\w*|trend\\w* (?:\\w+\\s+){0,1}significan\\w*|almost (?:\\w+\\s+){0,2}significan\\w*|approach\\w* (?:\\w+\\s+){0,2}significan\\w*|border\\w* (?:\\w+\\s+){0,2}significan\\w*|close to (?:\\w+\\s+){0,2}significan\\w*")
   })
 
 
@@ -289,6 +332,103 @@ server <- function(input, output, session) {
       write.csv(text_table(), file, row.names = FALSE)
     }
   )
+
+  ## osf ----
+
+  ### search_osf----
+  observeEvent(input$search_osf, {
+    osf <- tryCatch( osf_check(text_table()),
+                     error = function(e) {
+                       return(data.frame())
+                     })
+
+    if (nrow(osf) == 0) {
+      showModal(modalDialog(
+        title = "No OSF URLs found",
+        easyClose = TRUE,
+        footer = tagList(
+          modalButton("Dismiss")
+        )
+      ))
+    }
+    osf_table(osf)
+  })
+
+  ### osf_table----
+  output$osf_table <- renderDT({
+    debug_msg("osf_table")
+
+    osf_table()
+  },
+  selection = 'none',
+  rownames = FALSE,
+  options = dt_options
+  )
+
+  ## statcheck ----
+
+  ### run_statcheck ----
+  observeEvent(input$run_statcheck, {
+    statcheck_table(data.frame()) # clear table
+    sc <- tryCatch( stats(text_table()),
+                    error = function(e) {
+                      return(data.frame())
+                    })
+
+    if (nrow(sc) == 0) {
+      showModal(modalDialog(
+        title = "No stats found",
+        easyClose = TRUE,
+        footer = tagList(
+          modalButton("Dismiss")
+        )
+      ))
+    }
+    statcheck_table(sc)
+  })
+
+  ### check_p_values ----
+  observeEvent(input$check_p_values, {
+    statcheck_table(data.frame()) # clear table
+    sc <- tryCatch( check_p_values(text_table()),
+                    error = function(e) {
+                      return(data.frame())
+                    })
+
+    if (nrow(sc) == 0) {
+      showModal(modalDialog(
+        title = "No p-values found",
+        easyClose = TRUE,
+        footer = tagList(
+          modalButton("Dismiss")
+        )
+      ))
+    }
+    statcheck_table(sc)
+  })
+
+  ### statcheck_table----
+  output$statcheck_table <- renderDT({
+    debug_msg("statcheck_table")
+
+    st <- statcheck_table()
+    if ("computed_p" %in% names(st))
+      st$computed_p <- round(st$computed_p, 4)
+
+    if (input$statcheck_errors) {
+      if ("imprecise" %in% names(st))
+        st <- st[st$imprecise, ]
+      if ("error" %in% names(st))
+        st <- st[st$error | st$decision_error, ]
+    }
+
+    return(st)
+  },
+  selection = 'none',
+  rownames = FALSE,
+  options = dt_search_options
+  )
+
 
   ## gpt ----
 
@@ -310,6 +450,7 @@ server <- function(input, output, session) {
       updateNumericInput(session, "gpt_max_calls", value = newmax)
     }
   })
+
   ### gpt_submit----
   observeEvent(input$gpt_submit, {
     debug_msg("gpt_submit")
@@ -367,9 +508,9 @@ server <- function(input, output, session) {
 
     gt
   },
-    selection = 'none',
-    rownames = FALSE,
-    options = dt_options
+  selection = 'none',
+  rownames = FALSE,
+  options = dt_options
   )
 
   ### download_gpt ----

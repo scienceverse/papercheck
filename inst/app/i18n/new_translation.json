@@ -308,10 +308,25 @@
       "en": "Load Demo Files"
     },
     {
+      "en": "marginal significance"
+    },
+    {
       "en": "Maximum allowed calls"
     },
     {
+      "en": "Only Show Errors"
+    },
+    {
+      "en": "P-values"
+    },
+    {
       "en": "Query"
+    },
+    {
+      "en": "Run Statcheck"
+    },
+    {
+      "en": "Search for OSF links"
     }
   ]
 }

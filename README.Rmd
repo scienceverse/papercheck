@@ -78,3 +78,25 @@ gpt_hypo <- structure(list(file = c("eyecolor.xml", "incest.xml", "prereg.xml"
 knitr::kable(gpt_hypo)
 ```
 
+## Check Stats
+
+```{r}
+statcheck <- stats(studies)
+
+check <- statcheck |>
+  dplyr::filter(error == TRUE) |>
+  dplyr::select(file, computed_p:one_tailed_in_txt)
+```
+
+```{r, echo = FALSE}
+knitr::kable(check)
+```
+
+```{r}
+p <- check_p_values(studies)
+```
+
+```{r, echo = FALSE}
+dplyr::select(p, file, p_comp:text) |> knitr::kable()
+```
+

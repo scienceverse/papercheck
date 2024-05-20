@@ -39,7 +39,7 @@
     
     <a class="navbar-brand me-2" href="index.html">papercheck</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9010</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9011</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -213,6 +213,255 @@
 <td align="left">prereg.xml</td>
 <td align="left">The hypothesis of this study is that more efficient study designs might increase the willingness to pre-register in psychological science.</td>
 <td align="right">0.000608</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level2">
+<h2 id="check-stats">Check Stats<a class="anchor" aria-label="anchor" href="#check-stats"></a>
+</h2>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">statcheck</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/stats.html">stats</a></span><span class="op">(</span><span class="va">studies</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">check</span> <span class="op">&lt;-</span> <span class="va">statcheck</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">error</span> <span class="op">==</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">file</span>, <span class="va">computed_p</span><span class="op">:</span><span class="va">one_tailed_in_txt</span><span class="op">)</span></span></code></pre></div>
+<table style="width:100%;" class="table">
+<colgroup>
+<col width="14%">
+<col width="12%">
+<col width="30%">
+<col width="7%">
+<col width="16%">
+<col width="19%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">file</th>
+<th align="right">computed_p</th>
+<th align="left">raw</th>
+<th align="left">error</th>
+<th align="left">decision_error</th>
+<th align="left">one_tailed_in_txt</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">eyecolor.xml</td>
+<td align="right">0.0286696</td>
+<td align="left">Z = 2.188, p = 0.091</td>
+<td align="left">TRUE</td>
+<td align="left">TRUE</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">prereg.xml</td>
+<td align="right">0.0245666</td>
+<td align="left">t(288.61) = -2.26, p = 0.012</td>
+<td align="left">TRUE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">prereg.xml</td>
+<td align="right">0.0040024</td>
+<td align="left">t(305.34) = -2.90, p = 0.002</td>
+<td align="left">TRUE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/check_p_values.html">check_p_values</a></span><span class="op">(</span><span class="va">studies</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<colgroup>
+<col width="3%">
+<col width="1%">
+<col width="2%">
+<col width="2%">
+<col width="89%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">file</th>
+<th align="left">p_comp</th>
+<th align="right">reported_p</th>
+<th align="right">p_decimals</th>
+<th align="left">text</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">eyecolor.xml</td>
+<td align="left">=</td>
+<td align="right">0.012</td>
+<td align="right">3</td>
+<td align="left">= 0.322, z = 2.52, p = 0.012), but not male partners (B = –0.059, S.E.</td>
+</tr>
+<tr class="even">
+<td align="left">eyecolor.xml</td>
+<td align="left">=</td>
+<td align="right">0.849</td>
+<td align="right">3</td>
+<td align="left">= 0.31, z = –0.19, p = 0.849) and paternal eye color significantly predicted the eye color of male partners (B = 0.75, S.E.</td>
+</tr>
+<tr class="odd">
+<td align="left">eyecolor.xml</td>
+<td align="left">=</td>
+<td align="right">0.019</td>
+<td align="right">3</td>
+<td align="left">= 0.318, z = 2.355, p = 0.019), but not female partners (B = 0.049, S.E.</td>
+</tr>
+<tr class="even">
+<td align="left">eyecolor.xml</td>
+<td align="left">=</td>
+<td align="right">0.879</td>
+<td align="right">3</td>
+<td align="left">= 0.32, z = 0.152, p = 0.879).</td>
+</tr>
+<tr class="odd">
+<td align="left">eyecolor.xml</td>
+<td align="left">=</td>
+<td align="right">0.266</td>
+<td align="right">3</td>
+<td align="left">= 0.236, z = 1.113, p = 0.266).</td>
+</tr>
+<tr class="even">
+<td align="left">eyecolor.xml</td>
+<td align="left">=</td>
+<td align="right">0.403</td>
+<td align="right">3</td>
+<td align="left">= 0.313, z = 0.836, p = 0.403) more than women’s partners (B = 0.472, S.E.</td>
+</tr>
+<tr class="odd">
+<td align="left">eyecolor.xml</td>
+<td align="left">=</td>
+<td align="right">0.130</td>
+<td align="right">2</td>
+<td align="left">= 0.311, z = 1.515, p = 0.13) and paternal eye color did not predict the eye color of women’s partners (B = 0.309, S.E.</td>
+</tr>
+<tr class="even">
+<td align="left">eyecolor.xml</td>
+<td align="left">=</td>
+<td align="right">0.337</td>
+<td align="right">3</td>
+<td align="left">= 0.321, z = 0.96, p = 0.337) more than men’s partners (B = 0.511, S.E.</td>
+</tr>
+<tr class="odd">
+<td align="left">eyecolor.xml</td>
+<td align="left">=</td>
+<td align="right">0.100</td>
+<td align="right">1</td>
+<td align="left">= 0.311, z = 1.645, p = 0.1).</td>
+</tr>
+<tr class="even">
+<td align="left">eyecolor.xml</td>
+<td align="left">=</td>
+<td align="right">0.029</td>
+<td align="right">3</td>
+<td align="left">= 0.481, Z = 2.188, p = 0.029), while men’s female partners’ eye color was best predicted by maternal eye color (B = 1.072, S.E.</td>
+</tr>
+<tr class="odd">
+<td align="left">eyecolor.xml</td>
+<td align="left">=</td>
+<td align="right">0.027</td>
+<td align="right">3</td>
+<td align="left">= 0.486, Z = 2.207, p = 0.027).</td>
+</tr>
+<tr class="even">
+<td align="left">eyecolor.xml</td>
+<td align="left">=</td>
+<td align="right">0.076</td>
+<td align="right">3</td>
+<td align="left">= 0.478, Z = 1.774, p = 0.076).</td>
+</tr>
+<tr class="odd">
+<td align="left">eyecolor.xml</td>
+<td align="left">=</td>
+<td align="right">0.091</td>
+<td align="right">3</td>
+<td align="left">= 0.489, Z = 2.188, p = 0.091), maternal eye color was the only positive predictor in the first step of this analysis (B = 0.694, S.E.</td>
+</tr>
+<tr class="even">
+<td align="left">eyecolor.xml</td>
+<td align="left">=</td>
+<td align="right">0.196</td>
+<td align="right">3</td>
+<td align="left">= 0.537, Z = 1.292, p = 0.196).</td>
+</tr>
+<tr class="odd">
+<td align="left">incest.xml</td>
+<td align="left">=</td>
+<td align="right">0.019</td>
+<td align="right">3</td>
+<td align="left">Our main, omnibus analysis showed a significant three-way interaction among incest type, participant sex, and sibling type (Estimate = 0.285, t(578.003) = 2.359, p = 0.019).</td>
+</tr>
+<tr class="even">
+<td align="left">incest.xml</td>
+<td align="left">=</td>
+<td align="right">0.005</td>
+<td align="right">3</td>
+<td align="left">Our analysis of moral wrongness scores for sibling incest scores showed a significant interaction between participant sex and sibling type (Estimate = -0.559, t(578) = -2.84, p = 0.005).</td>
+</tr>
+<tr class="odd">
+<td align="left">incest.xml</td>
+<td align="left">=</td>
+<td align="right">0.044</td>
+<td align="right">3</td>
+<td align="left">Women with brothers only tended to view sibling incest more negatively than did women with sisters only (Estimate = 0.179, t(452) = 2.022, p = 0.044) while men with brothers only tended to view sibling incest less negatively than did men with sisters only (Estimate = -0.38, t(126) = -1.933, p = 0.055).</td>
+</tr>
+<tr class="even">
+<td align="left">incest.xml</td>
+<td align="left">=</td>
+<td align="right">0.055</td>
+<td align="right">3</td>
+<td align="left">Women with brothers only tended to view sibling incest more negatively than did women with sisters only (Estimate = 0.179, t(452) = 2.022, p = 0.044) while men with brothers only tended to view sibling incest less negatively than did men with sisters only (Estimate = -0.38, t(126) = -1.933, p = 0.055).</td>
+</tr>
+<tr class="odd">
+<td align="left">incest.xml</td>
+<td align="left">=</td>
+<td align="right">0.170</td>
+<td align="right">2</td>
+<td align="left">In contrast, our analysis of moral wrongness scores for parental incest scores showed no significant interaction between participant sex and sibling type (Estimate = -0.268, t(578) = -1.373, p = 0.17).</td>
+</tr>
+<tr class="even">
+<td align="left">prereg.xml</td>
+<td align="left">&lt;</td>
+<td align="right">0.001</td>
+<td align="right">3</td>
+<td align="left">The difference between measurements (M = 2.47, SD = 1.71) was large, t(86) = 13.47, p &lt; 0.001, Hedges’ g z = 1.43, 95% CI [1.13;1.73], see Figure 1.</td>
+</tr>
+<tr class="odd">
+<td align="left">prereg.xml</td>
+<td align="left">&lt;</td>
+<td align="right">0.001</td>
+<td align="right">3</td>
+<td align="left">The difference between measurements (M = 2.35, SD = 1.69) was analyzed with a dependent t-test, t(85) = 12.87, p &lt; 0.001, Hedges’ g z = 1.38, 95% CI [1.08;1.67].</td>
+</tr>
+<tr class="even">
+<td align="left">prereg.xml</td>
+<td align="left">&lt;</td>
+<td align="right">0.001</td>
+<td align="right">3</td>
+<td align="left">Four Welch’s independent t-tests using the TOST approach indicated statistical equivalence for the difference between conditions for the perceived benefits, t(311.65) = -3.45, p &lt; 0.001, costs, t(288.61) = -2.26, p = 0.012, how likely researchers were to pre-register, t(323.68) = -4.55, p &lt; 0.001, and percentage of studies they planned to pre-register, t(305.34) = -2.90, p = 0.002.</td>
+</tr>
+<tr class="odd">
+<td align="left">prereg.xml</td>
+<td align="left">=</td>
+<td align="right">0.012</td>
+<td align="right">3</td>
+<td align="left">Four Welch’s independent t-tests using the TOST approach indicated statistical equivalence for the difference between conditions for the perceived benefits, t(311.65) = -3.45, p &lt; 0.001, costs, t(288.61) = -2.26, p = 0.012, how likely researchers were to pre-register, t(323.68) = -4.55, p &lt; 0.001, and percentage of studies they planned to pre-register, t(305.34) = -2.90, p = 0.002.</td>
+</tr>
+<tr class="even">
+<td align="left">prereg.xml</td>
+<td align="left">&lt;</td>
+<td align="right">0.001</td>
+<td align="right">3</td>
+<td align="left">Four Welch’s independent t-tests using the TOST approach indicated statistical equivalence for the difference between conditions for the perceived benefits, t(311.65) = -3.45, p &lt; 0.001, costs, t(288.61) = -2.26, p = 0.012, how likely researchers were to pre-register, t(323.68) = -4.55, p &lt; 0.001, and percentage of studies they planned to pre-register, t(305.34) = -2.90, p = 0.002.</td>
+</tr>
+<tr class="odd">
+<td align="left">prereg.xml</td>
+<td align="left">=</td>
+<td align="right">0.002</td>
+<td align="right">3</td>
+<td align="left">Four Welch’s independent t-tests using the TOST approach indicated statistical equivalence for the difference between conditions for the perceived benefits, t(311.65) = -3.45, p &lt; 0.001, costs, t(288.61) = -2.26, p = 0.012, how likely researchers were to pre-register, t(323.68) = -4.55, p &lt; 0.001, and percentage of studies they planned to pre-register, t(305.34) = -2.90, p = 0.002.</td>
 </tr>
 </tbody>
 </table>

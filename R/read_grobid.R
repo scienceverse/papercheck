@@ -14,7 +14,6 @@
 read_grobid <- function(filename) {
   # handle list of files or a directory----
   if (length(filename) > 1) {
-    #message("Processing ", length(filename), " files...")
     # set up progress bar ----
     if (getOption("scienceverse.verbose")) {
       pb <- progress::progress_bar$new(
@@ -51,7 +50,7 @@ read_grobid <- function(filename) {
       s[[un]]$full_text$file <- un
     }
     return(s)
-  } else if (file.exists(filename) & file.info(filename)$isdir) {
+  } else if (dir.exists(filename)) {
     xmls <- list.files(filename, "\\.xml",
                        full.names = TRUE,
                        recursive = TRUE)
@@ -66,6 +65,52 @@ read_grobid <- function(filename) {
     stop("The file ", filename, " does not exist.")
   }
 
+  # read xml ----
+  xml <- read_grobid_xml(filename)
+
+  # set up study object ----
+  if (requireNamespace("scienceverse", quietly = TRUE)) {
+    s <- scienceverse::study()
+  } else {
+    s <- list()
+    class(s) <- c("scivrs_study", "list")
+  }
+
+  # general info ----
+  s$name <- basename(filename)
+  s$info$filename <- basename(filename)
+  s$info$title <- xml2::xml_find_first(xml, "//titleStmt //title") |>
+    xml2::xml_text()
+  s$info$description <-  xml2::xml_find_all(xml, "//abstract //p") |>
+    xml2::xml_text() |>
+    paste(collapse = "\n\n")
+
+  # keywords ----
+  s$info$keywords <- xml2::xml_find_all(xml, "//keywords //term") |>
+    xml2::xml_text()
+
+  # get authors ----
+  s$authors <- get_authors(xml)
+
+  # full text----
+  s$full_text <- get_full_text(xml, id = basename(filename))
+
+  # references ----
+  s$refs <- get_refs(xml)
+
+  # TODO: figures ----
+  divs <- xml2::xml_find_all(xml, "//figure")
+
+  return(s)
+}
+
+#' Read in grobid XML
+#'
+#' @param filename The path to the XML file to be read
+#'
+#' @return An XML object
+#' @keywords internal
+read_grobid_xml <- function(filename) {
   xml_text <- filename |>
     readLines(warn = FALSE) |>
     paste(collapse = "\n") |>
@@ -82,47 +127,22 @@ read_grobid <- function(filename) {
     stop("This XML file does not parse as a valid Grobid TEI.")
   }
 
-  # set up study object ----
-  #xlist <- xml2::as_list(xml)
-  if (requireNamespace("scienceverse", quietly = TRUE)) {
-    s <- scienceverse::study()
-  } else {
-    s <- list()
-    class(s) <- c("scivrs_study", "list")
-  }
+  return(xml)
+}
 
-  # general info ----
-  s$name <- basename(filename)
-  s$info$filename <- basename(filename)
-  s$info$title <- xml2::xml_find_first(xml, "//titleStmt //title") |>
-    xml2::xml_text()
 
-  # get authors ----
-  if (requireNamespace("scienceverse", quietly = TRUE)) {
-
-    authors <- xml2::xml_find_all(xml, "//sourceDesc //author[persName]")
-
-    for (a in authors) {
-      family <- xml2::xml_find_all(a, ".//surname") |> xml2::xml_text() |> paste(collapse = " ")
-      given <- xml2::xml_find_all(a, ".//forename") |> xml2::xml_text() |> paste(collapse = " ")
-      email <- xml2::xml_find_all(a, ".//email") |> xml2::xml_text() |> paste(collapse = ";")
-      orcid <- xml2::xml_find_all(a, ".//idno[@type='ORCID']") |> xml2::xml_text()
-      # if (is.null(orcid) & !is.null(family)) {
-      #   orcid_lookup <- scienceverse::get_orcid(family, given)
-      #   if (length(orcid_lookup) == 1) orcid <- orcid_lookup
-      # }
-      if (length(orcid) == 0) orcid = NULL
-
-      s <- scienceverse::add_author(s, family, given, orcid, email = email)
-    }
-  }
-
-  # process text----
-
+#' Add section info to full text table
+#'
+#' @param xml The grobid XML
+#' @param id An ID for the file column
+#'
+#' @return a data frame of the classified full text
+#' @keywords internal
+#'
+get_full_text<- function(xml, id = NULL) {
   ## abstract ----
   abstract <- xml2::xml_find_all(xml, "//abstract //p") |>
     xml2::xml_text()
-  s$info$description <- paste(abstract, collapse = "\n\n")
 
   if (length(abstract) > 0) {
     abst_table <- data.frame(
@@ -151,39 +171,14 @@ read_grobid <- function(filename) {
     )
   })
 
+  ## parse sentences ----
   text <- NULL # hack to stop cmdcheck warning :(
-  body_table <- do.call(rbind, c(list(abst_table), div_text)) |>
+  ft <- do.call(rbind, c(list(abst_table), div_text)) |>
     tidytext::unnest_sentences(text, text, to_lower = FALSE) |>
     dplyr::mutate(s = dplyr::row_number(), .by = c("div", "p"))
 
-  body_table$file <- basename(filename)
-  rownames(body_table) <- NULL
+  ft$file <- id
 
-  body_table <- full_text_sections(body_table)
-
-  blank_divs <- grepl("\\[div-\\d+\\]", body_table$text)
-  #blank_divs <- body_table$p == 0
-
-  s$full_text <- body_table[!blank_divs, ]
-
-  # TODO: figures ----
-  divs <- xml2::xml_find_all(xml, "//figure")
-
-  # keywords ----
-  s$info$keywords <- xml2::xml_find_all(xml, "//keywords //term") |> xml2::xml_text()
-
-  return(s)
-}
-
-
-#' Add section info to full text table
-#'
-#' @param ft full text table
-#'
-#' @return a data frame of the classified full text
-#' @keywords internal
-#'
-full_text_sections <- function(ft) {
   # classify headers ----
   abstract <- grepl("abstract", ft$header, ignore.case = TRUE)
   intro <- grepl("intro", ft$header, ignore.case = TRUE)
@@ -230,7 +225,129 @@ full_text_sections <- function(ft) {
 
   colorder <- c("text", "section", "header", "div", "p", "s", "file")
 
-  return(ft[, colorder])
+  blank_divs <- grepl("\\[div-\\d+\\]", ft$text)
+  #blank_divs <- ft$p == 0
+
+  body_table <- ft[!blank_divs, colorder]
+  rownames(body_table) <- NULL
+
+  return(body_table)
 }
 
+#' Get author info from XML
+#'
+#' @param xml The grobid XML
+#'
+#' @return an author list
+#' @keywords internal
+get_authors <- function(xml) {
+  if (!requireNamespace("scienceverse", quietly = TRUE)) {
+    return(NULL)
+  }
 
+  s <- scienceverse::study()
+  authors <- xml2::xml_find_all(xml, "//sourceDesc //author[persName]")
+
+  for (a in authors) {
+    family <- xml2::xml_find_all(a, ".//surname") |> xml2::xml_text() |> paste(collapse = " ")
+    given <- xml2::xml_find_all(a, ".//forename") |> xml2::xml_text() |> paste(collapse = " ")
+    email <- xml2::xml_find_all(a, ".//email") |> xml2::xml_text() |> paste(collapse = ";")
+    orcid <- xml2::xml_find_all(a, ".//idno[@type='ORCID']") |> xml2::xml_text()
+    # if (is.null(orcid) & !is.null(family)) {
+    #   orcid_lookup <- scienceverse::get_orcid(family, given)
+    #   if (length(orcid_lookup) == 1) orcid <- orcid_lookup
+    # }
+    if (length(orcid) == 0) orcid = NULL
+
+    s <- scienceverse::add_author(s, family, given, orcid, email = email)
+  }
+
+  return(s$authors)
+}
+
+#' Get references from grobid XML
+#'
+#' @param xml The grobid XML
+#'
+#' @return a list with a data frame of referencesand a data frame of citation sentences
+#' @keywords internal
+get_refs <- function(xml) {
+  refs <- xml2::xml_find_all(xml, "//listBibl //biblStruct")
+
+  ref_table <- data.frame(
+    id = xml2::xml_attr(refs, "id")
+  )
+  ref_table$doi <- xml2::xml_find_first(refs, ".//analytic //idno[@type='DOI']") |>
+    xml2::xml_text()
+  ref_table$title <- xml2::xml_find_first(refs, ".//analytic //title[@type='main']") |>
+    xml2::xml_text()
+
+  # add retractionwatch summary
+  ref_table <- dplyr::left_join(ref_table, retractionwatch, by = "doi")
+
+  # get in-text citation ----
+  textrefs <- xml2::xml_find_all(xml, "//body //ref[@type='bibr']")
+
+  # get parent paragraphs of all in-text references and parse into sentences
+  textrefp <- data.frame(
+    p = xml2::xml_parent(textrefs) |> as.character() |>
+      gsub("</?p>", "", x = _)
+  ) |>
+    tidytext::unnest_sentences(output = "text", input = "p", to_lower = FALSE, )
+
+  # find refs
+  matches <- gregexpr("(?<=ref type=\"bibr\" target=\"#)b\\d+", textrefp$text, perl = TRUE)
+  textrefp$id <- regmatches(textrefp$text, matches) |>
+    sapply(paste, collapse = ";")
+
+  citation_table <- textrefp[textrefp$id != "", ]
+  citation_table$text <- lapply(citation_table$text, xml2::read_html) |>
+    sapply(xml2::xml_text)
+
+  citation_table <- citation_table |>
+    tidyr::separate_longer_delim("id", delim = ";")
+
+
+  return(list(
+    references = ref_table,
+    citations = citation_table[, c("id", "text")]
+  ))
+}
+
+#' Crossref info
+#'
+#' @param refs a table with DOIs
+#'
+#' @return the table with addition crossref data
+#' @export
+crossref <- function(refs) {
+  # set up progress bar ----
+  if (getOption("scienceverse.verbose")) {
+    pb <- progress::progress_bar$new(
+      total = nrow(refs), clear = FALSE,
+      format = "Querying crossref [:bar] :current/:total :elapsedfull"
+    )
+    pb$tick(0)
+    Sys.sleep(0.2)
+    pb$tick(0)
+  }
+
+  crossref <- lapply(refs$doi, \(doi) {
+    url <- sprintf("https://api.labs.crossref.org/works/%s?mailto=debruine@gmail.com", doi)
+    j <- jsonlite::read_json(url)
+    if (getOption("scienceverse.verbose")) pb$tick()
+    j
+  })
+
+  refs$updates <- sapply(crossref, \(x) {
+    uds <- x$message$`cr-labs-updates`
+    if (length(uds) == 0) return(NA)
+    sapply(uds, \(ud) {
+      paste0(ud$`update-nature`, ": ",
+             paste(ud$reasons, collapse = ", ")
+      )
+    }) |> paste(collapse = "; ")
+  })
+
+  return(refs)
+}

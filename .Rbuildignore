@@ -6,3 +6,5 @@
 ^docs$
 ^pkgdown$
 ^\.github$
+^profile$
+^data-raw$

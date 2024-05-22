@@ -29,6 +29,42 @@ test_that("basics", {
   expect_equal(nrow(s$full_text), 56)
 })
 
+
+test_that("read_grobid_xml", {
+  expect_true(is.function(read_grobid_xml))
+
+  # non-grobid XML
+  filename <- tempfile(fileext = "xml")
+  xml2::read_html("<p>Hello</p>") |>
+    xml2::write_xml(filename, options = "as_xml")
+  expect_error( read_grobid_xml(filename),
+                "does not parse as a valid Grobid TEI")
+
+  xml <- read_grobid_xml(file.path(grobid_dir, "incest.xml"))
+  expect_s3_class(xml, "xml_document")
+
+  title <- xml2::xml_find_first(xml, "//title") |> xml2::xml_text()
+  exp <- "Having other-sex siblings predicts moral attitudes to sibling incest, but not parent-child incest"
+  expect_equal(title, exp)
+})
+
+test_that("get_refs", {
+  expect_true(is.function(get_refs))
+
+  xml <- read_grobid_xml(file.path(grobid_dir, "prereg.xml"))
+
+  refs <- get_refs(xml)
+  expect_equal(names(refs), c("references", "citations"))
+
+  expect_equal(names(refs$references), c("id", "doi", "title", "retractionwatch"))
+  expect_equal(nrow(refs$references), 23)
+
+  expect_equal(names(refs$citations), c("id", "text"))
+
+  skip_if_offline("api.labs.crossref.org")
+  updated_refs <- crossref(refs$references[1:2, ])
+})
+
 test_that("iteration", {
   expect_error(read_grobid("."),
                "^There are no xml files in the directory")
@@ -63,4 +99,6 @@ test_that("iteration", {
   s <- read_grobid(system.file(package="papercheck"))
   expect_equal(names(s), file_list)
 })
+
+
 

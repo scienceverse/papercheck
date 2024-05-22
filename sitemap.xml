@@ -25,7 +25,16 @@
     <loc>https://scienceverse.github.io/papercheck/reference/check_p_values.html</loc>
   </url>
   <url>
-    <loc>https://scienceverse.github.io/papercheck/reference/full_text_sections.html</loc>
+    <loc>https://scienceverse.github.io/papercheck/reference/crossref.html</loc>
+  </url>
+  <url>
+    <loc>https://scienceverse.github.io/papercheck/reference/get_authors.html</loc>
+  </url>
+  <url>
+    <loc>https://scienceverse.github.io/papercheck/reference/get_full_text.html</loc>
+  </url>
+  <url>
+    <loc>https://scienceverse.github.io/papercheck/reference/get_refs.html</loc>
   </url>
   <url>
     <loc>https://scienceverse.github.io/papercheck/reference/gpt.html</loc>
@@ -43,7 +52,16 @@
     <loc>https://scienceverse.github.io/papercheck/reference/papercheck_app.html</loc>
   </url>
   <url>
+    <loc>https://scienceverse.github.io/papercheck/reference/pdf2grobid.html</loc>
+  </url>
+  <url>
     <loc>https://scienceverse.github.io/papercheck/reference/read_grobid.html</loc>
+  </url>
+  <url>
+    <loc>https://scienceverse.github.io/papercheck/reference/read_grobid_xml.html</loc>
+  </url>
+  <url>
+    <loc>https://scienceverse.github.io/papercheck/reference/retractionwatch.html</loc>
   </url>
   <url>
     <loc>https://scienceverse.github.io/papercheck/reference/search_text.html</loc>

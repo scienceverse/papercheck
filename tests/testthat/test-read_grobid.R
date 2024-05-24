@@ -56,7 +56,7 @@ test_that("get_refs", {
   refs <- get_refs(xml)
   expect_equal(names(refs), c("references", "citations"))
 
-  expect_equal(names(refs$references), c("id", "doi", "title", "retractionwatch"))
+  expect_equal(names(refs$references), c("id", "doi", "title"))
   expect_equal(nrow(refs$references), 23)
 
   expect_equal(names(refs$citations), c("id", "text"))

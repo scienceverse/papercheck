@@ -1,0 +1,19 @@
+{
+  "title": "RetractionWatch",
+  "type": "code",
+  "authors": [{
+    "orcid": "0000-0002-7523-5539",
+    "name":{
+      "surname": "DeBruine",
+      "given": "Lisa"
+    },
+    "email": "debruine@gmail.com"
+  }],
+  "code": {
+    "packages": ["papercheck", "dplyr"],
+    "code": [
+      "refs <- concat_tables(study, c('refs', 'references'))",
+      "semi_join(refs, retractionwatch, by = 'doi')"
+    ]
+  }
+}

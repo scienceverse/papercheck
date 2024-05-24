@@ -10,7 +10,7 @@ crossref(refs)
 \item{refs}{a table with DOIs}
 }
 \value{
-the table with addition crossref data
+the table with additional crossref data
 }
 \description{
 Crossref info

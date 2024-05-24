@@ -171,7 +171,8 @@ get_full_text<- function(xml, id = NULL) {
     )
   })
 
-  ## parse sentences ----
+  ## tokenizie sentences ----
+  # TODO: get tidytext to stop breaking sentences at "S.E. ="
   text <- NULL # hack to stop cmdcheck warning :(
   ft <- do.call(rbind, c(list(abst_table), div_text)) |>
     tidytext::unnest_sentences(text, text, to_lower = FALSE) |>
@@ -282,9 +283,6 @@ get_refs <- function(xml) {
   ref_table$title <- xml2::xml_find_first(refs, ".//analytic //title[@type='main']") |>
     xml2::xml_text()
 
-  # add retractionwatch summary
-  ref_table <- dplyr::left_join(ref_table, retractionwatch, by = "doi")
-
   # get in-text citation ----
   textrefs <- xml2::xml_find_all(xml, "//body //ref[@type='bibr']")
 
@@ -318,9 +316,11 @@ get_refs <- function(xml) {
 #'
 #' @param refs a table with DOIs
 #'
-#' @return the table with addition crossref data
+#' @return the table with additional crossref data
 #' @export
 crossref <- function(refs) {
+  #site_down("api.labs.crossref.org", error = FALSE)
+
   # set up progress bar ----
   if (getOption("scienceverse.verbose")) {
     pb <- progress::progress_bar$new(
@@ -344,7 +344,7 @@ crossref <- function(refs) {
     if (length(uds) == 0) return(NA)
     sapply(uds, \(ud) {
       paste0(ud$`update-nature`, ": ",
-             paste(ud$reasons, collapse = ", ")
+             paste(ud$reasons, collapse = "+")
       )
     }) |> paste(collapse = "; ")
   })

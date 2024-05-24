@@ -91,8 +91,14 @@ search_text <- function(study, pattern = ".*", section = NULL,
 
   } else if (return == "match") {
     ft_match_all <- ft_match
-    matches <- regexpr(pattern, ft_match$text, ignore.case = ignore.case, ...)
+    matches <- gregexpr(pattern, ft_match$text, ignore.case = ignore.case, ...)
     ft_match_all$text <- regmatches(ft_match$text, matches)
+    #ft_match_all <- tidyr::unnest_longer(ft_match_all, text)
+    text_lens <- sapply(ft_match_all$text, length)
+    rowrep <- rep(seq_along(text_lens), text_lens)
+    longtext <- unlist(ft_match_all$text)
+    ft_match_all <- ft_match_all[rowrep, ]
+    ft_match_all$text <- longtext
   }
 
   all_cols <- names(ft)

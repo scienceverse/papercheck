@@ -12,6 +12,7 @@
 #' @param text_col The name of the text column if text is a data frame
 #' @param group_by the column(s) to group by if text is a data frame
 #' @param CHATGPT_KEY your API key for ChatGPT
+#' @param gpt_model the model name to pass to ChatOpenAI
 #' @param chunk_size text chunk size for embeddings
 #' @param chunk_overlap overlap between text chunks for embeddings
 #' @param temperature temperature value for ChatGPT (0.0 to 2.0)
@@ -25,11 +26,13 @@ gpt <- function(text, query,
                 text_col = "text",
                 group_by = "file",
                 CHATGPT_KEY = Sys.getenv("CHATGPT_KEY"),
+                gpt_model = "gpt-3.5-turbo-1106",
                 chunk_size = 500,
                 chunk_overlap = 100,
                 temperature = 0,
                 include_query = FALSE) {
   ## error detection ----
+  #site_down("chat.openai.com")
 
   if (CHATGPT_KEY == "") {
     stop("You need to include the argument CHATGPT_KEY or set the variable CHATGPT_KEY in your Renviron")
@@ -54,26 +57,6 @@ gpt <- function(text, query,
   } else if (temperature < 0 | temperature > 2) {
     stop("The argument `temperature` must be between 0.0 and 2.0")
   }
-
-  # check if internet is available----
-  # internet_down <- system("ping -c 1 chat.openai.com",
-  #                         ignore.stdout = TRUE,
-  #                         ignore.stderr = TRUE) |>
-  #     as.logical()
-  # if (internet_down) {
-  #   warning("The internet seems to be not connected")
-  # }
-
-  # #load/check python stuff ----
-  if (!reticulate::py_available(TRUE)) {
-    stop("You need to install Python to use the chatGPT functions")
-  }
-
-  py_gpt <- NULL # stops annoying cmdcheck warning
-
-  # load script
-  pyscript <- system.file("python/gpt.py", package = "papercheck")
-  reticulate::source_python(pyscript)
 
   # make a data frame if text is a vector
   if (!is.data.frame(text)) {
@@ -103,6 +86,17 @@ gpt <- function(text, query,
     pb$tick(0)
   }
 
+  # #load/check python stuff ----
+  if (!reticulate::py_available(TRUE)) {
+    stop("You need to install Python to use the chatGPT functions")
+  }
+
+  py_gpt <- NULL # stops annoying cmdcheck warning
+  # load script
+  pyscript <- system.file("python/gpt.py", package = "papercheck")
+  tryCatch(reticulate::source_python(pyscript),
+           error = \(e) { stop("Error in python, try using `gpt_setup()`")})
+
   # call chatgpt ----
   file <- tempfile(fileext = ".txt")
   response <- replicate(nrow(answer_df), list(), simplify = FALSE)
@@ -115,6 +109,7 @@ gpt <- function(text, query,
 
     response[[i]] <- tryCatch({
       py_gpt(file, query, context, CHATGPT_KEY,
+             gpt_model = gpt_model,
              chunk_size = chunk_size,
              chunk_overlap = chunk_overlap,
              temperature = temperature)
@@ -173,4 +168,41 @@ set_gpt_max_calls <- function(n = 10) {
   }
 
   invisible()
+}
+
+
+gpt_setup <- function(envname = "r-reticulate") {
+  if (!reticulate::py_available(TRUE)) {
+    stop("You need to install python")
+  }
+
+  # set up virtual environment
+  message("Setting up virtual environment ", envname, "...")
+  req <- system.file("python/requirements.txt", package = "papercheck")
+  if (!reticulate::virtualenv_exists(envname)) {
+    reticulate::virtualenv_create(envname, requirements = req)
+  } else {
+    reticulate::virtualenv_install(envname, requirements = req)
+  }
+
+  # check for .Renviron
+  rp <- Sys.getenv("RETICULATE_PYTHON") == ""
+  ck <- Sys.getenv("CHATGPT_KEY") == ""
+  if (rp | ck) {
+    message <- "Add the following line to your .Renviron file, and restart R:"
+
+    if (rp & ck) {
+      message <- "Add the following lines to your .Renviron file, and restart R:"
+    }
+    if (rp) {
+      message <- sprintf("%s\nRETICULATE_PYTHON=\"%s/%s/bin/python\"",
+              message, reticulate::virtualenv_root(), envname)
+    }
+    if (ck) {
+      message <- sprintf("%s\nCHATGPT_KEY=\"sk-proj-your-chatgpt-api-key-here\"", message)
+    }
+    base::message(message)
+  }
+
+  message("Done!")
 }

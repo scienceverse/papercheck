@@ -11,6 +11,7 @@ gpt(
   text_col = "text",
   group_by = "file",
   CHATGPT_KEY = Sys.getenv("CHATGPT_KEY"),
+  gpt_model = "gpt-3.5-turbo-1106",
   chunk_size = 500,
   chunk_overlap = 100,
   temperature = 0,
@@ -29,6 +30,8 @@ gpt(
 \item{group_by}{the column(s) to group by if text is a data frame}
 
 \item{CHATGPT_KEY}{your API key for ChatGPT}
+
+\item{gpt_model}{the model name to pass to ChatOpenAI}
 
 \item{chunk_size}{text chunk size for embeddings}
 

@@ -7,7 +7,7 @@ from langchain_community.vectorstores import FAISS
 from langchain_core.prompts import ChatPromptTemplate, PromptTemplate
 from langchain_community.callbacks import get_openai_callback
 
-def py_gpt(file, query, context, APIKEY, chunk_size = 500, chunk_overlap = 100, temperature = 0):
+def py_gpt(file, query, context, APIKEY, gpt_model = "gpt-3.5-turbo-1106", chunk_size = 500, chunk_overlap = 100, temperature = 0):
   # Loads personal texts for model
   loader = TextLoader(file)
   documents = loader.load()
@@ -28,7 +28,7 @@ def py_gpt(file, query, context, APIKEY, chunk_size = 500, chunk_overlap = 100, 
   retriever = vector_db.as_retriever()
   
   # Find out more about the models behavior in relation to the query:
-  docs = retriever.get_relevant_documents(query)
+  docs = retriever.invoke(query)
   # print('Most relevant docs to your query:')
   # print("\n\n".join([x.page_content[:200] for x in docs[:5]]))
   
@@ -51,7 +51,7 @@ def py_gpt(file, query, context, APIKEY, chunk_size = 500, chunk_overlap = 100, 
   # Yet to determine optimal chain_type
   # (https://docs.langflow.org/components/chains#:~:text=chain_type%3A%20The%20chain%20type%20to,that%20prompt%20to%20an%20LLM.)
   chain = RetrievalQAWithSourcesChain.from_chain_type(
-      llm=ChatOpenAI(openai_api_key=APIKEY, model="gpt-3.5-turbo-1106", temperature=temperature),
+      llm=ChatOpenAI(openai_api_key=APIKEY, model=gpt_model, temperature=temperature),
       chain_type="stuff",
       retriever=retriever,
       chain_type_kwargs={

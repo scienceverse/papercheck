@@ -7,5 +7,5 @@
 #'   \item{doi}{Document ID}
 #'   \item{retractionwatch}{Nature of note(s)}
 #' }
-#' @source \url{https://api.labs.crossref.org/data/retractionwatch?debruine@gmail.com}
+#' @source \url{https://api.labs.crossref.org/data/retractionwatch}
 "retractionwatch"

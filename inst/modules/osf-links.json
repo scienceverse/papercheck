@@ -1,0 +1,21 @@
+{
+  "title": "Check OSF Links",
+  "type": "code",
+  "authors": [{
+    "orcid": "0000-0002-0247-239X",
+    "name":{
+      "surname": "Lakens",
+      "given": "Daniël"
+    },
+    "email": "lakens@gmail.com"
+  }],
+  "code": {
+    "packages": ["papercheck"],
+    "code": "osf_check(study)"
+  },
+  "report": {
+    "found": "There are some closed OSF links",
+    "not_found": "",
+    "details": "Go to the OSF and fix it."
+  }
+}

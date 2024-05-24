@@ -26,6 +26,13 @@ test_that("default", {
   res <- search_text(s, "significant", "results")
   expect_equal(nrow(res), 3)
   expect_true(all(res$section == "results"))
+
+  # multiple matches in a sentence
+  equal <- search_text(s, "[a-zA-Z]*\\s*=\\s*[\\.0-9-]*",
+                       section = "abstract",
+                       return = "match")
+  expect_equal(nrow(equal), 2)
+  expect_equal(equal$text, c("N=313", "N=269"))
 })
 
 test_that("table as first argument", {
@@ -36,7 +43,7 @@ test_that("table as first argument", {
   expect_equal(sig, sig2)
 
   s3 <- search_text(sig, "[a-zA-Z]*\\s*=\\s*[\\.0-9-]*", return = "match")
-  expect_equal(nrow(s3), 3)
+  expect_equal(nrow(s3), 9)
 })
 
 test_that("return", {
@@ -69,48 +76,4 @@ test_that("iteration", {
   equal <- search_text(s, "=", section = "results")
   classes <- as.character(unique(equal$section))
   expect_equal(classes, "results")
-})
-
-test_that("private", {
-  skip("Private files")
-
-  psyarxiv_dir <- "~/rproj/scienceverse/grobid_test/xml/psyarxiv-s/"
-  collabra_dir   <- "~/rproj/scienceverse/grobid_test/xml/collabra-s/"
-
-  # fix error: replacement has 1 row, data has 0
-  filename <- list.files(collabra_dir, "collabra.77608", full.names = TRUE)
-  s <- read_grobid(filename)
-
-  # long tests
-  psyarxiv <- read_grobid(psyarxiv_dir)
-  collabra <- read_grobid(collabra_dir)
-
-  studies <- collabra #psyarxiv
-  dir <- collabra_dir #psyarxiv_dir
-  files <- list.files(dir, ".xml")
-  expect_equal(names(studies), files)
-
-  pattern <- "p\\s*<\\s*(0?\\.?\\d*|[0-9\\.]+e-\\d+)"
-  p_sentence <- search_text(studies, pattern)
-  p_match <- search_text(studies, pattern, return = "match")
-  p_para <- search_text(studies, pattern, return = "paragraph")
-  p_sec <- search_text(studies, pattern, return = "section")
-
-  expect_true(nrow(p_match) == nrow(p_sentence))
-  expect_true(nrow(p_sentence) > nrow(p_para))
-  expect_true(nrow(p_para) > nrow(p_sec))
-
-  # all sentences are in full match
-  missing_s <- dplyr::anti_join(p_sentence, p_match,
-                                by = c("section", "div", "p", "s", "file"))
-  expect_equal(nrow(missing_s), 0)
-
-  # all paragraphs are in full match
-  missing_p <- dplyr::anti_join(p_para, p_match,
-                                by = c("section", "div", "p", "file"))
-  expect_equal(nrow(missing_p), 0)
-
-  p_match |>
-    dplyr::group_by(section, div, p, s, file) |>
-    dplyr::filter(dplyr::n() > 1)
 })

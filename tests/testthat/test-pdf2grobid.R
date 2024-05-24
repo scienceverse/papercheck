@@ -3,9 +3,16 @@ grobid_dir <- system.file("grobid", package="papercheck")
 test_that("works", {
   expect_true(is.function(pdf2grobid))
 
-  # invalid file type
-  expect_error(pdf2grobid("no.exist"), "does not exist")
+  filename <- file.path(grobid_dir, "incest.pdf")
+  expect_error(pdf2grobid(filename, grobid_url = "notawebsite"),
+               "The grobid server notawebsite is not available")
 
+  # invalid file type
+  skip_if_offline("localhost")
+  expect_error(pdf2grobid("no.exist", grobid_url = "localhost"), "does not exist")
+})
+
+test_that("defaults", {
   skip_if_offline("grobid.work.abed.cloud")
 
   filename <- file.path(grobid_dir, "incest.pdf")

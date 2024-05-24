@@ -12,7 +12,7 @@ A data frame with 44784 rows and 2 columns:
 }
 }
 \source{
-\url{https://api.labs.crossref.org/data/retractionwatch?debruine@gmail.com}
+\url{https://api.labs.crossref.org/data/retractionwatch}
 }
 \usage{
 retractionwatch

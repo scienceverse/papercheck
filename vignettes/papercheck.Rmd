@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 
 ## Installation
 
-You can install the development version of papercheck from [GitHub](https://github.com/) with:
+You can install the development version of papercheck from [GitHub](https://github.com/scienceverse/papercheck) with:
 
 ``` r
 # install.packages("devtools")
@@ -28,17 +28,26 @@ devtools::install_github("scienceverse/papercheck")
 library(papercheck)
 ```
 
+### Load from PDF
 
-### Load from XML
+The function `pdf2grobid()` can read PDF files and save them in the [TEI](https://tei-c.org/) format created by [grobid](https://grobid.readthedocs.io/). This requires an internet connection and takes a few seconds per paper, so should only be done once and the results saved for later use.
 
-The function `read_grobid()` can read XML files in [TEI](https://tei-c.org/) format created by [grobid](https://grobid.readthedocs.io/). 
-
-The example below uses some previously created XML files that are included with papercheck. You can [use grobid on your own paper](https://huggingface.co/spaces/kermitt2/grobid) here.
+If the server is unavailable, you can [use a grobid web interface](https://huggingface.co/spaces/kermitt2/grobid).
 
 ```{r}
 grobid_dir <- system.file("grobid", package="papercheck")
-filename <- file.path(grobid_dir, "incest.xml")
-s <- read_grobid(filename)
+pdf_file <- file.path(grobid_dir, "incest.pdf")
+xml_file <- pdf2grobid(pdf_file)
+```
+
+
+
+### Load from XML
+
+The function `read_grobid()` can read XML files parsed by grobid. 
+
+```{r}
+s <- read_grobid(xml_file)
 ```
 
 ## Full Text
@@ -110,9 +119,11 @@ knitr::kable(text)
 
 ## Batch Processing
 
-The function `read_grobid()` also works on a folder of XML files, returning a list of scienceverse study objects, and `search_text()` works on such a list.
+The functions `pdf2grobid()` and `read_grobid()` also work on a folder of files, returning a list of XML file paths or scienceverse study objects, respectively.  `search_text()` also works on a list of study objects.
 
 ```{r}
+grobid_dir <- system.file("grobid", package="papercheck")
+
 studies <- read_grobid(grobid_dir)
 
 hypotheses <- search_text(studies, "hypothesi", 
@@ -120,6 +131,17 @@ hypotheses <- search_text(studies, "hypothesi",
                           return = "paragraph")
 ```
 
+## Modules
+
+```{r}
+module_list()
+```
+
+```{r}
+p <- module_run(studies, "all-p-values")
+
+head(p)
+```
 
 ## ChatGPT
 
@@ -127,11 +149,19 @@ You can query the extracted text of papers with chatGPT.
 
 ### Setup
 
-You will need to provide your own [API key](https://platform.openai.com/api-keys). You can enter it manually for each call to `gpt()`, or add the following line in the .Renviron file for your user or project. 
+Run 
+
+```{r, eval = FALSE}
+gpt_setup()
+```
+
+
+You will need to provide your own [API key](https://platform.openai.com/api-keys). You can enter it manually for each call to `gpt()`, or add the following lines in the .Renviron file for your user or project. 
 
 
 ``` bash
 CHATGPT_KEY="sk-proj-abcdefghijklmnopqrs0123456789ABCDEFGHIJKLMNOPQRS"
+RETICULATE_PYTHON="~/.virtualenvs/r-reticulate/bin/python"
 ```
 
 ```{r, eval=FALSE}

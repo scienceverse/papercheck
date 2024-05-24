@@ -1,12 +1,18 @@
 #' Convert a PDF to Grobid XML
 #'
+#' This function uses the grobid server provided by Daniel Lakens at Technical University Eindhoven. You can set up your own local grobid server following instructions from <https://grobid.readthedocs.io/> and set the argument `grobid_url` to the path to the processFullTextDocument API.
+#'
 #' @param filename path to the PDF
 #' @param save_path directory or file path to save to; set to NULL to save to a temp file
+#' @param grobid_url the URL to the grobid server
 #'
 #' @return XML object
 #' @export
 #'
-pdf2grobid <- function(filename, save_path = ".") {
+pdf2grobid <- function(filename, save_path = ".",
+                       grobid_url = "https://grobid.work.abed.cloud/api/processFulltextDocument") {
+  site_down(grobid_url, "The grobid server %s is not available")
+
   # handle list of files or a directory----
   if (length(filename) > 1) {
     if (is.null(save_path) || !dir.exists(save_path)) {
@@ -53,8 +59,6 @@ pdf2grobid <- function(filename, save_path = ".") {
   if (!file.exists(filename)) {
     stop("The file ", filename, " does not exist.")
   }
-
-  grobid_url <- "https://grobid.work.abed.cloud/api/processFulltextDocument"
 
   file <- httr::upload_file(filename)
   resp <- httr::POST(grobid_url, body = list(input = file),

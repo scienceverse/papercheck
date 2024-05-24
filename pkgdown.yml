@@ -3,7 +3,7 @@ pkgdown: 2.0.9
 pkgdown_sha: ~
 articles:
   papercheck: papercheck.html
-last_built: 2024-05-22T23:23Z
+last_built: 2024-05-24T17:58Z
 urls:
   reference: https://scienceverse.github.io/papercheck/reference
   article: https://scienceverse.github.io/papercheck/articles

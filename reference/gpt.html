@@ -16,7 +16,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">papercheck</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9012</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9013</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -64,6 +64,7 @@
 <span>  text_col <span class="op">=</span> <span class="st">"text"</span>,</span>
 <span>  group_by <span class="op">=</span> <span class="st">"file"</span>,</span>
 <span>  CHATGPT_KEY <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"CHATGPT_KEY"</span><span class="op">)</span>,</span>
+<span>  gpt_model <span class="op">=</span> <span class="st">"gpt-3.5-turbo-1106"</span>,</span>
 <span>  chunk_size <span class="op">=</span> <span class="fl">500</span>,</span>
 <span>  chunk_overlap <span class="op">=</span> <span class="fl">100</span>,</span>
 <span>  temperature <span class="op">=</span> <span class="fl">0</span>,</span>
@@ -95,6 +96,10 @@
 
 <dt>CHATGPT_KEY</dt>
 <dd><p>your API key for ChatGPT</p></dd>
+
+
+<dt>gpt_model</dt>
+<dd><p>the model name to pass to ChatOpenAI</p></dd>
 
 
 <dt>chunk_size</dt>

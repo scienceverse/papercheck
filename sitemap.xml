@@ -25,6 +25,9 @@
     <loc>https://scienceverse.github.io/papercheck/reference/check_p_values.html</loc>
   </url>
   <url>
+    <loc>https://scienceverse.github.io/papercheck/reference/concat_tables.html</loc>
+  </url>
+  <url>
     <loc>https://scienceverse.github.io/papercheck/reference/crossref.html</loc>
   </url>
   <url>
@@ -44,6 +47,24 @@
   </url>
   <url>
     <loc>https://scienceverse.github.io/papercheck/reference/message.html</loc>
+  </url>
+  <url>
+    <loc>https://scienceverse.github.io/papercheck/reference/module_list.html</loc>
+  </url>
+  <url>
+    <loc>https://scienceverse.github.io/papercheck/reference/module_run.html</loc>
+  </url>
+  <url>
+    <loc>https://scienceverse.github.io/papercheck/reference/module_run_ai.html</loc>
+  </url>
+  <url>
+    <loc>https://scienceverse.github.io/papercheck/reference/module_run_code.html</loc>
+  </url>
+  <url>
+    <loc>https://scienceverse.github.io/papercheck/reference/module_run_ml.html</loc>
+  </url>
+  <url>
+    <loc>https://scienceverse.github.io/papercheck/reference/module_run_text.html</loc>
   </url>
   <url>
     <loc>https://scienceverse.github.io/papercheck/reference/osf_check.html</loc>
@@ -68,6 +89,9 @@
   </url>
   <url>
     <loc>https://scienceverse.github.io/papercheck/reference/set_gpt_max_calls.html</loc>
+  </url>
+  <url>
+    <loc>https://scienceverse.github.io/papercheck/reference/site_down.html</loc>
   </url>
   <url>
     <loc>https://scienceverse.github.io/papercheck/reference/stats.html</loc>

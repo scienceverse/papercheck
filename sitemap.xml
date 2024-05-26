@@ -22,13 +22,13 @@
     <loc>https://scienceverse.github.io/papercheck/index.html</loc>
   </url>
   <url>
-    <loc>https://scienceverse.github.io/papercheck/reference/check_p_values.html</loc>
-  </url>
-  <url>
     <loc>https://scienceverse.github.io/papercheck/reference/concat_tables.html</loc>
   </url>
   <url>
     <loc>https://scienceverse.github.io/papercheck/reference/crossref.html</loc>
+  </url>
+  <url>
+    <loc>https://scienceverse.github.io/papercheck/reference/demofile.html</loc>
   </url>
   <url>
     <loc>https://scienceverse.github.io/papercheck/reference/get_authors.html</loc>
@@ -70,10 +70,16 @@
     <loc>https://scienceverse.github.io/papercheck/reference/osf_check.html</loc>
   </url>
   <url>
+    <loc>https://scienceverse.github.io/papercheck/reference/paper.html</loc>
+  </url>
+  <url>
     <loc>https://scienceverse.github.io/papercheck/reference/papercheck_app.html</loc>
   </url>
   <url>
     <loc>https://scienceverse.github.io/papercheck/reference/pdf2grobid.html</loc>
+  </url>
+  <url>
+    <loc>https://scienceverse.github.io/papercheck/reference/print.scivrs_paper.html</loc>
   </url>
   <url>
     <loc>https://scienceverse.github.io/papercheck/reference/read_grobid.html</loc>

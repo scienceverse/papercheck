@@ -39,7 +39,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">papercheck</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9013</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9014</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -116,7 +116,7 @@ interface</a>.</p>
 <p>The function <code><a href="../reference/read_grobid.html">read_grobid()</a></code> can read XML files parsed by
 grobid.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_grobid.html">read_grobid</a></span><span class="op">(</span><span class="va">xml_file</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">paper</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_grobid.html">read_grobid</a></span><span class="op">(</span><span class="va">xml_file</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -129,7 +129,7 @@ each sentence, with the section type, header, div, paragraph and
 sentence numbers, and file name. (The section type is a best guess from
 the headers, so may not always be accurate.)</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">text</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/search_text.html">search_text</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">text</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/search_text.html">search_text</a></span><span class="op">(</span><span class="va">paper</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <colgroup>
 <col width="79%">
@@ -147,7 +147,7 @@ the headers, so may not always be accurate.)</p>
 <th align="right">div</th>
 <th align="right">p</th>
 <th align="right">s</th>
-<th align="left">file</th>
+<th align="left">id</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
@@ -229,7 +229,7 @@ with greater moral opposition to sibling incest.</td>
 set <code>fixed = TRUE</code> if you want to find exact text
 matches.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">text</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/search_text.html">search_text</a></span><span class="op">(</span><span class="va">s</span>, pattern <span class="op">=</span> <span class="st">"signific"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">text</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/search_text.html">search_text</a></span><span class="op">(</span><span class="va">paper</span>, pattern <span class="op">=</span> <span class="st">"signific"</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <colgroup>
 <col width="82%">
@@ -247,7 +247,7 @@ matches.</p>
 <th align="right">div</th>
 <th align="right">p</th>
 <th align="right">s</th>
-<th align="left">file</th>
+<th align="left">id</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
@@ -304,7 +304,7 @@ incest.</td>
 <p>Set <code>section</code> to a vector of the sections to search
 in.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">text</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/search_text.html">search_text</a></span><span class="op">(</span><span class="va">s</span>, <span class="st">"signific"</span>, </span>
+<code class="sourceCode R"><span><span class="va">text</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/search_text.html">search_text</a></span><span class="op">(</span><span class="va">paper</span>, <span class="st">"signific"</span>, </span>
 <span>                    section <span class="op">=</span> <span class="st">"results"</span><span class="op">)</span></span></code></pre></div>
 <table style="width:100%;" class="table">
 <colgroup>
@@ -323,7 +323,7 @@ in.</p>
 <th align="right">div</th>
 <th align="right">p</th>
 <th align="right">s</th>
-<th align="left">file</th>
+<th align="left">id</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
@@ -369,7 +369,7 @@ participant sex and sibling type (Estimate = -0.268, t(578) = -1.373, p
 <p>Set <code>return</code> to one of “sentence”, “paragraph”, “section”,
 or “match” to control what gets returned.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">text</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/search_text.html">search_text</a></span><span class="op">(</span><span class="va">s</span>, <span class="st">"signific"</span>, </span>
+<code class="sourceCode R"><span><span class="va">text</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/search_text.html">search_text</a></span><span class="op">(</span><span class="va">paper</span>, <span class="st">"signific"</span>, </span>
 <span>                    section <span class="op">=</span> <span class="st">"results"</span>, </span>
 <span>                    return <span class="op">=</span> <span class="st">"paragraph"</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
@@ -389,7 +389,7 @@ or “match” to control what gets returned.</p>
 <th align="right">div</th>
 <th align="right">p</th>
 <th align="left">s</th>
-<th align="left">file</th>
+<th align="left">id</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
@@ -437,7 +437,7 @@ arguments in <code><a href="../reference/search_text.html">search_text()</a></co
 complex regex, like below.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pattern</span> <span class="op">&lt;-</span> <span class="st">"[^\\s\\(\\)]+\\s*(=|&lt;)\\s*[0-9\\.-]+"</span></span>
-<span><span class="va">text</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/search_text.html">search_text</a></span><span class="op">(</span><span class="va">s</span>, <span class="va">pattern</span>, return <span class="op">=</span> <span class="st">"match"</span>, perl <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">text</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/search_text.html">search_text</a></span><span class="op">(</span><span class="va">paper</span>, <span class="va">pattern</span>, return <span class="op">=</span> <span class="st">"match"</span>, perl <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <thead><tr class="header">
 <th align="left">text</th>
@@ -446,7 +446,7 @@ complex regex, like below.</p>
 <th align="right">div</th>
 <th align="right">p</th>
 <th align="right">s</th>
-<th align="left">file</th>
+<th align="left">id</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
@@ -571,9 +571,9 @@ list of XML file paths or scienceverse study objects, respectively.
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">grobid_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"grobid"</span>, package<span class="op">=</span><span class="st">"papercheck"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">studies</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_grobid.html">read_grobid</a></span><span class="op">(</span><span class="va">grobid_dir</span><span class="op">)</span></span>
+<span><span class="va">papers</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_grobid.html">read_grobid</a></span><span class="op">(</span><span class="va">grobid_dir</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">hypotheses</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/search_text.html">search_text</a></span><span class="op">(</span><span class="va">studies</span>, <span class="st">"hypothesi"</span>, </span>
+<span><span class="va">hypotheses</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/search_text.html">search_text</a></span><span class="op">(</span><span class="va">papers</span>, <span class="st">"hypothesi"</span>, </span>
 <span>                          section <span class="op">=</span> <span class="st">"intro"</span>, </span>
 <span>                          return <span class="op">=</span> <span class="st">"paragraph"</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -585,28 +585,30 @@ list of XML file paths or scienceverse study objects, respectively.
 <span><span class="co">#&gt;              name                 title type</span></span>
 <span><span class="co">#&gt; 1    ai-summarise    Summarise Sections   ai</span></span>
 <span><span class="co">#&gt; 2    all-p-values     List All P-Values text</span></span>
-<span><span class="co">#&gt; 3        marginal Marginal Significance text</span></span>
-<span><span class="co">#&gt; 4       osf-links       Check OSF Links code</span></span>
-<span><span class="co">#&gt; 5 retractionwatch       RetractionWatch code</span></span>
+<span><span class="co">#&gt; 3     imprecise-p    Imprecise P-Values code</span></span>
+<span><span class="co">#&gt; 4        marginal Marginal Significance text</span></span>
+<span><span class="co">#&gt; 5       osf-links       Check OSF Links code</span></span>
+<span><span class="co">#&gt; 6 retractionwatch       RetractionWatch code</span></span>
 <span><span class="co">#&gt;                                                                      path</span></span>
 <span><span class="co">#&gt; 1    /home/runner/work/_temp/Library/papercheck/modules/ai-summarise.json</span></span>
 <span><span class="co">#&gt; 2    /home/runner/work/_temp/Library/papercheck/modules/all-p-values.json</span></span>
-<span><span class="co">#&gt; 3        /home/runner/work/_temp/Library/papercheck/modules/marginal.json</span></span>
-<span><span class="co">#&gt; 4       /home/runner/work/_temp/Library/papercheck/modules/osf-links.json</span></span>
-<span><span class="co">#&gt; 5 /home/runner/work/_temp/Library/papercheck/modules/retractionwatch.json</span></span></code></pre></div>
+<span><span class="co">#&gt; 3     /home/runner/work/_temp/Library/papercheck/modules/imprecise-p.json</span></span>
+<span><span class="co">#&gt; 4        /home/runner/work/_temp/Library/papercheck/modules/marginal.json</span></span>
+<span><span class="co">#&gt; 5       /home/runner/work/_temp/Library/papercheck/modules/osf-links.json</span></span>
+<span><span class="co">#&gt; 6 /home/runner/work/_temp/Library/papercheck/modules/retractionwatch.json</span></span></code></pre></div>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/module_run.html">module_run</a></span><span class="op">(</span><span class="va">studies</span>, <span class="st">"all-p-values"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/module_run.html">module_run</a></span><span class="op">(</span><span class="va">papers</span>, <span class="st">"all-p-values"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 7</span></span></span>
-<span><span class="co">#&gt;   text      section header     div     p     s file        </span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> p = 0.012 intro   [div-01]     1     4     6 eyecolor.xml</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> p = 0.849 intro   [div-01]     1     4     7 eyecolor.xml</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> p = 0.019 intro   [div-01]     1     4     8 eyecolor.xml</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> p = 0.879 intro   [div-01]     1     4     9 eyecolor.xml</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> p = 0.266 intro   [div-01]     1     4    11 eyecolor.xml</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> p = 0.403 intro   [div-01]     1     4    13 eyecolor.xml</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 8</span></span></span>
+<span><span class="co">#&gt;   text      section header     div     p     s id           file        </span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> p = 0.012 intro   [div-01]     1     4     6 eyecolor.xml eyecolor.xml</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> p = 0.849 intro   [div-01]     1     4     7 eyecolor.xml eyecolor.xml</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> p = 0.019 intro   [div-01]     1     4     8 eyecolor.xml eyecolor.xml</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> p = 0.879 intro   [div-01]     1     4     9 eyecolor.xml eyecolor.xml</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> p = 0.266 intro   [div-01]     1     4    11 eyecolor.xml eyecolor.xml</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> p = 0.403 intro   [div-01]     1     4    13 eyecolor.xml eyecolor.xml</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="chatgpt">ChatGPT<a class="anchor" aria-label="anchor" href="#chatgpt"></a>
@@ -640,7 +642,7 @@ lines in the .Renviron file for your user or project.</p>
 <col width="4%">
 </colgroup>
 <thead><tr class="header">
-<th align="left">file</th>
+<th align="left">id</th>
 <th align="left">answer</th>
 <th align="right">cost</th>
 </tr></thead>

@@ -16,7 +16,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">papercheck</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9013</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9014</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,7 +63,7 @@
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>text</dt>
-<dd><p>the search table (or list of scienceverse objects)</p></dd>
+<dd><p>the search table (or list of scienceverse paper objects)</p></dd>
 
 
 <dt>...</dt>
@@ -79,39 +79,191 @@
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">filename</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"grobid"</span>, <span class="st">"incest.xml"</span>, package<span class="op">=</span><span class="st">"papercheck"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">study</span> <span class="op">&lt;-</span> <span class="fu"><a href="read_grobid.html">read_grobid</a></span><span class="op">(</span><span class="va">filename</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">stats</span><span class="op">(</span><span class="va">study</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   test_type df1     df2 test_comp test_value p_comp reported_p  computed_p</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1         t  NA 578.003         =      2.359      =      0.019 0.018655985</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2         t  NA 578.000         =     -2.840      =      0.005 0.004670184</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3         t  NA 452.000         =      2.022      =      0.044 0.043764941</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4         t  NA 126.000         =     -1.933      =      0.055 0.055479644</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5         t  NA 578.000         =     -1.373      =      0.170 0.170284762</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                             raw error decision_error one_tailed_in_txt</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 t(578.003) = 2.359, p = 0.019 FALSE          FALSE             FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2     t(578) = -2.84, p = 0.005 FALSE          FALSE             FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3     t(452) = 2.022, p = 0.044 FALSE          FALSE             FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4    t(126) = -1.933, p = 0.055 FALSE          FALSE             FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5     t(578) = -1.373, p = 0.17 FALSE          FALSE             FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   apa_factor</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1          1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2          1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3          1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4          1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5          1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                                                                                                                                                                                                                                                              text</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1                                                                                                                                   Our main, omnibus analysis showed a significant three-way interaction among incest type, participant sex, and sibling type (Estimate = 0.285, t(578.003) = 2.359, p = 0.019).</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2                                                                                                                      Our analysis of moral wrongness scores for sibling incest scores showed a significant interaction between participant sex and sibling type (Estimate = -0.559, t(578) = -2.84, p = 0.005).</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 Women with brothers only tended to view sibling incest more negatively than did women with sisters only (Estimate = 0.179, t(452) = 2.022, p = 0.044) while men with brothers only tended to view sibling incest less negatively than did men with sisters only (Estimate = -0.38, t(126) = -1.933, p = 0.055).</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 Women with brothers only tended to view sibling incest more negatively than did women with sisters only (Estimate = 0.179, t(452) = 2.022, p = 0.044) while men with brothers only tended to view sibling incest less negatively than did men with sisters only (Estimate = -0.38, t(126) = -1.933, p = 0.055).</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5                                                                                                       In contrast, our analysis of moral wrongness scores for parental incest scores showed no significant interaction between participant sex and sibling type (Estimate = -0.268, t(578) = -1.373, p = 0.17).</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   section  header div p s       file</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 results Results   5 1 1 incest.xml</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 results Results   5 2 1 incest.xml</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 results Results   5 2 2 incest.xml</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 results Results   5 2 2 incest.xml</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5 results Results   5 2 3 incest.xml</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="demofile.html">demofile</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">papers</span> <span class="op">&lt;-</span> <span class="fu"><a href="read_grobid.html">read_grobid</a></span><span class="op">(</span><span class="va">dir</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">stats</span><span class="op">(</span><span class="va">papers</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    test_type df1     df2 test_comp test_value p_comp reported_p   computed_p</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1          Z  NA      NA         =      2.520      =      0.012 1.173548e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2          Z  NA      NA         =     -0.190      =      0.849 8.493091e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3          Z  NA      NA         =      2.355      =      0.019 1.852271e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4          Z  NA      NA         =      0.152      =      0.879 8.791869e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5          Z  NA      NA         =      1.113      =      0.266 2.657084e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6          Z  NA      NA         =      0.836      =      0.403 4.031549e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7          Z  NA      NA         =      1.515      =      0.130 1.297724e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8          Z  NA      NA         =      0.960      =      0.337 3.370552e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9          Z  NA      NA         =      1.645      =      0.100 9.996981e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10         Z  NA      NA         =      2.188      =      0.029 2.866960e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11         Z  NA      NA         =      2.207      =      0.027 2.731406e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12         Z  NA      NA         =      1.774      =      0.076 7.606315e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13         Z  NA      NA         =      2.188      =      0.091 2.866960e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14         Z  NA      NA         =      1.292      =      0.196 1.963571e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15         t  NA 578.003         =      2.359      =      0.019 1.865598e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16         t  NA 578.000         =     -2.840      =      0.005 4.670184e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17         t  NA 452.000         =      2.022      =      0.044 4.376494e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18         t  NA 126.000         =     -1.933      =      0.055 5.547964e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19         t  NA 578.000         =     -1.373      =      0.170 1.702848e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20         t  NA  86.000         =     13.470      &lt;      0.001 6.729803e-23</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21         t  NA  85.000         =     12.870      &lt;      0.001 1.159479e-21</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22         t  NA 311.650         =     -3.450      &lt;      0.001 6.378390e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23         t  NA 288.610         =     -2.260      =      0.012 2.456660e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24         t  NA 323.680         =     -4.550      &lt;      0.001 7.597548e-06</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25         t  NA 305.340         =     -2.900      =      0.002 4.002409e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                              raw error decision_error one_tailed_in_txt</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1            z = 2.52, p = 0.012 FALSE          FALSE             FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2          z = --0.19, p = 0.849 FALSE          FALSE             FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3           z = 2.355, p = 0.019 FALSE          FALSE             FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4           z = 0.152, p = 0.879 FALSE          FALSE             FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5           z = 1.113, p = 0.266 FALSE          FALSE             FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6           z = 0.836, p = 0.403 FALSE          FALSE             FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7            z = 1.515, p = 0.13 FALSE          FALSE             FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8            z = 0.96, p = 0.337 FALSE          FALSE             FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9             z = 1.645, p = 0.1 FALSE          FALSE             FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10          Z = 2.188, p = 0.029 FALSE          FALSE             FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11          Z = 2.207, p = 0.027 FALSE          FALSE             FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12          Z = 1.774, p = 0.076 FALSE          FALSE             FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13          Z = 2.188, p = 0.091  TRUE           TRUE             FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14          Z = 1.292, p = 0.196 FALSE          FALSE             FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15 t(578.003) = 2.359, p = 0.019 FALSE          FALSE             FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16     t(578) = -2.84, p = 0.005 FALSE          FALSE             FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17     t(452) = 2.022, p = 0.044 FALSE          FALSE             FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18    t(126) = -1.933, p = 0.055 FALSE          FALSE             FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19     t(578) = -1.373, p = 0.17 FALSE          FALSE             FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20      t(86) = 13.47, p &lt; 0.001 FALSE          FALSE             FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21      t(85) = 12.87, p &lt; 0.001 FALSE          FALSE             FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22  t(311.65) = -3.45, p &lt; 0.001 FALSE          FALSE             FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23  t(288.61) = -2.26, p = 0.012  TRUE          FALSE             FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24  t(323.68) = -4.55, p &lt; 0.001 FALSE          FALSE             FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25  t(305.34) = -2.90, p = 0.002  TRUE          FALSE             FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    apa_factor</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1           1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2           1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3           1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4           1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5           1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6           1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7           1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8           1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9           1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                                                                                                                                                                                                                                                                                                                                                text</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1                                                                                                                                                                                                                                                                                                                           = 0.322, z = 2.52, p = 0.012), but not male partners (B = --0.059, S.E.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2                                                                                                                                                                                                                                                                      = 0.31, z = --0.19, p = 0.849) and paternal eye color significantly predicted the eye color of male partners (B = 0.75, S.E.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3                                                                                                                                                                                                                                                                                                                          = 0.318, z = 2.355, p = 0.019), but not female partners (B = 0.049, S.E.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4                                                                                                                                                                                                                                                                                                                                                                    = 0.32, z = 0.152, p = 0.879).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5                                                                                                                                                                                                                                                                                                                                                                   = 0.236, z = 1.113, p = 0.266).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6                                                                                                                                                                                                                                                                                                                        = 0.313, z = 0.836, p = 0.403) more than women's partners (B = 0.472, S.E.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7                                                                                                                                                                                                                                                                           = 0.311, z = 1.515, p = 0.13) and paternal eye color did not predict the eye color of women's partners (B = 0.309, S.E.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8                                                                                                                                                                                                                                                                                                                           = 0.321, z = 0.96, p = 0.337) more than men's partners (B = 0.511, S.E.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9                                                                                                                                                                                                                                                                                                                                                                     = 0.311, z = 1.645, p = 0.1).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10                                                                                                                                                                                                                                                                 = 0.481, Z = 2.188, p = 0.029), while men's female partners' eye color was best predicted by maternal eye color (B = 1.072, S.E.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11                                                                                                                                                                                                                                                                                                                                                                  = 0.486, Z = 2.207, p = 0.027).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12                                                                                                                                                                                                                                                                                                                                                                  = 0.478, Z = 1.774, p = 0.076).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13                                                                                                                                                                                                                                                           = 0.489, Z = 2.188, p = 0.091), maternal eye color was the only positive predictor in the first step of this analysis (B = 0.694, S.E.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14                                                                                                                                                                                                                                                                                                                                                                  = 0.537, Z = 1.292, p = 0.196).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15                                                                                                                                                                                                                    Our main, omnibus analysis showed a significant three-way interaction among incest type, participant sex, and sibling type (Estimate = 0.285, t(578.003) = 2.359, p = 0.019).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16                                                                                                                                                                                                       Our analysis of moral wrongness scores for sibling incest scores showed a significant interaction between participant sex and sibling type (Estimate = -0.559, t(578) = -2.84, p = 0.005).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17                                                                                  Women with brothers only tended to view sibling incest more negatively than did women with sisters only (Estimate = 0.179, t(452) = 2.022, p = 0.044) while men with brothers only tended to view sibling incest less negatively than did men with sisters only (Estimate = -0.38, t(126) = -1.933, p = 0.055).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18                                                                                  Women with brothers only tended to view sibling incest more negatively than did women with sisters only (Estimate = 0.179, t(452) = 2.022, p = 0.044) while men with brothers only tended to view sibling incest less negatively than did men with sisters only (Estimate = -0.38, t(126) = -1.933, p = 0.055).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19                                                                                                                                                                                        In contrast, our analysis of moral wrongness scores for parental incest scores showed no significant interaction between participant sex and sibling type (Estimate = -0.268, t(578) = -1.373, p = 0.17).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20                                                                                                                                                                                                                                             The difference between measurements (M = 2.47, SD = 1.71) was large, t(86) = 13.47, p &lt; 0.001, Hedges' g z = 1.43, 95% CI [1.13;1.73], see Figure 1.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21                                                                                                                                                                                                                                The difference between measurements (M = 2.35, SD = 1.69) was analyzed with a dependent t-test, t(85) = 12.87, p &lt; 0.001, Hedges' g z = 1.38, 95% CI [1.08;1.67].</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22 Four Welch's independent t-tests using the TOST approach indicated statistical equivalence for the difference between conditions for the perceived benefits, t(311.65) = -3.45, p &lt; 0.001, costs, t(288.61) = -2.26, p = 0.012, how likely researchers were to pre-register, t(323.68) = -4.55, p &lt; 0.001, and percentage of studies they planned to pre-register, t(305.34) = -2.90, p = 0.002.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23 Four Welch's independent t-tests using the TOST approach indicated statistical equivalence for the difference between conditions for the perceived benefits, t(311.65) = -3.45, p &lt; 0.001, costs, t(288.61) = -2.26, p = 0.012, how likely researchers were to pre-register, t(323.68) = -4.55, p &lt; 0.001, and percentage of studies they planned to pre-register, t(305.34) = -2.90, p = 0.002.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24 Four Welch's independent t-tests using the TOST approach indicated statistical equivalence for the difference between conditions for the perceived benefits, t(311.65) = -3.45, p &lt; 0.001, costs, t(288.61) = -2.26, p = 0.012, how likely researchers were to pre-register, t(323.68) = -4.55, p &lt; 0.001, and percentage of studies they planned to pre-register, t(305.34) = -2.90, p = 0.002.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25 Four Welch's independent t-tests using the TOST approach indicated statistical equivalence for the difference between conditions for the perceived benefits, t(311.65) = -3.45, p &lt; 0.001, costs, t(288.61) = -2.26, p = 0.012, how likely researchers were to pre-register, t(323.68) = -4.55, p &lt; 0.001, and percentage of studies they planned to pre-register, t(305.34) = -2.90, p = 0.002.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    section</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1    intro</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2    intro</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3    intro</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4    intro</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5    intro</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6    intro</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7    intro</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8    intro</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9    intro</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10  method</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11  method</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12  method</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13  method</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14  method</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15 results</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16 results</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17 results</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18 results</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19 results</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20   intro</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21   intro</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22   intro</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23   intro</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24   intro</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25   intro</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                     header div</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1                                                                 [div-01]   1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2                                                                 [div-01]   1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3                                                                 [div-01]   1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4                                                                 [div-01]   1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5                                                                 [div-01]   1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6                                                                 [div-01]   1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7                                                                 [div-01]   1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8                                                                 [div-01]   1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9                                                                 [div-01]   1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10                                                       Statistical tests   5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11                                                       Statistical tests   5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12                                                       Statistical tests   5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13                                                       Statistical tests   5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14                                                       Statistical tests   5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15                                                                 Results   5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16                                                                 Results   5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17                                                                 Results   5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18                                                                 Results   5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19                                                                 Results   5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20 Are One-tailed Tests and Sequential Analyses Appropriate in Psychology?   2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21 Are One-tailed Tests and Sequential Analyses Appropriate in Psychology?   2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22                                                                Attitude   3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23                                                                Attitude   3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24                                                                Attitude   3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25                                                                Attitude   3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    p  s           id         file</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  4  6 eyecolor.xml eyecolor.xml</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  4  7 eyecolor.xml eyecolor.xml</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  4  8 eyecolor.xml eyecolor.xml</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  4  9 eyecolor.xml eyecolor.xml</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  4 11 eyecolor.xml eyecolor.xml</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  4 13 eyecolor.xml eyecolor.xml</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  4 14 eyecolor.xml eyecolor.xml</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  4 15 eyecolor.xml eyecolor.xml</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9  4 16 eyecolor.xml eyecolor.xml</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10 1 13 eyecolor.xml eyecolor.xml</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11 1 14 eyecolor.xml eyecolor.xml</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12 1 16 eyecolor.xml eyecolor.xml</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13 1 18 eyecolor.xml eyecolor.xml</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14 1 19 eyecolor.xml eyecolor.xml</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15 1  1   incest.xml   incest.xml</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16 2  1   incest.xml   incest.xml</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17 2  2   incest.xml   incest.xml</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18 2  2   incest.xml   incest.xml</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19 2  3   incest.xml   incest.xml</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20 8  8   prereg.xml   prereg.xml</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21 8 14   prereg.xml   prereg.xml</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22 5  4   prereg.xml   prereg.xml</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23 5  4   prereg.xml   prereg.xml</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24 5  4   prereg.xml   prereg.xml</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25 5  4   prereg.xml   prereg.xml</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

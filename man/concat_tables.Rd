@@ -4,10 +4,10 @@
 \alias{concat_tables}
 \title{Concatenate tables}
 \usage{
-concat_tables(studies, name_path)
+concat_tables(papers, name_path)
 }
 \arguments{
-\item{studies}{a list of scienceverse study objects}
+\item{papers}{a list of scienceverse study objects}
 
 \item{name_path}{a vector of names that get you to the table}
 }
@@ -19,6 +19,6 @@ Concatenate tables across a list of scienceverse objects
 }
 \examples{
 grobid_dir <- system.file("grobid", package = "papercheck")
-studies <- read_grobid(grobid_dir)
-references <- concat_tables(studies, c("refs", "references"))
+papers <- read_grobid(grobid_dir)
+references <- concat_tables(papers, c("refs", "references"))
 }

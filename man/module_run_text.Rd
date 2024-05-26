@@ -4,10 +4,10 @@
 \alias{module_run_text}
 \title{Run text module}
 \usage{
-module_run_text(study, args)
+module_run_text(paper, args)
 }
 \arguments{
-\item{study}{the scienceverse study object (or list of object)}
+\item{paper}{the scienceverse paper object (or list of objects)}
 
 \item{args}{a list of arguments to \code{search_text()}}
 }

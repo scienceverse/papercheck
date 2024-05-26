@@ -7,8 +7,7 @@ test_that("exists", {
 })
 
 test_that("text", {
-  filename <- system.file("grobid", package = "papercheck")
-  s <- read_grobid(filename)
+  s <- read_grobid(demofile())
 
   mod_output <- module_run(s, "all-p-values")
 
@@ -17,8 +16,7 @@ test_that("text", {
 })
 
 test_that("code", {
-  filename <- system.file("grobid", package = "papercheck")
-  s <- read_grobid(filename)
+  s <- read_grobid(demofile())
 
   mod_output <- module_run(s, "retractionwatch")
   expect_equal(nrow(mod_output), 0)
@@ -27,11 +25,10 @@ test_that("code", {
 test_that("text", {
   skip_if_offline()
 
-  filename <- system.file("grobid/eyecolor.xml", package = "papercheck")
-  s <- read_grobid(filename)
+  p <- read_grobid(demofile("xml")[2])
+  hypo <- search_text(p, "hypothes", return = "paragraph")
 
-  mod_output <- module_run(s, "ai-summarise")
+  mod_output <- module_run(hypo, "ai-summarise")
 
-  first_char <- substr(mod_output$text, 1, 1)
-  expect_true(all(first_char == "p"))
+  expect_equal(names(mod_output), c("id", "section", "answer", "cost"))
 })

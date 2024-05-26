@@ -91,22 +91,22 @@ save_trans <- function(trans_text, trans_labels) {
   ## save translations ----
   is_local <- Sys.getenv('SHINY_PORT') == ""
   if (is_local) {
-    all_text <- c(trans_text, trans_labels) %>%
-      unname() %>%
-      unlist() %>%
-      unique() %>%
+    all_text <- c(trans_text, trans_labels) |>
+      unname() |>
+      unlist() |>
+      unique() |>
       sort()
     j <- jsonlite::read_json("i18n/translation.json")
     cur_text <- sapply(j$translation, "[[", "en")
-    new_text <- setdiff(all_text, cur_text) %>%
+    new_text <- setdiff(all_text, cur_text) |>
       lapply(function(x) { list("en" = x) })
 
     if (length(new_text)) {
       j$translation <- c(j$translation, new_text)
 
       # save to new_translation so user can choose to update
-      jsonlite::toJSON(j, auto_unbox = TRUE) %>%
-        jsonlite::prettify(2) %>%
+      jsonlite::toJSON(j, auto_unbox = TRUE) |>
+        jsonlite::prettify(2) |>
         write("i18n/new_translation.json")
 
       debug_msg("saving ", length(new_text),

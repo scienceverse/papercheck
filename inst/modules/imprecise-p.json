@@ -1,0 +1,23 @@
+{
+  "title": "Imprecise P-Values",
+  "type": "code",
+  "authors": [{
+    "orcid": "0000-0002-7523-5539",
+    "name":{
+      "surname": "DeBruine",
+      "given": "Lisa"
+    },
+    "email": "debruine@gmail.com"
+  }],
+  "code": {
+    "packages": ["papercheck"],
+    "code": [
+      "p <- module_run(paper, \"all-p-values\")",
+      "p$p_comp <- gsub(\"p-?(value)?\\s*|\\s*\\d?\\.\\d+e?-?\\d*\", \"\", p$text)",
+      "p$p_value <- gsub(\"^p-?(value)?\\s*[<>=≤≥]{1,2}\\s*\", \"\", p$text) |> as.numeric()",
+      "p$imprecise <- p$p_comp == \"<\" & p$p_value > .001",
+      "p$imprecise <- p$imprecise | p$p_comp == \">\"",
+      "p[p$imprecise, ]"
+    ]
+  }
+}

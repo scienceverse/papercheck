@@ -5,11 +5,14 @@ devtools::load_all(".")
 
 files <- list.files("profile/psyarxiv", "xml$", full.names = TRUE)
 
-lineprof( s <- read_grobid(files[[1]]) )
+lineprof( papers <- read_grobid(files[1:50]) )
 
-lineprof( res <- search_text(s, section = "results") )
+lineprof( refs <- concat_tables(papers, "references") )
+lineprof( cite <- concat_tables(papers, "citations") )
+
+lineprof( res <- search_text(papers, section = "results") )
 
 lineprof( sc <- stats(res) )
 
-lineprof( p <- check_p_values(res) )
+lineprof( p <- module_run(res, "all-p-values") )
 

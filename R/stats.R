@@ -1,15 +1,15 @@
 #' Check Stats
 #'
-#' @param text the search table (or list of scienceverse objects)
+#' @param text the search table (or list of scienceverse paper objects)
 #' @param ... arguments to pass to statcheck()
 #'
 #' @return a table of statistics
 #' @export
 #'
 #' @examples
-#' filename <- system.file("grobid", "incest.xml", package="papercheck")
-#' study <- read_grobid(filename)
-#' stats(study)
+#' dir <- demofile()
+#' papers <- read_grobid(dir)
+#' stats(papers)
 stats <- function(text, ...) {
   if (!is.data.frame(text)) {
     text <- search_text(text)
@@ -52,25 +52,4 @@ stats <- function(text, ...) {
   rownames(stat_table) <- NULL
 
   stat_table[, 2:ncol(stat_table)]
-}
-
-
-#' Check p-values
-#'
-#' @param text the search table (or list of scienceverse objects)
-#'
-#' @return a table of p-values
-#' @export
-#'
-#' @examples
-#' filename <- system.file("grobid", "incest.xml", package="papercheck")
-#' study <- read_grobid(filename)
-#' check_p_values(study)
-check_p_values <- function(text) {
-  p <- stats(text, AllPValues = TRUE)
-
-  p$imprecise <- p$p_comp == "<" & p$reported_p > .001
-  p$imprecise <- p$imprecise | p$p_comp == ">"
-
-  return(p)
 }

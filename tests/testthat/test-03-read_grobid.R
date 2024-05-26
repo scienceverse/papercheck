@@ -1,5 +1,3 @@
-grobid_dir <- system.file("grobid", package="papercheck")
-
 test_that("error", {
   expect_true(is.function(read_grobid))
 
@@ -16,9 +14,9 @@ test_that("error", {
 })
 
 test_that("basics", {
-  filename <- file.path(grobid_dir, "incest.xml")
+  filename <- demofile("xml")[2]
   s <- read_grobid(filename)
-  expect_equal(class(s), c("scivrs_study", "list"))
+  expect_equal(class(s), c("scivrs_paper", "list"))
 
   title <- "Having other-sex siblings predicts moral attitudes to sibling incest, but not parent-child incest"
   expect_equal(s$name, "incest.xml")
@@ -40,7 +38,8 @@ test_that("read_grobid_xml", {
   expect_error( read_grobid_xml(filename),
                 "does not parse as a valid Grobid TEI")
 
-  xml <- read_grobid_xml(file.path(grobid_dir, "incest.xml"))
+  filename <- demofile("xml")[2]
+  xml <- read_grobid_xml(filename)
   expect_s3_class(xml, "xml_document")
 
   title <- xml2::xml_find_first(xml, "//title") |> xml2::xml_text()
@@ -51,15 +50,16 @@ test_that("read_grobid_xml", {
 test_that("get_refs", {
   expect_true(is.function(get_refs))
 
-  xml <- read_grobid_xml(file.path(grobid_dir, "prereg.xml"))
+  filename <- demofile("xml")[3]
+  xml <- read_grobid_xml(filename)
 
   refs <- get_refs(xml)
   expect_equal(names(refs), c("references", "citations"))
 
-  expect_equal(names(refs$references), c("id", "doi", "title"))
+  expect_equal(names(refs$references), c("bib_id", "doi", "ref"))
   expect_equal(nrow(refs$references), 23)
 
-  expect_equal(names(refs$citations), c("id", "text"))
+  expect_equal(names(refs$citations), c("bib_id", "text"))
 
   skip_if_offline("api.labs.crossref.org")
   updated_refs <- crossref(refs$references[1:2, ])
@@ -69,15 +69,16 @@ test_that("iteration", {
   expect_error(read_grobid("."),
                "^There are no xml files in the directory")
 
+  grobid_dir <- demofile()
   s <- read_grobid(grobid_dir)
 
   file_list <- list.files(grobid_dir, ".xml")
 
   expect_equal(length(s), 3)
   expect_equal(names(s), file_list)
-  expect_s3_class(s[[1]], "scivrs_study")
-  expect_s3_class(s[[2]], "scivrs_study")
-  expect_s3_class(s[[3]], "scivrs_study")
+  expect_s3_class(s[[1]], "scivrs_paper")
+  expect_s3_class(s[[2]], "scivrs_paper")
+  expect_s3_class(s[[3]], "scivrs_paper")
 
   expect_equal(s[[1]]$name, "eyecolor.xml")
   expect_equal(s[[2]]$name, "incest.xml")
@@ -88,7 +89,7 @@ test_that("iteration", {
   expect_equal(s[[3]]$info$title, "Will knowledge about more efficient study designs increase the willingness to pre-register?")
 
   # separate xmls
-  filenames <- list.files(grobid_dir, ".xml", full.names = TRUE)
+  filenames <- demofile("xml")
   s <- read_grobid(filenames)
   expect_equal(names(s), file_list)
 

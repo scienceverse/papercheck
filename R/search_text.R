@@ -1,8 +1,8 @@
 #' Search text
 #'
-#' Search the text of a study or list of study objects. Also works on the table results of a `search_text()` call.
+#' Search the text of a paper or list of paper objects. Also works on the table results of a `search_text()` call.
 #'
-#' @param study a study object created by `read_grobid` or a list of study objects
+#' @param paper a paper object created by `read_grobid` or a list of paper objects
 #' @param pattern the regex pattern to search for
 #' @param section the section(s) to search in
 #' @param return the kind of text to return, the full sentence, paragraph, or section that the text is in, or just the (regex) match
@@ -13,11 +13,11 @@
 #' @export
 #'
 #' @examples
-#' filename <- system.file("grobid", "eyecolor.xml", package="papercheck")
-#' study <- read_grobid(filename)
+#' filename <- demofile("xml")[1]
+#' paper <- read_grobid(filename)
 #'
-#' search_text(study, "p\\s*(=|<)\\s*[0-9\\.]+", return = "match")
-search_text <- function(study, pattern = ".*", section = NULL,
+#' search_text(paper, "p\\s*(=|<)\\s*[0-9\\.]+", return = "match")
+search_text <- function(paper, pattern = ".*", section = NULL,
                         return = c("sentence", "paragraph", "section", "match"),
                         ignore.case = TRUE, ...) {
   return <- match.arg(return)
@@ -30,16 +30,16 @@ search_text <- function(study, pattern = ".*", section = NULL,
       stop("Check the pattern argument:\n", e$message, call. = FALSE)
     })
 
-  if (is.data.frame(study)) {
-    full_text <- study
-  } else if ("scivrs_study" %in% class(study)) {
-    full_text <- study$full_text
-  } else if (is.list(study)) {
-    contains_scivrs <- lapply(study, class) |>
-      sapply(\(x) "scivrs_study" %in% x)
+  if (is.data.frame(paper)) {
+    full_text <- paper
+  } else if ("scivrs_paper" %in% class(paper)) {
+    full_text <- paper$full_text
+  } else if (is.list(paper)) {
+    contains_scivrs <- lapply(paper, class) |>
+      sapply(\(x) "scivrs_paper" %in% x)
     # handle list of scivrs objects ----
     if (all(contains_scivrs)) {
-      matches <- lapply(study, \(x) {
+      matches <- lapply(paper, \(x) {
         tryCatch({
           search_text(x, pattern, section, return, ignore.case, ...)
         }, error = function(e) {
@@ -49,10 +49,10 @@ search_text <- function(study, pattern = ".*", section = NULL,
       matches_agg <- do.call(rbind, matches)
       return(matches_agg)
     } else {
-      stop("The study argument doesn't seem to be a scivrs_study object or a list of study objects")
+      stop("The paper argument doesn't seem to be a scivrs_paper object or a list of paper objects")
     }
   } else {
-    stop("The study argument doesn't seem to be a scivrs_study object or a list of study objects")
+    stop("The paper argument doesn't seem to be a scivrs_paper object or a list of paper objects")
   }
 
   # filter full text----
@@ -75,7 +75,7 @@ search_text <- function(study, pattern = ".*", section = NULL,
     ft_match_all <- ft_match
   } else if (return == "paragraph") {
     # add in other sentences from matched paragraphs
-    groups <- c("section", "header", "div", "p", "file")
+    groups <- c("section", "header", "div", "p", "id")
 
     ft_match_all <- dplyr::semi_join(ft, ft_match, by = groups) |>
       dplyr::summarise(text = paste(text, collapse = " "),
@@ -84,7 +84,7 @@ search_text <- function(study, pattern = ".*", section = NULL,
   } else if (return == "section") {
     # add in other sentences from matched sections
 
-    groups <- c("section", "header", "div", "file")
+    groups <- c("section", "header", "div", "id")
     ft_match_all <- dplyr::semi_join(ft, ft_match, by = groups) |>
       dplyr::summarise(text = paste(text, collapse = " "),
                        .by = dplyr::all_of(groups))

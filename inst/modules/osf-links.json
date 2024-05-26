@@ -11,7 +11,7 @@
   }],
   "code": {
     "packages": ["papercheck"],
-    "code": "osf_check(study)"
+    "code": "osf_check(paper)"
   },
   "report": {
     "found": "There are some closed OSF links",

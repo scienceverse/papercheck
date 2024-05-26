@@ -35,12 +35,21 @@ devtools::install_github("scienceverse/papercheck")
 library(papercheck)
 ```
 
+Convert a PDF to grobid XML format, then read it in as a scienceverse paper object.
+
 ```{r}
-grobid_dir <- system.file("grobid", package="papercheck")
-filename <- file.path(grobid_dir, "incest.xml")
-s <- read_grobid(filename)
+pdf <- demofile("pdf")[2]
+grobid <- pdf2grobid(pdf)
+paper <- read_grobid(grobid)
+```
+
+Search the returned text. The regex pattern below searches for text that looks like statistical values (e.g., `N=313` or `p = 0.17`).
+
+```{r}
 pattern <- "[^\\s\\(\\)]+\\s*(=|<)\\s*[0-9\\.-]+"
-text <- search_text(s, pattern, return = "match", perl = TRUE)
+text <- search_text(paper, pattern, 
+                    return = "match", 
+                    perl = TRUE)
 ```
 
 ```{r, echo = FALSE}
@@ -51,25 +60,38 @@ knitr::kable(text)
 ## Batch Processing
 
 ```{r}
-# read in all the XML files in this directory
-studies <- read_grobid(grobid_dir)
+# read in all the XML files in the demo directory
+grobid_dir <- demofile()
+papers <- read_grobid(grobid_dir)
 
 # select paragraphs in the intros containing the text "hypothesi"
-hypotheses <- search_text(studies, "hypothesi", 
+hypotheses <- search_text(papers, "hypothesi", 
                           section = "intro", 
                           return = "paragraph")
 ```
+## Modules
+
+```{r}
+module_list()
+```
+
+```{r}
+p <- module_run(papers, "all-p-values")
+
+head(p)
+```
+
 
 ## Ask ChatGPT
 
 ```{r, eval = FALSE}
 # ask chatGPT a question
 query <- "What is the hypothesis of this study?"
-gpt_hypo <- gpt(hypotheses, query, group_by = "file")
+gpt_hypo <- gpt(hypotheses, query, group_by = "id")
 ```
 
 ```{r, echo = FALSE}
-gpt_hypo <- structure(list(file = c("eyecolor.xml", "incest.xml", "prereg.xml"
+gpt_hypo <- structure(list(id = c("eyecolor.xml", "incest.xml", "prereg.xml"
 ), answer = c("The hypothesis of this study is to test the matching hypothesis, sex-linked heritable preference hypothesis, and positive sexual imprinting hypothesis in relation to eye color and partner selection.", 
 "The hypothesis of this study is that humans possess adaptations to reduce inbreeding, and that the strong moral opposition to incest plays an important role in preventing inbreeding.", 
 "The hypothesis of this study is that more efficient study designs might increase the willingness to pre-register in psychological science."
@@ -81,7 +103,7 @@ knitr::kable(gpt_hypo)
 ## Check Stats
 
 ```{r}
-statcheck <- stats(studies)
+statcheck <- stats(papers)
 
 check <- statcheck |>
   dplyr::filter(error == TRUE) |>
@@ -92,11 +114,4 @@ check <- statcheck |>
 knitr::kable(check)
 ```
 
-```{r}
-p <- check_p_values(studies)
-```
-
-```{r, echo = FALSE}
-dplyr::select(p, file, p_comp:text) |> knitr::kable()
-```
 

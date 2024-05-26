@@ -4,10 +4,10 @@
 \alias{module_run_code}
 \title{Run code module}
 \usage{
-module_run_code(study, args)
+module_run_code(paper, args)
 }
 \arguments{
-\item{study}{the scienceverse study object (or list of object)}
+\item{paper}{the scienceverse paper object (or list of objects)}
 
 \item{args}{a list of arguments}
 }

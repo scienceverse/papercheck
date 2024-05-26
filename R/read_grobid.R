@@ -1,15 +1,15 @@
-#' Get study from grobid XML file
+#' Get paper from grobid XML file
 #'
 #' You can create a grobid XML file from a paper PDF at https://huggingface.co/spaces/kermitt2/grobid.
 #'
 #' @param filename the path to the XML file, a vector of file paths, or the path to a directory containing XML files
 #'
-#' @return A study object with class scivrs_stud, or. list of study objects
+#' @return A paper object with class scivrs_paper, or. list of paper objects
 #' @export
 #'
 #' @examples
-#' filename <- system.file("grobid", "eyecolor.xml", package="papercheck")
-#' study <- read_grobid(filename)
+#' filename <- demofile("xml")[1]
+#' paper <- read_grobid(filename)
 #'
 read_grobid <- function(filename) {
   # handle list of files or a directory----
@@ -38,18 +38,17 @@ read_grobid <- function(filename) {
     unique_names <- dir_df[ , distinct_vals, drop = FALSE] |>
       apply(1, paste0, collapse = "/")
 
-    s <- lapply(filename, \(x) {
-      #message("- ", basename(x))
-      s1 <- read_grobid(x)
+    p <- lapply(filename, \(x) {
+      p1 <- read_grobid(x)
       if (getOption("scienceverse.verbose")) pb$tick()
-      s1
+      p1
     })
-    #message("Complete!")
-    names(s) <- unique_names
+
+    names(p) <- unique_names
     for (un in unique_names) {
-      s[[un]]$full_text$file <- un
+      p[[un]]$full_text$file <- un
     }
-    return(s)
+    return(p)
   } else if (dir.exists(filename)) {
     xmls <- list.files(filename, "\\.xml",
                        full.names = TRUE,
@@ -57,8 +56,8 @@ read_grobid <- function(filename) {
     if (length(xmls) == 0) {
       stop("There are no xml files in the directory ", filename)
     }
-    s <- read_grobid(xmls)
-    return(s)
+    p <- read_grobid(xmls)
+    return(p)
   }
 
   if (!file.exists(filename)) {
@@ -68,40 +67,36 @@ read_grobid <- function(filename) {
   # read xml ----
   xml <- read_grobid_xml(filename)
 
-  # set up study object ----
-  if (requireNamespace("scienceverse", quietly = TRUE)) {
-    s <- scienceverse::study()
-  } else {
-    s <- list()
-    class(s) <- c("scivrs_study", "list")
-  }
+  # set up paper object ----
+  p <- paper()
 
-  # general info ----
-  s$name <- basename(filename)
-  s$info$filename <- basename(filename)
-  s$info$title <- xml2::xml_find_first(xml, "//titleStmt //title") |>
+  p$name <- basename(filename)
+  p$info$filename <- basename(filename)
+  p$info$title <- xml2::xml_find_first(xml, "//titleStmt //title") |>
     xml2::xml_text()
-  s$info$description <-  xml2::xml_find_all(xml, "//abstract //p") |>
+  p$info$description <-  xml2::xml_find_all(xml, "//abstract //p") |>
     xml2::xml_text() |>
     paste(collapse = "\n\n")
 
   # keywords ----
-  s$info$keywords <- xml2::xml_find_all(xml, "//keywords //term") |>
+  p$info$keywords <- xml2::xml_find_all(xml, "//keywords //term") |>
     xml2::xml_text()
 
   # get authors ----
-  s$authors <- get_authors(xml)
+  p$authors <- get_authors(xml)
 
   # full text----
-  s$full_text <- get_full_text(xml, id = basename(filename))
+  p$full_text <- get_full_text(xml, id = basename(filename))
 
   # references ----
-  s$refs <- get_refs(xml)
+  refs <- get_refs(xml)
+  p$references <- refs$references
+  p$citations <- refs$citations
 
   # TODO: figures ----
   divs <- xml2::xml_find_all(xml, "//figure")
 
-  return(s)
+  return(p)
 }
 
 #' Read in grobid XML
@@ -134,7 +129,7 @@ read_grobid_xml <- function(filename) {
 #' Add section info to full text table
 #'
 #' @param xml The grobid XML
-#' @param id An ID for the file column
+#' @param id An ID for the paper
 #'
 #' @return a data frame of the classified full text
 #' @keywords internal
@@ -171,14 +166,14 @@ get_full_text<- function(xml, id = NULL) {
     )
   })
 
-  ## tokenizie sentences ----
+  ## tokenize sentences ----
   # TODO: get tidytext to stop breaking sentences at "S.E. ="
   text <- NULL # hack to stop cmdcheck warning :(
   ft <- do.call(rbind, c(list(abst_table), div_text)) |>
     tidytext::unnest_sentences(text, text, to_lower = FALSE) |>
     dplyr::mutate(s = dplyr::row_number(), .by = c("div", "p"))
 
-  ft$file <- id
+  ft$id <- id
 
   # classify headers ----
   abstract <- grepl("abstract", ft$header, ignore.case = TRUE)
@@ -224,7 +219,7 @@ get_full_text<- function(xml, id = NULL) {
     }
   }
 
-  colorder <- c("text", "section", "header", "div", "p", "s", "file")
+  colorder <- c("text", "section", "header", "div", "p", "s", "id")
 
   blank_divs <- grepl("\\[div-\\d+\\]", ft$text)
   #blank_divs <- ft$p == 0
@@ -276,11 +271,11 @@ get_refs <- function(xml) {
   refs <- xml2::xml_find_all(xml, "//listBibl //biblStruct")
 
   ref_table <- data.frame(
-    id = xml2::xml_attr(refs, "id")
+    bib_id = xml2::xml_attr(refs, "id")
   )
   ref_table$doi <- xml2::xml_find_first(refs, ".//analytic //idno[@type='DOI']") |>
     xml2::xml_text()
-  ref_table$title <- xml2::xml_find_first(refs, ".//analytic //title[@type='main']") |>
+  ref_table$ref <- xml2::xml_find_first(refs, ".//note[@type='raw_reference']") |>
     xml2::xml_text()
 
   # get in-text citation ----
@@ -295,20 +290,20 @@ get_refs <- function(xml) {
 
   # find refs
   matches <- gregexpr("(?<=ref type=\"bibr\" target=\"#)b\\d+", textrefp$text, perl = TRUE)
-  textrefp$id <- regmatches(textrefp$text, matches) |>
+  textrefp$bib_id <- regmatches(textrefp$text, matches) |>
     sapply(paste, collapse = ";")
 
-  citation_table <- textrefp[textrefp$id != "", ]
+  citation_table <- textrefp[textrefp$bib_id != "", ]
   citation_table$text <- lapply(citation_table$text, xml2::read_html) |>
     sapply(xml2::xml_text)
 
   citation_table <- citation_table |>
-    tidyr::separate_longer_delim("id", delim = ";")
+    tidyr::separate_longer_delim("bib_id", delim = ";")
 
 
   return(list(
     references = ref_table,
-    citations = citation_table[, c("id", "text")]
+    citations = citation_table[, c("bib_id", "text")]
   ))
 }
 

@@ -7,7 +7,7 @@
 stats(text, ...)
 }
 \arguments{
-\item{text}{the search table (or list of scienceverse objects)}
+\item{text}{the search table (or list of scienceverse paper objects)}
 
 \item{...}{arguments to pass to statcheck()}
 }
@@ -18,7 +18,7 @@ a table of statistics
 Check Stats
 }
 \examples{
-filename <- system.file("grobid", "incest.xml", package="papercheck")
-study <- read_grobid(filename)
-stats(study)
+dir <- demofile()
+papers <- read_grobid(dir)
+stats(papers)
 }

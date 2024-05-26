@@ -9,7 +9,7 @@ gpt(
   query,
   context = "You are a scientist",
   text_col = "text",
-  group_by = "file",
+  group_by = "id",
   CHATGPT_KEY = Sys.getenv("CHATGPT_KEY"),
   gpt_model = "gpt-3.5-turbo-1106",
   chunk_size = 500,

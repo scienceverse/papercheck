@@ -5,7 +5,7 @@
 \title{Search text}
 \usage{
 search_text(
-  study,
+  paper,
   pattern = ".*",
   section = NULL,
   return = c("sentence", "paragraph", "section", "match"),
@@ -14,7 +14,7 @@ search_text(
 )
 }
 \arguments{
-\item{study}{a study object created by \code{read_grobid} or a list of study objects}
+\item{paper}{a paper object created by \code{read_grobid} or a list of paper objects}
 
 \item{pattern}{the regex pattern to search for}
 
@@ -30,11 +30,11 @@ search_text(
 a data frame of matches
 }
 \description{
-Search the text of a study or list of study objects. Also works on the table results of a \code{search_text()} call.
+Search the text of a paper or list of paper objects. Also works on the table results of a \code{search_text()} call.
 }
 \examples{
-filename <- system.file("grobid", "eyecolor.xml", package="papercheck")
-study <- read_grobid(filename)
+filename <- demofile("xml")[1]
+paper <- read_grobid(filename)
 
-search_text(study, "p\\\\s*(=|<)\\\\s*[0-9\\\\.]+", return = "match")
+search_text(paper, "p\\\\s*(=|<)\\\\s*[0-9\\\\.]+", return = "match")
 }

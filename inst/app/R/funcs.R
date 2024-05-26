@@ -22,8 +22,8 @@ debug_msg <- function(...) {
   if (is_local) {
     message(...)
     #} else {
-    list(...) %>%
-      toString() %>%
+    list(...) |>
+      toString() |>
       shinyjs::logjs()
   }
 }

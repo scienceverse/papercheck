@@ -50,7 +50,7 @@ site_down <- function(url, msg = "The website %s is not available", error = TRUE
 #'
 #' Concatenate tables across a list of scienceverse objects
 #'
-#' @param studies a list of scienceverse study objects
+#' @param papers a list of scienceverse study objects
 #' @param name_path a vector of names that get you to the table
 #'
 #' @return a merged table
@@ -58,24 +58,77 @@ site_down <- function(url, msg = "The website %s is not available", error = TRUE
 #'
 #' @examples
 #' grobid_dir <- system.file("grobid", package = "papercheck")
-#' studies <- read_grobid(grobid_dir)
-#' references <- concat_tables(studies, c("refs", "references"))
-concat_tables <- function(studies, name_path) {
-  if ("scivrs_study" %in% class(studies)) {
+#' papers <- read_grobid(grobid_dir)
+#' references <- concat_tables(papers, c("refs", "references"))
+concat_tables <- function(papers, name_path) {
+  if ("scivrs_paper" %in% class(papers)) {
     # single scienceverse object
-    studies <- list(studies)
+    papers <- list(papers)
   }
 
-  table_list <- studies
+  table_list <- papers
   for (name in name_path) {
     table_list <- lapply(table_list, `[[`, name)
   }
-  for (i in seq_along(studies)) {
-    table_list[[i]]$file <- studies[[i]]$info$filename
+  for (i in seq_along(papers)) {
+    x <- table_list[[i]]
+    if (is.data.frame(x) && nrow(x) > 0) {
+      table_list[[i]]$id <- papers[[i]]$info$filename
+    }
   }
 
   merged_table <- do.call(rbind, table_list)
   rownames(merged_table) <- NULL
 
   merged_table
+}
+
+
+#' Print Paper Object
+#'
+#' @param x The scivrs_paper list
+#' @param ... Additional parameters for print
+#'
+#' @export
+#' @keywords internal
+#'
+print.scivrs_paper <- function(x, ...) {
+  ft <- sprintf("%d rows", nrow(x$full_text))
+
+  ref <- sprintf("%d rows", nrow(x$references))
+
+  cite <- sprintf("%d rows", nrow(x$citations))
+
+  underline <- rep("-", nchar(x$name)) |> paste(collapse="")
+  txt <- sprintf("%s\n%s\n\n* Full Text: %s\n* References: %s\n* Citations: %s\n\n%s", x$name, underline, ft, ref, cite)
+
+  cat(txt)
+}
+
+
+#' Get demo files
+#'
+#' @param type whether to return the path to the demo directory, or demo XML or PDF files
+#'
+#' @return vector of paths
+#' @export
+#'
+#' @examples
+#' demofile()
+#' demofile("xml")
+#' demofile("pdf")
+demofile <- function(type = c("dir", "xml", "pdf")) {
+  grobid_dir <- system.file("grobid", package="papercheck")
+
+  type <- match.arg(type)
+
+  if (type == "dir") return(grobid_dir)
+  if (type == "xml") {
+    pattern <- "\\.xml$"
+  } else if (type == "pdf") {
+    pattern <- "\\.pdf$"
+  }
+
+  files <- list.files(grobid_dir, pattern, full.names = TRUE)
+  return(files)
 }

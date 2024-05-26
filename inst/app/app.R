@@ -574,7 +574,7 @@ server <- function(input, output, session) {
 
   # .app.study ----
   if (exists(".app.study.") && !is.null(.app.study.)) {
-    if ("scivrs_study" %in% class(.app.study.)) {
+    if ("scivrs_paper" %in% class(.app.study.)) {
       .app.study. <- list(.app.study.)
       names(.app.study.) <- .app.study.[[1]]$name
     }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/read_grobid.R
 \name{read_grobid}
 \alias{read_grobid}
-\title{Get study from grobid XML file}
+\title{Get paper from grobid XML file}
 \usage{
 read_grobid(filename)
 }
@@ -10,13 +10,13 @@ read_grobid(filename)
 \item{filename}{the path to the XML file, a vector of file paths, or the path to a directory containing XML files}
 }
 \value{
-A study object with class scivrs_stud, or. list of study objects
+A paper object with class scivrs_paper, or. list of paper objects
 }
 \description{
 You can create a grobid XML file from a paper PDF at https://huggingface.co/spaces/kermitt2/grobid.
 }
 \examples{
-filename <- system.file("grobid", "eyecolor.xml", package="papercheck")
-study <- read_grobid(filename)
+filename <- demofile("xml")[1]
+paper <- read_grobid(filename)
 
 }

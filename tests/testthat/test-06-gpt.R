@@ -45,7 +45,7 @@ test_that("max calls", {
 
   text <- data.frame(
     text = 1:20,
-    file = 1:20
+    id = 1:20
   )
   expect_error(gpt(text, "summarise"),
                "This would make 20 calls to chatGPT")
@@ -59,8 +59,7 @@ test_that("basic", {
   skip_if_offline(host = "chat.openai.com")
   skip_if(Sys.getenv("CHATGPT_KEY") == "", message = "Requires ChatGPT API key")
 
-  filename <- system.file("grobid", package = "papercheck")
-  s <- read_grobid(filename)
+  s <- read_grobid(demofile())
   text <- search_text(s, section = "method", return = "section")
   query <- "What is the sample size of this study (e.g., the number of participants tested?"
   context <- "Please give your answer exactly like this: 'XXX (XX men, XX women)', with the total number first, then any subsets in parentheses."
@@ -72,12 +71,12 @@ test_that("basic", {
   expect_equal(res$context[[1]], context)
   # expect_equal(res$answer[[1]], "300 (150 men, 150 women)")
   # expect_equal(res$answer[[2]], "1998 (666 men, 1332 women)")
-  expect_equal(res$file, c("eyecolor.xml", "incest.xml"))
+  expect_equal(res$id, c("eyecolor.xml", "incest.xml"))
 
   ## text vector
-  text_vector <- text$text[text$file == text$file[[1]]]
+  text_vector <- text$text[text$id == text$id[[1]]]
   expect_message( res2 <- gpt(text_vector, query, context) )
-  expect_equal(names(res2), c("file", "answer", "cost"))
+  expect_equal(names(res2), c("id", "answer", "cost"))
   expect_equal(res2$answer[[1]], res$answer[[1]])
 })
 
@@ -87,16 +86,15 @@ test_that("multiple group by", {
   skip_if_offline(host = "chat.openai.com")
   skip_if(Sys.getenv("CHATGPT_KEY") == "", message = "Requires ChatGPT API key")
 
-  filename <- system.file("grobid", package = "papercheck") |>
-    list.files("\\.xml", full.names = TRUE)
+  filename <- demofile("xml")
   s <- read_grobid(filename[1:2])
   text <- search_text(s, return = "section", section = c("method", "results"))
-  groups <- dplyr::summarise(text, .by = c(file, section))
+  groups <- dplyr::summarise(text, .by = c(id, section))
 
   query <- "Summarise this text"
   context <- "Answer in one short sentence, for a scientific audience"
-  expect_message( res <- gpt(text, query, context, group_by = c("file", "section")) )
-  expect_equal(names(res), c("file", "section", "answer", "cost"))
+  expect_message( res <- gpt(text, query, context, group_by = c("id", "section")) )
+  expect_equal(names(res), c("id", "section", "answer", "cost"))
   expect_equal(res[, 1:2], groups)
 })
 

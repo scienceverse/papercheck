@@ -15,7 +15,7 @@
 #'
 papercheck_app <- function(study = NULL, quiet = FALSE, ...) {
   # check study
-  if (!is.null(study) && !"scivrs_study" %in% class(study)) {
+  if (!is.null(study) && !"scivrs_paper" %in% class(study)) {
     stop("The argument study must be a study object created by scienceverse, or NULL to create it entirely in the app.")
   }
 

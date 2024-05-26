@@ -12,7 +12,7 @@
   "code": {
     "packages": ["papercheck", "dplyr"],
     "code": [
-      "refs <- concat_tables(study, c('refs', 'references'))",
+      "refs <- concat_tables(paper, c('references'))",
       "semi_join(refs, retractionwatch, by = 'doi')"
     ]
   }

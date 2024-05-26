@@ -25,32 +25,86 @@ devtools::install_github("scienceverse/papercheck")
 library(papercheck)
 ```
 
+Convert a PDF to grobid XML format, then read it in as a scienceverse
+paper object.
+
 ``` r
-grobid_dir <- system.file("grobid", package="papercheck")
-filename <- file.path(grobid_dir, "incest.xml")
-s <- read_grobid(filename)
-pattern <- "[^\\s\\(\\)]+\\s*(=|<)\\s*[0-9\\.-]+"
-text <- search_text(s, pattern, return = "match", perl = TRUE)
+pdf <- demofile("pdf")[2]
+grobid <- pdf2grobid(pdf)
+paper <- read_grobid(grobid)
 ```
 
-| text              | section  | header   | div |   p |   s | file       |
+Search the returned text. The regex pattern below searches for text that
+looks like statistical values (e.g., `N=313` or `p = 0.17`).
+
+``` r
+pattern <- "[^\\s\\(\\)]+\\s*(=|<)\\s*[0-9\\.-]+"
+text <- search_text(paper, pattern, 
+                    return = "match", 
+                    perl = TRUE)
+```
+
+| text              | section  | header   | div |   p |   s | id         |
 |:------------------|:---------|:---------|----:|----:|----:|:-----------|
 | N=313             | abstract | Abstract |   0 |   1 |   4 | incest.xml |
+| N=269             | abstract | Abstract |   0 |   1 |   4 | incest.xml |
 | Estimate = 0.285  | results  | Results  |   5 |   1 |   1 | incest.xml |
+| p = 0.019         | results  | Results  |   5 |   1 |   1 | incest.xml |
 | Estimate = -0.559 | results  | Results  |   5 |   2 |   1 | incest.xml |
+| p = 0.005         | results  | Results  |   5 |   2 |   1 | incest.xml |
 | Estimate = 0.179  | results  | Results  |   5 |   2 |   2 | incest.xml |
+| p = 0.044         | results  | Results  |   5 |   2 |   2 | incest.xml |
+| Estimate = -0.38  | results  | Results  |   5 |   2 |   2 | incest.xml |
+| p = 0.055         | results  | Results  |   5 |   2 |   2 | incest.xml |
 | Estimate = -0.268 | results  | Results  |   5 |   2 |   3 | incest.xml |
+| p = 0.17          | results  | Results  |   5 |   2 |   3 | incest.xml |
 
 ## Batch Processing
 
 ``` r
-# read in all the XML files in this directory
-studies <- read_grobid(grobid_dir)
+# read in all the XML files in the demo directory
+grobid_dir <- demofile()
+papers <- read_grobid(grobid_dir)
 
 # select paragraphs in the intros containing the text "hypothesi"
-hypotheses <- search_text(studies, "hypothesi", 
+hypotheses <- search_text(papers, "hypothesi", 
                           section = "intro", 
                           return = "paragraph")
+```
+
+## Modules
+
+``` r
+module_list()
+#>              name                 title type
+#> 1    ai-summarise    Summarise Sections   ai
+#> 2    all-p-values     List All P-Values text
+#> 3     imprecise-p    Imprecise P-Values code
+#> 4        marginal Marginal Significance text
+#> 5       osf-links       Check OSF Links code
+#> 6 retractionwatch       RetractionWatch code
+#>                                                                                                            path
+#> 1    /Library/Frameworks/R.framework/Versions/4.4-x86_64/Resources/library/papercheck/modules/ai-summarise.json
+#> 2    /Library/Frameworks/R.framework/Versions/4.4-x86_64/Resources/library/papercheck/modules/all-p-values.json
+#> 3     /Library/Frameworks/R.framework/Versions/4.4-x86_64/Resources/library/papercheck/modules/imprecise-p.json
+#> 4        /Library/Frameworks/R.framework/Versions/4.4-x86_64/Resources/library/papercheck/modules/marginal.json
+#> 5       /Library/Frameworks/R.framework/Versions/4.4-x86_64/Resources/library/papercheck/modules/osf-links.json
+#> 6 /Library/Frameworks/R.framework/Versions/4.4-x86_64/Resources/library/papercheck/modules/retractionwatch.json
+```
+
+``` r
+p <- module_run(papers, "all-p-values")
+
+head(p)
+#> # A tibble: 6 × 8
+#>   text      section header     div     p     s id           file        
+#>   <chr>     <chr>   <chr>    <dbl> <dbl> <int> <chr>        <chr>       
+#> 1 p = 0.012 intro   [div-01]     1     4     6 eyecolor.xml eyecolor.xml
+#> 2 p = 0.849 intro   [div-01]     1     4     7 eyecolor.xml eyecolor.xml
+#> 3 p = 0.019 intro   [div-01]     1     4     8 eyecolor.xml eyecolor.xml
+#> 4 p = 0.879 intro   [div-01]     1     4     9 eyecolor.xml eyecolor.xml
+#> 5 p = 0.266 intro   [div-01]     1     4    11 eyecolor.xml eyecolor.xml
+#> 6 p = 0.403 intro   [div-01]     1     4    13 eyecolor.xml eyecolor.xml
 ```
 
 ## Ask ChatGPT
@@ -58,10 +112,10 @@ hypotheses <- search_text(studies, "hypothesi",
 ``` r
 # ask chatGPT a question
 query <- "What is the hypothesis of this study?"
-gpt_hypo <- gpt(hypotheses, query, group_by = "file")
+gpt_hypo <- gpt(hypotheses, query, group_by = "id")
 ```
 
-| file         | answer                                                                                                                                                                                                 |     cost |
+| id           | answer                                                                                                                                                                                                 |     cost |
 |:-------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------:|
 | eyecolor.xml | The hypothesis of this study is to test the matching hypothesis, sex-linked heritable preference hypothesis, and positive sexual imprinting hypothesis in relation to eye color and partner selection. | 0.000612 |
 | incest.xml   | The hypothesis of this study is that humans possess adaptations to reduce inbreeding, and that the strong moral opposition to incest plays an important role in preventing inbreeding.                 | 0.000216 |
@@ -70,7 +124,7 @@ gpt_hypo <- gpt(hypotheses, query, group_by = "file")
 ## Check Stats
 
 ``` r
-statcheck <- stats(studies)
+statcheck <- stats(papers)
 
 check <- statcheck |>
   dplyr::filter(error == TRUE) |>
@@ -82,35 +136,3 @@ check <- statcheck |>
 | eyecolor.xml |  0.0286696 | Z = 2.188, p = 0.091         | TRUE  | TRUE           | FALSE             |
 | prereg.xml   |  0.0245666 | t(288.61) = -2.26, p = 0.012 | TRUE  | FALSE          | FALSE             |
 | prereg.xml   |  0.0040024 | t(305.34) = -2.90, p = 0.002 | TRUE  | FALSE          | FALSE             |
-
-``` r
-p <- check_p_values(studies)
-```
-
-| file         | p_comp | reported_p | p_decimals | text                                                                                                                                                                                                                                                                                                                                                                                               |
-|:-------------|:-------|-----------:|-----------:|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| eyecolor.xml | =      |      0.012 |          3 | = 0.322, z = 2.52, p = 0.012), but not male partners (B = –0.059, S.E.                                                                                                                                                                                                                                                                                                                             |
-| eyecolor.xml | =      |      0.849 |          3 | = 0.31, z = –0.19, p = 0.849) and paternal eye color significantly predicted the eye color of male partners (B = 0.75, S.E.                                                                                                                                                                                                                                                                        |
-| eyecolor.xml | =      |      0.019 |          3 | = 0.318, z = 2.355, p = 0.019), but not female partners (B = 0.049, S.E.                                                                                                                                                                                                                                                                                                                           |
-| eyecolor.xml | =      |      0.879 |          3 | = 0.32, z = 0.152, p = 0.879).                                                                                                                                                                                                                                                                                                                                                                     |
-| eyecolor.xml | =      |      0.266 |          3 | = 0.236, z = 1.113, p = 0.266).                                                                                                                                                                                                                                                                                                                                                                    |
-| eyecolor.xml | =      |      0.403 |          3 | = 0.313, z = 0.836, p = 0.403) more than women’s partners (B = 0.472, S.E.                                                                                                                                                                                                                                                                                                                         |
-| eyecolor.xml | =      |      0.130 |          2 | = 0.311, z = 1.515, p = 0.13) and paternal eye color did not predict the eye color of women’s partners (B = 0.309, S.E.                                                                                                                                                                                                                                                                            |
-| eyecolor.xml | =      |      0.337 |          3 | = 0.321, z = 0.96, p = 0.337) more than men’s partners (B = 0.511, S.E.                                                                                                                                                                                                                                                                                                                            |
-| eyecolor.xml | =      |      0.100 |          1 | = 0.311, z = 1.645, p = 0.1).                                                                                                                                                                                                                                                                                                                                                                      |
-| eyecolor.xml | =      |      0.029 |          3 | = 0.481, Z = 2.188, p = 0.029), while men’s female partners’ eye color was best predicted by maternal eye color (B = 1.072, S.E.                                                                                                                                                                                                                                                                   |
-| eyecolor.xml | =      |      0.027 |          3 | = 0.486, Z = 2.207, p = 0.027).                                                                                                                                                                                                                                                                                                                                                                    |
-| eyecolor.xml | =      |      0.076 |          3 | = 0.478, Z = 1.774, p = 0.076).                                                                                                                                                                                                                                                                                                                                                                    |
-| eyecolor.xml | =      |      0.091 |          3 | = 0.489, Z = 2.188, p = 0.091), maternal eye color was the only positive predictor in the first step of this analysis (B = 0.694, S.E.                                                                                                                                                                                                                                                             |
-| eyecolor.xml | =      |      0.196 |          3 | = 0.537, Z = 1.292, p = 0.196).                                                                                                                                                                                                                                                                                                                                                                    |
-| incest.xml   | =      |      0.019 |          3 | Our main, omnibus analysis showed a significant three-way interaction among incest type, participant sex, and sibling type (Estimate = 0.285, t(578.003) = 2.359, p = 0.019).                                                                                                                                                                                                                      |
-| incest.xml   | =      |      0.005 |          3 | Our analysis of moral wrongness scores for sibling incest scores showed a significant interaction between participant sex and sibling type (Estimate = -0.559, t(578) = -2.84, p = 0.005).                                                                                                                                                                                                         |
-| incest.xml   | =      |      0.044 |          3 | Women with brothers only tended to view sibling incest more negatively than did women with sisters only (Estimate = 0.179, t(452) = 2.022, p = 0.044) while men with brothers only tended to view sibling incest less negatively than did men with sisters only (Estimate = -0.38, t(126) = -1.933, p = 0.055).                                                                                    |
-| incest.xml   | =      |      0.055 |          3 | Women with brothers only tended to view sibling incest more negatively than did women with sisters only (Estimate = 0.179, t(452) = 2.022, p = 0.044) while men with brothers only tended to view sibling incest less negatively than did men with sisters only (Estimate = -0.38, t(126) = -1.933, p = 0.055).                                                                                    |
-| incest.xml   | =      |      0.170 |          2 | In contrast, our analysis of moral wrongness scores for parental incest scores showed no significant interaction between participant sex and sibling type (Estimate = -0.268, t(578) = -1.373, p = 0.17).                                                                                                                                                                                          |
-| prereg.xml   | \<     |      0.001 |          3 | The difference between measurements (M = 2.47, SD = 1.71) was large, t(86) = 13.47, p \< 0.001, Hedges’ g z = 1.43, 95% CI \[1.13;1.73\], see Figure 1.                                                                                                                                                                                                                                            |
-| prereg.xml   | \<     |      0.001 |          3 | The difference between measurements (M = 2.35, SD = 1.69) was analyzed with a dependent t-test, t(85) = 12.87, p \< 0.001, Hedges’ g z = 1.38, 95% CI \[1.08;1.67\].                                                                                                                                                                                                                               |
-| prereg.xml   | \<     |      0.001 |          3 | Four Welch’s independent t-tests using the TOST approach indicated statistical equivalence for the difference between conditions for the perceived benefits, t(311.65) = -3.45, p \< 0.001, costs, t(288.61) = -2.26, p = 0.012, how likely researchers were to pre-register, t(323.68) = -4.55, p \< 0.001, and percentage of studies they planned to pre-register, t(305.34) = -2.90, p = 0.002. |
-| prereg.xml   | =      |      0.012 |          3 | Four Welch’s independent t-tests using the TOST approach indicated statistical equivalence for the difference between conditions for the perceived benefits, t(311.65) = -3.45, p \< 0.001, costs, t(288.61) = -2.26, p = 0.012, how likely researchers were to pre-register, t(323.68) = -4.55, p \< 0.001, and percentage of studies they planned to pre-register, t(305.34) = -2.90, p = 0.002. |
-| prereg.xml   | \<     |      0.001 |          3 | Four Welch’s independent t-tests using the TOST approach indicated statistical equivalence for the difference between conditions for the perceived benefits, t(311.65) = -3.45, p \< 0.001, costs, t(288.61) = -2.26, p = 0.012, how likely researchers were to pre-register, t(323.68) = -4.55, p \< 0.001, and percentage of studies they planned to pre-register, t(305.34) = -2.90, p = 0.002. |
-| prereg.xml   | =      |      0.002 |          3 | Four Welch’s independent t-tests using the TOST approach indicated statistical equivalence for the difference between conditions for the perceived benefits, t(311.65) = -3.45, p \< 0.001, costs, t(288.61) = -2.26, p = 0.012, how likely researchers were to pre-register, t(323.68) = -4.55, p \< 0.001, and percentage of studies they planned to pre-register, t(305.34) = -2.90, p = 0.002. |

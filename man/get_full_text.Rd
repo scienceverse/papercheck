@@ -9,7 +9,7 @@ get_full_text(xml, id = NULL)
 \arguments{
 \item{xml}{The grobid XML}
 
-\item{id}{An ID for the file column}
+\item{id}{An ID for the paper}
 }
 \value{
 a data frame of the classified full text

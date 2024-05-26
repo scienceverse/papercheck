@@ -37,28 +37,28 @@ module_run <- function(study, module) {
 
 #' Run text module
 #'
-#' @param study the scienceverse study object (or list of object)
+#' @param paper the scienceverse paper object (or list of objects)
 #' @param args a list of arguments to `search_text()`
 #'
 #' @return data frame
 #' @keywords internal
-module_run_text <- function(study, args) {
-  args$study <- study
+module_run_text <- function(paper, args) {
+  args$paper <- paper
   do.call(search_text, args)
 }
 
 
 #' Run code module
 #'
-#' @param study the scienceverse study object (or list of object)
+#' @param paper the scienceverse paper object (or list of objects)
 #' @param args a list of arguments
 #'
 #' @return data frame
 #' @keywords internal
-module_run_code <- function(study, args) {
+module_run_code <- function(paper, args) {
   # make function in new environment
   envir <- new.env()
-  assign("study", study, envir = envir)
+  assign("paper", paper, envir = envir)
 
   code <- sprintf("library(%s)", args$packages) |>
     c(args$code) |>
@@ -72,12 +72,12 @@ module_run_code <- function(study, args) {
 
 #' Run machine learning module
 #'
-#' @param study the scienceverse study object (or list of object)
+#' @param paper the scienceverse paper object (or list of objects)
 #' @param args a list of arguments
 #'
 #' @return data frame
 #' @keywords internal
-module_run_ml <- function(study, args) {
+module_run_ml <- function(paper, args) {
   # TODO
   warning("The ML module type is not yet supported")
   data.frame()

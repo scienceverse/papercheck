@@ -11,6 +11,6 @@
   }],
   "ai": {
     "query": "Summarise this section briefly, in one sentence.",
-    "group_by": ["file", "section"]
+    "group_by": ["id", "section"]
   }
 }

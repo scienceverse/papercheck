@@ -1,5 +1,5 @@
 test_that("error", {
-  filename <- demofile("xml")[2]
+  filename <- demofiles("xml")[2]
   s <- read_grobid(filename)
 
   expect_true(is.function(search_text))
@@ -12,7 +12,7 @@ test_that("error", {
 })
 
 test_that("default", {
-  filename <- demofile("xml")[2]
+  filename <- demofiles("xml")[2]
   s <- read_grobid(filename)
 
   sig <- search_text(s, "significant")
@@ -34,7 +34,7 @@ test_that("default", {
 })
 
 test_that("table as first argument", {
-  filename <- demofile("xml")[2]
+  filename <- demofiles("xml")[2]
   s <- read_grobid(filename)
 
   sig <- search_text(s, "significant")
@@ -46,7 +46,7 @@ test_that("table as first argument", {
 })
 
 test_that("return", {
-  filename <- demofile("xml")[2]
+  filename <- demofiles("xml")[2]
   s <- read_grobid(filename)
 
   res_s1 <- search_text(s, "significant")
@@ -67,7 +67,7 @@ test_that("return", {
 })
 
 test_that("iteration", {
-  s <- read_grobid(demofile())
+  s <- read_grobid(demofiles())
 
   # search full text
   sig <- search_text(s, "significant")

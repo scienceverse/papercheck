@@ -34,12 +34,14 @@ The function `pdf2grobid()` can read PDF files and save them in the [TEI](https:
 
 If the server is unavailable, you can [use a grobid web interface](https://huggingface.co/spaces/kermitt2/grobid).
 
-```{r}
-grobid_dir <- system.file("grobid", package="papercheck")
-pdf_file <- file.path(grobid_dir, "incest.pdf")
+```{r, eval = FALSE}
+pdf_file <- demofiles("pdf")[[2]]
 xml_file <- pdf2grobid(pdf_file)
 ```
 
+```{r, inlcude = FALSE}
+xml_file <- demofiles("xml")[[2]]
+```
 
 
 ### Load from XML

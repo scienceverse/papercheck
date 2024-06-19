@@ -29,7 +29,7 @@ Convert a PDF to grobid XML format, then read it in as a scienceverse
 paper object.
 
 ``` r
-pdf <- demofile("pdf")[2]
+pdf <- demofiles("pdf")[2]
 grobid <- pdf2grobid(pdf)
 paper <- read_grobid(grobid)
 ```
@@ -63,48 +63,70 @@ text <- search_text(paper, pattern,
 
 ``` r
 # read in all the XML files in the demo directory
-grobid_dir <- demofile()
+grobid_dir <- demofiles()
 papers <- read_grobid(grobid_dir)
 
-# select paragraphs in the intros containing the text "hypothesi"
-hypotheses <- search_text(papers, "hypothesi", 
-                          section = "intro", 
-                          return = "paragraph")
+# select sentences in the intros containing the text "previous"
+previous <- search_text(papers, "previous", 
+                        section = "intro", 
+                        return = "sentence")
 ```
+
+``` r
+knitr::kable(previous)
+```
+
+| text                                                                                                                                                                                                                                                                                                                                                                                                                  | section | header       | div |   p |   s | id         |
+|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------|:-------------|----:|----:|----:|:-----------|
+| Royzman et al’s non-replication potentially calls into question the reliability of previously reported links between having an other-sex sibling and moral opposition to third-party sibling incest.                                                                                                                                                                                                                  | intro   | Introduction |   1 |   3 |   3 | incest.xml |
+| Previous research has shown that making cost-benefit analyses of using statistical approaches explicit can influence researchers’ attitudes.                                                                                                                                                                                                                                                                          | intro   | \[div-01\]   |   1 |   8 |   5 | prereg.xml |
+| When exploring difference in responses between previous experience with pre-registration, we see a clear trend where reasearchers who have pre-registered studies in their own research indicate pre-registration is more beneficial, and indicate higher a higher likelihood of pre-registering studies in the future, and higher percentage of studies for which they would consider pre-registering (see Table 2). | intro   | Attitude     |   3 |   7 |   1 | prereg.xml |
 
 ## Modules
 
+Papercheck is designed modularly, so you can add modules to check for
+anything. It comes with a set of pre-defined modules, and we hope people
+will share more modules.
+
+You can see the list of built-in modules with the function below.
+
 ``` r
 module_list()
-#>              name                 title type
-#> 1    ai-summarise    Summarise Sections   ai
-#> 2    all-p-values     List All P-Values text
-#> 3     imprecise-p    Imprecise P-Values code
-#> 4        marginal Marginal Significance text
-#> 5       osf-links       Check OSF Links code
-#> 6 retractionwatch       RetractionWatch code
-#>                                                                                                            path
-#> 1    /Library/Frameworks/R.framework/Versions/4.4-x86_64/Resources/library/papercheck/modules/ai-summarise.json
-#> 2    /Library/Frameworks/R.framework/Versions/4.4-x86_64/Resources/library/papercheck/modules/all-p-values.json
-#> 3     /Library/Frameworks/R.framework/Versions/4.4-x86_64/Resources/library/papercheck/modules/imprecise-p.json
-#> 4        /Library/Frameworks/R.framework/Versions/4.4-x86_64/Resources/library/papercheck/modules/marginal.json
-#> 5       /Library/Frameworks/R.framework/Versions/4.4-x86_64/Resources/library/papercheck/modules/osf-links.json
-#> 6 /Library/Frameworks/R.framework/Versions/4.4-x86_64/Resources/library/papercheck/modules/retractionwatch.json
+#>              name                     title type
+#> 1    ai-summarise        Summarise Sections   ai
+#> 2    all-p-values         List All P-Values text
+#> 3        all-urls             List All URLs text
+#> 4     imprecise-p        Imprecise P-Values code
+#> 5        marginal     Marginal Significance text
+#> 6       osf-check Check Status of OSF Links code
+#> 7 retractionwatch           RetractionWatch code
+#> 8  sample-size-ml               Sample Size   ml
+#>                                                                                                                                 path
+#> 1    /private/var/folders/sw/fftq36pn4wj66bj_pjvh5fpw0000gn/T/RtmpiP9OCw/temp_libpath2899724073b/papercheck/modules/ai-summarise.mod
+#> 2    /private/var/folders/sw/fftq36pn4wj66bj_pjvh5fpw0000gn/T/RtmpiP9OCw/temp_libpath2899724073b/papercheck/modules/all-p-values.mod
+#> 3        /private/var/folders/sw/fftq36pn4wj66bj_pjvh5fpw0000gn/T/RtmpiP9OCw/temp_libpath2899724073b/papercheck/modules/all-urls.mod
+#> 4     /private/var/folders/sw/fftq36pn4wj66bj_pjvh5fpw0000gn/T/RtmpiP9OCw/temp_libpath2899724073b/papercheck/modules/imprecise-p.mod
+#> 5        /private/var/folders/sw/fftq36pn4wj66bj_pjvh5fpw0000gn/T/RtmpiP9OCw/temp_libpath2899724073b/papercheck/modules/marginal.mod
+#> 6       /private/var/folders/sw/fftq36pn4wj66bj_pjvh5fpw0000gn/T/RtmpiP9OCw/temp_libpath2899724073b/papercheck/modules/osf-check.mod
+#> 7 /private/var/folders/sw/fftq36pn4wj66bj_pjvh5fpw0000gn/T/RtmpiP9OCw/temp_libpath2899724073b/papercheck/modules/retractionwatch.mod
+#> 8  /private/var/folders/sw/fftq36pn4wj66bj_pjvh5fpw0000gn/T/RtmpiP9OCw/temp_libpath2899724073b/papercheck/modules/sample-size-ml.mod
 ```
+
+To run a built-in module on a paper, you can reference it by name.
 
 ``` r
 p <- module_run(papers, "all-p-values")
 
-head(p)
-#> # A tibble: 6 × 8
-#>   text      section header     div     p     s id           file        
-#>   <chr>     <chr>   <chr>    <dbl> <dbl> <int> <chr>        <chr>       
-#> 1 p = 0.012 intro   [div-01]     1     4     6 eyecolor.xml eyecolor.xml
-#> 2 p = 0.849 intro   [div-01]     1     4     7 eyecolor.xml eyecolor.xml
-#> 3 p = 0.019 intro   [div-01]     1     4     8 eyecolor.xml eyecolor.xml
-#> 4 p = 0.879 intro   [div-01]     1     4     9 eyecolor.xml eyecolor.xml
-#> 5 p = 0.266 intro   [div-01]     1     4    11 eyecolor.xml eyecolor.xml
-#> 6 p = 0.403 intro   [div-01]     1     4    13 eyecolor.xml eyecolor.xml
+head(p$table)
+#> # A tibble: 6 × 7
+#>   text      section header     div     p     s id          
+#>   <chr>     <chr>   <chr>    <dbl> <dbl> <int> <chr>       
+#> 1 p = 0.012 intro   [div-01]     1     4     6 eyecolor.xml
+#> 2 p = 0.849 intro   [div-01]     1     4     7 eyecolor.xml
+#> 3 p = 0.019 intro   [div-01]     1     4     8 eyecolor.xml
+#> 4 p = 0.879 intro   [div-01]     1     4     9 eyecolor.xml
+#> 5 p = 0.266 intro   [div-01]     1     4    11 eyecolor.xml
+#> 6 p = 0.403 intro   [div-01]     1     4    13 eyecolor.xml
 ```
 
 ## Ask ChatGPT
@@ -128,10 +150,10 @@ statcheck <- stats(papers)
 
 check <- statcheck |>
   dplyr::filter(error == TRUE) |>
-  dplyr::select(file, computed_p:one_tailed_in_txt)
+  dplyr::select(id, computed_p:one_tailed_in_txt)
 ```
 
-| file         | computed_p | raw                          | error | decision_error | one_tailed_in_txt |
+| id           | computed_p | raw                          | error | decision_error | one_tailed_in_txt |
 |:-------------|-----------:|:-----------------------------|:------|:---------------|:------------------|
 | eyecolor.xml |  0.0286696 | Z = 2.188, p = 0.091         | TRUE  | TRUE           | FALSE             |
 | prereg.xml   |  0.0245666 | t(288.61) = -2.26, p = 0.012 | TRUE  | FALSE          | FALSE             |

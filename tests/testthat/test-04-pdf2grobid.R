@@ -1,7 +1,7 @@
 test_that("works", {
   expect_true(is.function(pdf2grobid))
 
-  filename <- demofile("xml")[2]
+  filename <- demofiles("xml")[2]
   expect_error(pdf2grobid(filename, grobid_url = "notawebsite"),
                "The grobid server notawebsite is not available")
 
@@ -13,7 +13,7 @@ test_that("works", {
 test_that("defaults", {
   skip_if_offline("grobid.work.abed.cloud")
 
-  filename <- demofile("pdf")[2]
+  filename <- demofiles("pdf")[2]
 
   xml <- pdf2grobid(filename, NULL)
   expect_s3_class(xml, "xml_document")
@@ -31,7 +31,7 @@ test_that("defaults", {
 test_that("batch", {
   skip_if_offline("grobid.work.abed.cloud")
 
-  grobid_dir <- demofile()
+  grobid_dir <- demofiles()
 
   file.remove(list.files(tempdir(), "\\.xml", full.names = TRUE))
   xml_files <- pdf2grobid(grobid_dir, tempdir())
@@ -40,7 +40,7 @@ test_that("batch", {
   expect_equal(actual, expected)
   file.remove(list.files(tempdir(), "\\.xml", full.names = TRUE))
 
-  filenames <- demofile("pdf")
+  filenames <- demofiles("pdf")
   xml_files <- pdf2grobid(filenames[2:3], tempdir())
   actual <- list.files(tempdir(), "\\.xml")
   expected <- list.files(grobid_dir, "\\.xml")[2:3]

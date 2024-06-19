@@ -7,7 +7,7 @@
 #' @export
 #'
 #' @examples
-#' dir <- demofile()
+#' dir <- demofiles()
 #' papers <- read_grobid(dir)
 #' stats(papers)
 stats <- function(text, ...) {

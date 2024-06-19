@@ -8,8 +8,7 @@
 #' @keywords internal
 #'
 message <- function (..., domain = NULL, appendLF = TRUE) {
-  #if (is.null(knitr::opts_knit$get('rmarkdown.pandoc.to'))) {
-  if (options("scienceverse.verbose")[[1]]) {
+  if (getOption("scienceverse.verbose")) {
     if (interactive()) {
       # not in knitr environment
       base::message("\033[32m", ..., "\033[39m",
@@ -93,14 +92,14 @@ concat_tables <- function(papers, name_path) {
 #' @keywords internal
 #'
 print.scivrs_paper <- function(x, ...) {
-  ft <- sprintf("%d rows", nrow(x$full_text))
+  ft <- sprintf("%d sentences", nrow(x$full_text))
 
-  ref <- sprintf("%d rows", nrow(x$references))
+  ref <- sprintf("%d references", nrow(x$references))
 
-  cite <- sprintf("%d rows", nrow(x$citations))
+  cite <- sprintf("%d citations", nrow(x$citations))
 
   underline <- rep("-", nchar(x$name)) |> paste(collapse="")
-  txt <- sprintf("%s\n%s\n\n* Full Text: %s\n* References: %s\n* Citations: %s\n\n%s", x$name, underline, ft, ref, cite)
+  txt <- sprintf("%s\n%s\n%s\n\n* Full Text: %s\n* References: %s\n* Citations: %s\n\n", underline, x$name, underline, ft, ref, cite)
 
   cat(txt)
 }
@@ -114,10 +113,10 @@ print.scivrs_paper <- function(x, ...) {
 #' @export
 #'
 #' @examples
-#' demofile()
-#' demofile("xml")
-#' demofile("pdf")
-demofile <- function(type = c("dir", "xml", "pdf")) {
+#' demofiles()
+#' demofiles("xml")
+#' demofiles("pdf")
+demofiles <- function(type = c("dir", "xml", "pdf")) {
   grobid_dir <- system.file("grobid", package="papercheck")
 
   type <- match.arg(type)

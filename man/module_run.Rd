@@ -4,10 +4,10 @@
 \alias{module_run}
 \title{Run a module}
 \usage{
-module_run(study, module)
+module_run(paper, module)
 }
 \arguments{
-\item{study}{a study object or a list of study objects}
+\item{paper}{a paper object or a list of paper objects}
 
 \item{module}{the name of a module or path to a module to run on this object}
 }

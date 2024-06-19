@@ -2,7 +2,7 @@
 #'
 #' Search the text of a paper or list of paper objects. Also works on the table results of a `search_text()` call.
 #'
-#' @param paper a paper object created by `read_grobid` or a list of paper objects
+#' @param paper a paper object or a list of paper objects
 #' @param pattern the regex pattern to search for
 #' @param section the section(s) to search in
 #' @param return the kind of text to return, the full sentence, paragraph, or section that the text is in, or just the (regex) match
@@ -13,7 +13,7 @@
 #' @export
 #'
 #' @examples
-#' filename <- demofile("xml")[1]
+#' filename <- demofiles("xml")[1]
 #' paper <- read_grobid(filename)
 #'
 #' search_text(paper, "p\\s*(=|<)\\s*[0-9\\.]+", return = "match")

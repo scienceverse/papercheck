@@ -7,6 +7,11 @@ from langchain_community.vectorstores import FAISS
 from langchain_core.prompts import ChatPromptTemplate, PromptTemplate
 from langchain_community.callbacks import get_openai_callback
 
+# https://stackoverflow.com/questions/53014306/error-15-initializing-libiomp5-dylib-but-found-libiomp5-dylib-already-initial
+import os
+os.environ['KMP_DUPLICATE_LIB_OK']='True'
+
+
 def py_gpt(file, query, context, APIKEY, gpt_model = "gpt-3.5-turbo-1106", chunk_size = 500, chunk_overlap = 100, temperature = 0):
   # Loads personal texts for model
   loader = TextLoader(file)

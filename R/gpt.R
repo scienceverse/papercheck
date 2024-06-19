@@ -86,7 +86,7 @@ gpt <- function(text, query,
     pb$tick(0)
   }
 
-  # #load/check python stuff ----
+  # load/check python stuff ----
   if (!reticulate::py_available(TRUE)) {
     stop("You need to install Python to use the chatGPT functions")
   }

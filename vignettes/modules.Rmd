@@ -1,0 +1,45 @@
+---
+title: "Modules"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Modules}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(papercheck)
+```
+
+Modules are user-created patterns for checking a paper or set of papers. They can be one of four types, using four search strategies.
+
+## Text Search
+
+For checks that can be done with a simple text search, you can create a module that provides the arguments to the `search_text()` function, along with report output.
+
+```
+
+
+```
+
+## Code
+
+
+## Machine Learning
+
+
+## Generative AI
+
+
+
+
+
+
+

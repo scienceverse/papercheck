@@ -337,7 +337,7 @@ server <- function(input, output, session) {
 
   ### search_osf----
   observeEvent(input$search_osf, {
-    osf <- tryCatch( osf_check(text_table()),
+    osf <- tryCatch( module_run(text_table(), "osf_check"),
                      error = function(e) {
                        return(data.frame())
                      })

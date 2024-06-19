@@ -4,12 +4,14 @@
 \alias{module_run_ml}
 \title{Run machine learning module}
 \usage{
-module_run_ml(paper, args)
+module_run_ml(paper, args, module_dir = ".")
 }
 \arguments{
 \item{paper}{the scienceverse paper object (or list of objects)}
 
 \item{args}{a list of arguments}
+
+\item{module_dir}{the base directory for the module, in case resources are in files with relative paths}
 }
 \value{
 data frame

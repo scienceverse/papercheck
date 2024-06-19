@@ -14,7 +14,7 @@ search_text(
 )
 }
 \arguments{
-\item{paper}{a paper object created by \code{read_grobid} or a list of paper objects}
+\item{paper}{a paper object or a list of paper objects}
 
 \item{pattern}{the regex pattern to search for}
 
@@ -33,7 +33,7 @@ a data frame of matches
 Search the text of a paper or list of paper objects. Also works on the table results of a \code{search_text()} call.
 }
 \examples{
-filename <- demofile("xml")[1]
+filename <- demofiles("xml")[1]
 paper <- read_grobid(filename)
 
 search_text(paper, "p\\\\s*(=|<)\\\\s*[0-9\\\\.]+", return = "match")

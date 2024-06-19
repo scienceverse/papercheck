@@ -4,10 +4,10 @@
 \alias{module_run_ai}
 \title{Run AI module}
 \usage{
-module_run_ai(study, args)
+module_run_ai(paper, args)
 }
 \arguments{
-\item{study}{the scienceverse study object (or list of object)}
+\item{paper}{the scienceverse paper object (or list of object)}
 
 \item{args}{a list of argumentsto \code{gpt()}}
 }

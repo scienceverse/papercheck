@@ -8,7 +8,7 @@
 #' @export
 #'
 #' @examples
-#' filename <- demofile("xml")[1]
+#' filename <- demofiles("xml")[1]
 #' paper <- read_grobid(filename)
 #'
 read_grobid <- function(filename) {
@@ -46,7 +46,7 @@ read_grobid <- function(filename) {
 
     names(p) <- unique_names
     for (un in unique_names) {
-      p[[un]]$full_text$file <- un
+      p[[un]]$full_text$id <- un
     }
     return(p)
   } else if (dir.exists(filename)) {
@@ -70,8 +70,9 @@ read_grobid <- function(filename) {
   # set up paper object ----
   p <- paper()
 
-  p$name <- basename(filename)
-  p$info$filename <- basename(filename)
+  p$name <- basename(filename) |>
+    gsub("\\.(xml|pdf)$", "", x = _, ignore.case = TRUE)
+  p$info$filename <- filename
   p$info$title <- xml2::xml_find_first(xml, "//titleStmt //title") |>
     xml2::xml_text()
   p$info$description <-  xml2::xml_find_all(xml, "//abstract //p") |>

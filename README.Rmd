@@ -37,11 +37,17 @@ library(papercheck)
 
 Convert a PDF to grobid XML format, then read it in as a scienceverse paper object.
 
-```{r}
-pdf <- demofile("pdf")[2]
+```{r, eval = FALSE}
+pdf <- demofiles("pdf")[2]
 grobid <- pdf2grobid(pdf)
 paper <- read_grobid(grobid)
 ```
+
+```{r, include = FALSE}
+# load paper without need for grobid server online
+paper <- demofiles("xml")[2] |> read_grobid()
+```
+
 
 Search the returned text. The regex pattern below searches for text that looks like statistical values (e.g., `N=313` or `p = 0.17`).
 
@@ -61,24 +67,35 @@ knitr::kable(text)
 
 ```{r}
 # read in all the XML files in the demo directory
-grobid_dir <- demofile()
+grobid_dir <- demofiles()
 papers <- read_grobid(grobid_dir)
 
-# select paragraphs in the intros containing the text "hypothesi"
-hypotheses <- search_text(papers, "hypothesi", 
-                          section = "intro", 
-                          return = "paragraph")
+# select sentences in the intros containing the text "previous"
+previous <- search_text(papers, "previous", 
+                        section = "intro", 
+                        return = "sentence")
 ```
+
+```{r}
+knitr::kable(previous)
+```
+
 ## Modules
+
+Papercheck is designed modularly, so you can add modules to check for anything. It comes with a set of pre-defined modules, and we hope people will share more modules.
+
+You can see the list of built-in modules with the function below.
 
 ```{r}
 module_list()
 ```
 
+To run a built-in module on a paper, you can reference it by name.
+
 ```{r}
 p <- module_run(papers, "all-p-values")
 
-head(p)
+head(p$table)
 ```
 
 
@@ -107,7 +124,7 @@ statcheck <- stats(papers)
 
 check <- statcheck |>
   dplyr::filter(error == TRUE) |>
-  dplyr::select(file, computed_p:one_tailed_in_txt)
+  dplyr::select(id, computed_p:one_tailed_in_txt)
 ```
 
 ```{r, echo = FALSE}

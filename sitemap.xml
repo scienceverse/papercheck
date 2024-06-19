@@ -13,6 +13,9 @@
     <loc>https://scienceverse.github.io/papercheck/articles/index.html</loc>
   </url>
   <url>
+    <loc>https://scienceverse.github.io/papercheck/articles/modules.html</loc>
+  </url>
+  <url>
     <loc>https://scienceverse.github.io/papercheck/articles/papercheck.html</loc>
   </url>
   <url>
@@ -28,7 +31,7 @@
     <loc>https://scienceverse.github.io/papercheck/reference/crossref.html</loc>
   </url>
   <url>
-    <loc>https://scienceverse.github.io/papercheck/reference/demofile.html</loc>
+    <loc>https://scienceverse.github.io/papercheck/reference/demofiles.html</loc>
   </url>
   <url>
     <loc>https://scienceverse.github.io/papercheck/reference/get_authors.html</loc>
@@ -49,6 +52,9 @@
     <loc>https://scienceverse.github.io/papercheck/reference/message.html</loc>
   </url>
   <url>
+    <loc>https://scienceverse.github.io/papercheck/reference/ml.html</loc>
+  </url>
+  <url>
     <loc>https://scienceverse.github.io/papercheck/reference/module_list.html</loc>
   </url>
   <url>
@@ -67,9 +73,6 @@
     <loc>https://scienceverse.github.io/papercheck/reference/module_run_text.html</loc>
   </url>
   <url>
-    <loc>https://scienceverse.github.io/papercheck/reference/osf_check.html</loc>
-  </url>
-  <url>
     <loc>https://scienceverse.github.io/papercheck/reference/paper.html</loc>
   </url>
   <url>
@@ -86,6 +89,9 @@
   </url>
   <url>
     <loc>https://scienceverse.github.io/papercheck/reference/read_grobid_xml.html</loc>
+  </url>
+  <url>
+    <loc>https://scienceverse.github.io/papercheck/reference/report.html</loc>
   </url>
   <url>
     <loc>https://scienceverse.github.io/papercheck/reference/retractionwatch.html</loc>

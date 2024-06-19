@@ -54,6 +54,12 @@
 <li class="nav-item">
   <a class="nav-link" href="reference/index.html">Reference</a>
 </li>
+<li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="articles/modules.html">Modules</a>
+  </div>
+</li>
       </ul>
 <form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="search.json" id="search-input" placeholder="Search for" autocomplete="off">
@@ -96,7 +102,7 @@
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/debruine/papercheck" class="external-link">papercheck</a></span><span class="op">)</span></span></code></pre></div>
 <p>Convert a PDF to grobid XML format, then read it in as a scienceverse paper object.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">pdf</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/demofile.html">demofile</a></span><span class="op">(</span><span class="st">"pdf"</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span></span>
+<code class="sourceCode R"><span><span class="va">pdf</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/demofiles.html">demofiles</a></span><span class="op">(</span><span class="st">"pdf"</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span></span>
 <span><span class="va">grobid</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/pdf2grobid.html">pdf2grobid</a></span><span class="op">(</span><span class="va">pdf</span><span class="op">)</span></span>
 <span><span class="va">paper</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/read_grobid.html">read_grobid</a></span><span class="op">(</span><span class="va">grobid</span><span class="op">)</span></span></code></pre></div>
 <p>Search the returned text. The regex pattern below searches for text that looks like statistical values (e.g., <code>N=313</code> or <code>p = 0.17</code>).</p>
@@ -241,51 +247,109 @@
 </h2>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># read in all the XML files in the demo directory</span></span>
-<span><span class="va">grobid_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/demofile.html">demofile</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">grobid_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/demofiles.html">demofiles</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">papers</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/read_grobid.html">read_grobid</a></span><span class="op">(</span><span class="va">grobid_dir</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># select paragraphs in the intros containing the text "hypothesi"</span></span>
-<span><span class="va">hypotheses</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/search_text.html">search_text</a></span><span class="op">(</span><span class="va">papers</span>, <span class="st">"hypothesi"</span>, </span>
-<span>                          section <span class="op">=</span> <span class="st">"intro"</span>, </span>
-<span>                          return <span class="op">=</span> <span class="st">"paragraph"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co"># select sentences in the intros containing the text "previous"</span></span>
+<span><span class="va">previous</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/search_text.html">search_text</a></span><span class="op">(</span><span class="va">papers</span>, <span class="st">"previous"</span>, </span>
+<span>                        section <span class="op">=</span> <span class="st">"intro"</span>, </span>
+<span>                        return <span class="op">=</span> <span class="st">"sentence"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">previous</span><span class="op">)</span></span></code></pre></div>
+<table style="width:100%;" class="table">
+<colgroup>
+<col width="89%">
+<col width="1%">
+<col width="3%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="2%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">text</th>
+<th align="left">section</th>
+<th align="left">header</th>
+<th align="right">div</th>
+<th align="right">p</th>
+<th align="right">s</th>
+<th align="left">id</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">Royzman et al’s non-replication potentially calls into question the reliability of previously reported links between having an other-sex sibling and moral opposition to third-party sibling incest.</td>
+<td align="left">intro</td>
+<td align="left">Introduction</td>
+<td align="right">1</td>
+<td align="right">3</td>
+<td align="right">3</td>
+<td align="left">incest.xml</td>
+</tr>
+<tr class="even">
+<td align="left">Previous research has shown that making cost-benefit analyses of using statistical approaches explicit can influence researchers’ attitudes.</td>
+<td align="left">intro</td>
+<td align="left">[div-01]</td>
+<td align="right">1</td>
+<td align="right">8</td>
+<td align="right">5</td>
+<td align="left">prereg.xml</td>
+</tr>
+<tr class="odd">
+<td align="left">When exploring difference in responses between previous experience with pre-registration, we see a clear trend where reasearchers who have pre-registered studies in their own research indicate pre-registration is more beneficial, and indicate higher a higher likelihood of pre-registering studies in the future, and higher percentage of studies for which they would consider pre-registering (see Table 2).</td>
+<td align="left">intro</td>
+<td align="left">Attitude</td>
+<td align="right">3</td>
+<td align="right">7</td>
+<td align="right">1</td>
+<td align="left">prereg.xml</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="section level2">
 <h2 id="modules">Modules<a class="anchor" aria-label="anchor" href="#modules"></a>
 </h2>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/module_list.html">module_list</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;              name                 title type</span></span>
-<span><span class="co">#&gt; 1    ai-summarise    Summarise Sections   ai</span></span>
-<span><span class="co">#&gt; 2    all-p-values     List All P-Values text</span></span>
-<span><span class="co">#&gt; 3     imprecise-p    Imprecise P-Values code</span></span>
-<span><span class="co">#&gt; 4        marginal Marginal Significance text</span></span>
-<span><span class="co">#&gt; 5       osf-links       Check OSF Links code</span></span>
-<span><span class="co">#&gt; 6 retractionwatch       RetractionWatch code</span></span>
-<span><span class="co">#&gt;                                                                                                            path</span></span>
-<span><span class="co">#&gt; 1    /Library/Frameworks/R.framework/Versions/4.4-x86_64/Resources/library/papercheck/modules/ai-summarise.json</span></span>
-<span><span class="co">#&gt; 2    /Library/Frameworks/R.framework/Versions/4.4-x86_64/Resources/library/papercheck/modules/all-p-values.json</span></span>
-<span><span class="co">#&gt; 3     /Library/Frameworks/R.framework/Versions/4.4-x86_64/Resources/library/papercheck/modules/imprecise-p.json</span></span>
-<span><span class="co">#&gt; 4        /Library/Frameworks/R.framework/Versions/4.4-x86_64/Resources/library/papercheck/modules/marginal.json</span></span>
-<span><span class="co">#&gt; 5       /Library/Frameworks/R.framework/Versions/4.4-x86_64/Resources/library/papercheck/modules/osf-links.json</span></span>
-<span><span class="co">#&gt; 6 /Library/Frameworks/R.framework/Versions/4.4-x86_64/Resources/library/papercheck/modules/retractionwatch.json</span></span></code></pre></div>
+<p>Papercheck is designed modularly, so you can add modules to check for anything. It comes with a set of pre-defined modules, and we hope people will share more modules.</p>
+<p>You can see the list of built-in modules with the function below.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/module_list.html">module_list</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt;              name                     title type</span></span>
+<span><span class="co">#&gt; 1    ai-summarise        Summarise Sections   ai</span></span>
+<span><span class="co">#&gt; 2    all-p-values         List All P-Values text</span></span>
+<span><span class="co">#&gt; 3        all-urls             List All URLs text</span></span>
+<span><span class="co">#&gt; 4     imprecise-p        Imprecise P-Values code</span></span>
+<span><span class="co">#&gt; 5        marginal     Marginal Significance text</span></span>
+<span><span class="co">#&gt; 6       osf-check Check Status of OSF Links code</span></span>
+<span><span class="co">#&gt; 7 retractionwatch           RetractionWatch code</span></span>
+<span><span class="co">#&gt; 8  sample-size-ml               Sample Size   ml</span></span>
+<span><span class="co">#&gt;                                                                                                                                 path</span></span>
+<span><span class="co">#&gt; 1    /private/var/folders/sw/fftq36pn4wj66bj_pjvh5fpw0000gn/T/RtmpiP9OCw/temp_libpath2899724073b/papercheck/modules/ai-summarise.mod</span></span>
+<span><span class="co">#&gt; 2    /private/var/folders/sw/fftq36pn4wj66bj_pjvh5fpw0000gn/T/RtmpiP9OCw/temp_libpath2899724073b/papercheck/modules/all-p-values.mod</span></span>
+<span><span class="co">#&gt; 3        /private/var/folders/sw/fftq36pn4wj66bj_pjvh5fpw0000gn/T/RtmpiP9OCw/temp_libpath2899724073b/papercheck/modules/all-urls.mod</span></span>
+<span><span class="co">#&gt; 4     /private/var/folders/sw/fftq36pn4wj66bj_pjvh5fpw0000gn/T/RtmpiP9OCw/temp_libpath2899724073b/papercheck/modules/imprecise-p.mod</span></span>
+<span><span class="co">#&gt; 5        /private/var/folders/sw/fftq36pn4wj66bj_pjvh5fpw0000gn/T/RtmpiP9OCw/temp_libpath2899724073b/papercheck/modules/marginal.mod</span></span>
+<span><span class="co">#&gt; 6       /private/var/folders/sw/fftq36pn4wj66bj_pjvh5fpw0000gn/T/RtmpiP9OCw/temp_libpath2899724073b/papercheck/modules/osf-check.mod</span></span>
+<span><span class="co">#&gt; 7 /private/var/folders/sw/fftq36pn4wj66bj_pjvh5fpw0000gn/T/RtmpiP9OCw/temp_libpath2899724073b/papercheck/modules/retractionwatch.mod</span></span>
+<span><span class="co">#&gt; 8  /private/var/folders/sw/fftq36pn4wj66bj_pjvh5fpw0000gn/T/RtmpiP9OCw/temp_libpath2899724073b/papercheck/modules/sample-size-ml.mod</span></span></code></pre></div>
+<p>To run a built-in module on a paper, you can reference it by name.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/module_run.html">module_run</a></span><span class="op">(</span><span class="va">papers</span>, <span class="st">"all-p-values"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 6 × 8</span></span>
-<span><span class="co">#&gt;   text      section header     div     p     s id           file        </span></span>
-<span><span class="co">#&gt;   &lt;chr&gt;     &lt;chr&gt;   &lt;chr&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt; &lt;chr&gt;        &lt;chr&gt;       </span></span>
-<span><span class="co">#&gt; 1 p = 0.012 intro   [div-01]     1     4     6 eyecolor.xml eyecolor.xml</span></span>
-<span><span class="co">#&gt; 2 p = 0.849 intro   [div-01]     1     4     7 eyecolor.xml eyecolor.xml</span></span>
-<span><span class="co">#&gt; 3 p = 0.019 intro   [div-01]     1     4     8 eyecolor.xml eyecolor.xml</span></span>
-<span><span class="co">#&gt; 4 p = 0.879 intro   [div-01]     1     4     9 eyecolor.xml eyecolor.xml</span></span>
-<span><span class="co">#&gt; 5 p = 0.266 intro   [div-01]     1     4    11 eyecolor.xml eyecolor.xml</span></span>
-<span><span class="co">#&gt; 6 p = 0.403 intro   [div-01]     1     4    13 eyecolor.xml eyecolor.xml</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">p</span><span class="op">$</span><span class="va">table</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 6 × 7</span></span>
+<span><span class="co">#&gt;   text      section header     div     p     s id          </span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;     &lt;chr&gt;   &lt;chr&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt; &lt;chr&gt;       </span></span>
+<span><span class="co">#&gt; 1 p = 0.012 intro   [div-01]     1     4     6 eyecolor.xml</span></span>
+<span><span class="co">#&gt; 2 p = 0.849 intro   [div-01]     1     4     7 eyecolor.xml</span></span>
+<span><span class="co">#&gt; 3 p = 0.019 intro   [div-01]     1     4     8 eyecolor.xml</span></span>
+<span><span class="co">#&gt; 4 p = 0.879 intro   [div-01]     1     4     9 eyecolor.xml</span></span>
+<span><span class="co">#&gt; 5 p = 0.266 intro   [div-01]     1     4    11 eyecolor.xml</span></span>
+<span><span class="co">#&gt; 6 p = 0.403 intro   [div-01]     1     4    13 eyecolor.xml</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="ask-chatgpt">Ask ChatGPT<a class="anchor" aria-label="anchor" href="#ask-chatgpt"></a>
 </h2>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># ask chatGPT a question</span></span>
 <span><span class="va">query</span> <span class="op">&lt;-</span> <span class="st">"What is the hypothesis of this study?"</span></span>
 <span><span class="va">gpt_hypo</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/gpt.html">gpt</a></span><span class="op">(</span><span class="va">hypotheses</span>, <span class="va">query</span>, group_by <span class="op">=</span> <span class="st">"id"</span><span class="op">)</span></span></code></pre></div>
@@ -322,12 +386,12 @@
 <div class="section level2">
 <h2 id="check-stats">Check Stats<a class="anchor" aria-label="anchor" href="#check-stats"></a>
 </h2>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">statcheck</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/stats.html">stats</a></span><span class="op">(</span><span class="va">papers</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">check</span> <span class="op">&lt;-</span> <span class="va">statcheck</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">error</span> <span class="op">==</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">file</span>, <span class="va">computed_p</span><span class="op">:</span><span class="va">one_tailed_in_txt</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">computed_p</span><span class="op">:</span><span class="va">one_tailed_in_txt</span><span class="op">)</span></span></code></pre></div>
 <table style="width:100%;" class="table">
 <colgroup>
 <col width="14%">
@@ -338,7 +402,7 @@
 <col width="19%">
 </colgroup>
 <thead><tr class="header">
-<th align="left">file</th>
+<th align="left">id</th>
 <th align="right">computed_p</th>
 <th align="left">raw</th>
 <th align="left">error</th>

@@ -30,6 +30,12 @@
 <li class="active nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
+<li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="../articles/modules.html">Modules</a>
+  </div>
+</li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -76,20 +82,22 @@
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">module_list</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>              name                 title type</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1    ai-summarise    Summarise Sections   ai</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2    all-p-values     List All P-Values text</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3     imprecise-p    Imprecise P-Values code</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4        marginal Marginal Significance text</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5       osf-links       Check OSF Links code</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6 retractionwatch       RetractionWatch code</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                      path</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1    /home/runner/work/_temp/Library/papercheck/modules/ai-summarise.json</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2    /home/runner/work/_temp/Library/papercheck/modules/all-p-values.json</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3     /home/runner/work/_temp/Library/papercheck/modules/imprecise-p.json</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4        /home/runner/work/_temp/Library/papercheck/modules/marginal.json</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5       /home/runner/work/_temp/Library/papercheck/modules/osf-links.json</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6 /home/runner/work/_temp/Library/papercheck/modules/retractionwatch.json</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              name                     title type</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1    ai-summarise        Summarise Sections   ai</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2    all-p-values         List All P-Values text</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3        all-urls             List All URLs text</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4     imprecise-p        Imprecise P-Values code</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5        marginal     Marginal Significance text</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6       osf-check Check Status of OSF Links code</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7 retractionwatch           RetractionWatch code</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                     path</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1    /home/runner/work/_temp/Library/papercheck/modules/ai-summarise.mod</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2    /home/runner/work/_temp/Library/papercheck/modules/all-p-values.mod</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3        /home/runner/work/_temp/Library/papercheck/modules/all-urls.mod</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4     /home/runner/work/_temp/Library/papercheck/modules/imprecise-p.mod</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5        /home/runner/work/_temp/Library/papercheck/modules/marginal.mod</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6       /home/runner/work/_temp/Library/papercheck/modules/osf-check.mod</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7 /home/runner/work/_temp/Library/papercheck/modules/retractionwatch.mod</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

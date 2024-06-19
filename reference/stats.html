@@ -30,6 +30,12 @@
 <li class="active nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
+<li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="../articles/modules.html">Modules</a>
+  </div>
+</li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -79,7 +85,7 @@
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="demofile.html">demofile</a></span><span class="op">(</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="demofiles.html">demofiles</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">papers</span> <span class="op">&lt;-</span> <span class="fu"><a href="read_grobid.html">read_grobid</a></span><span class="op">(</span><span class="va">dir</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">stats</span><span class="op">(</span><span class="va">papers</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    test_type df1     df2 test_comp test_value p_comp reported_p   computed_p</span>
@@ -238,32 +244,32 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> 23                                                                Attitude   3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 24                                                                Attitude   3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 25                                                                Attitude   3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    p  s           id         file</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  4  6 eyecolor.xml eyecolor.xml</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  4  7 eyecolor.xml eyecolor.xml</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  4  8 eyecolor.xml eyecolor.xml</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  4  9 eyecolor.xml eyecolor.xml</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5  4 11 eyecolor.xml eyecolor.xml</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6  4 13 eyecolor.xml eyecolor.xml</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7  4 14 eyecolor.xml eyecolor.xml</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8  4 15 eyecolor.xml eyecolor.xml</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9  4 16 eyecolor.xml eyecolor.xml</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10 1 13 eyecolor.xml eyecolor.xml</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11 1 14 eyecolor.xml eyecolor.xml</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12 1 16 eyecolor.xml eyecolor.xml</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13 1 18 eyecolor.xml eyecolor.xml</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14 1 19 eyecolor.xml eyecolor.xml</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15 1  1   incest.xml   incest.xml</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16 2  1   incest.xml   incest.xml</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 17 2  2   incest.xml   incest.xml</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 18 2  2   incest.xml   incest.xml</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 19 2  3   incest.xml   incest.xml</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 20 8  8   prereg.xml   prereg.xml</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 21 8 14   prereg.xml   prereg.xml</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 22 5  4   prereg.xml   prereg.xml</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 23 5  4   prereg.xml   prereg.xml</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 24 5  4   prereg.xml   prereg.xml</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 25 5  4   prereg.xml   prereg.xml</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    p  s           id</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  4  6 eyecolor.xml</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  4  7 eyecolor.xml</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  4  8 eyecolor.xml</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  4  9 eyecolor.xml</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  4 11 eyecolor.xml</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  4 13 eyecolor.xml</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  4 14 eyecolor.xml</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  4 15 eyecolor.xml</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9  4 16 eyecolor.xml</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10 1 13 eyecolor.xml</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11 1 14 eyecolor.xml</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12 1 16 eyecolor.xml</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13 1 18 eyecolor.xml</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14 1 19 eyecolor.xml</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15 1  1   incest.xml</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16 2  1   incest.xml</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17 2  2   incest.xml</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18 2  2   incest.xml</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19 2  3   incest.xml</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20 8  8   prereg.xml</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21 8 14   prereg.xml</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22 5  4   prereg.xml</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23 5  4   prereg.xml</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24 5  4   prereg.xml</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25 5  4   prereg.xml</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

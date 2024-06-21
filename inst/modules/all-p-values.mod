@@ -13,5 +13,9 @@
     "pattern": "(?<=[^a-z])p-?(value)?\\s*[<>=≤≥]{1,2}\\s*(n\\.?s\\.?|\\d?\\.\\d+e?-?\\d*)",
     "return": "match",
     "perl": true
+  },
+  "traffic_light": {
+    "found": "info",
+    "not-found": "na"
   }
 }

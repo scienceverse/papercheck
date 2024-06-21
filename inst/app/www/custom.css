@@ -135,3 +135,11 @@ code {
 table.dataTable tbody td.focus {
   box-shadow: none !important;
 }
+
+/* traffic lights */
+h2.na::before { content: '⚪️ '; }
+h2.fail::before { content: '⚫️ '; }
+h2.info::before { content: '🔵 '; }
+h2.red::before { content: '🔴 '; }
+h2.yellow::before { content: '🟡 '; }
+h2.green::before { content: '🟢 '; }

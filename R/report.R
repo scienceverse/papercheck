@@ -56,9 +56,13 @@ report <- function(paper,
                      "    toc: true\n")
   } else {
     format <- paste0("  html:\n",
+                     "    theme: flatly\n",
                      "    toc: true\n",
                      "    toc-float: true\n",
-                     "    df-print: paged\n")
+                     "    toc-location: left\n",
+                     "    df-print: paged\n",
+                     "    minimal: true\n",
+                     "    embed-resources: true\n")
   }
 
   head <- paste0("---\n",
@@ -70,11 +74,19 @@ report <- function(paper,
                 "<style>\n",
                 "  h2.na::before { content: '⚪️ '; }\n",
                 "  h2.fail::before { content: '⚫️ '; }\n",
+                "  h2.info::before { content: '🔵 '; }\n",
                 "  h2.red::before { content: '🔴 '; }\n",
                 "  h2.yellow::before { content: '🟡 '; }\n",
                 "  h2.green::before { content: '🟢 '; }\n",
                 "</style>\n\n",
-                "🟢 no problems detected; 🟡 something to check; 🔴 possible problems detected; ⚪️ not applicable; ⚫️ check failed\n\n")
+                "::: {.column-margin}\n",
+                "🟢 no problems detected;<br>\n",
+                "🟡 something to check;<br>\n",
+                "🔴 possible problems detected;<br>\n",
+                "🔵 informational only;<br>\n",
+                "⚪️ not applicable;<br>\n",
+                "⚫️ check failed\n",
+                ":::\n\n")
 
   body <- sapply(module_output, function(mop) {
     tab <- mop$table

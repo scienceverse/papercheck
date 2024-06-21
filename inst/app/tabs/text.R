@@ -22,8 +22,7 @@ text_tab <- tabItem(
       actionButton("search_text", "Search"),
       actionButton("search_reset", "Reset"),
       actionButton("search_preset_p", "p-values"),
-      actionButton("search_preset_n", "sample size"),
-      actionButton("search_marginal", "marginal significance")
+      actionButton("search_preset_n", "sample size")
   ),
   downloadButton("download_table", "Download Table"),
   dataTableOutput("text_table")

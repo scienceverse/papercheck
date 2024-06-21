@@ -19,8 +19,8 @@ source("i18n/trans.R")
 source("tabs/load.R")
 source("tabs/text.R")
 source("tabs/gpt.R")
-source("tabs/osf.R")
-source("tabs/statcheck.R")
+source("tabs/mod.R")
+source("tabs/report.R")
 
 ## UI ----
 ui <- dashboardPage(
@@ -31,18 +31,18 @@ ui <- dashboardPage(
       id = "tabs",
       menuItem("Load Files", tabName = "load_tab",
                icon = icon("file")),
+      menuItem("Report", tabName = "report_tab",
+               icon = icon("list-check")),
+      menuItem("Modules", tabName = "mod_tab",
+               icon = icon("database")),
       menuItem("Search Text", tabName = "text_tab",
                icon = icon("magnifying-glass")),
-      menuItem("OSF Links", tabName = "osf_tab",
-               icon = icon("database")),
-      menuItem("Statcheck", tabName = "statcheck_tab",
-               icon = icon("database")),
       menuItem("ChatGPT", tabName = "gpt_tab",
                icon = icon("robot"))
     ),
     actionButton("demo", "Load Demo Files"),
-    #actionButton("reset_study", "Reset"),
-    actionButton("return_study", "Quit & Return"),
+    #actionButton("reset_paper", "Reset"),
+    actionButton("return_paper", "Quit & Return"),
     tags$br(),
 
     selectInput("lang", "Change language",
@@ -55,16 +55,17 @@ ui <- dashboardPage(
   ),
   dashboardBody(
     shinyjs::useShinyjs(),
+    waiter::use_waiter(),
     tags$head(
       tags$link(rel = "stylesheet", type = "text/css", href = "custom.css"),
       tags$script(src = "custom.js")
     ),
     tabItems(
       load_tab,
+      mod_tab,
+      report_tab,
       text_tab,
-      osf_tab,
-      gpt_tab,
-      statcheck_tab
+      gpt_tab
     )
   )
 )
@@ -79,29 +80,31 @@ server <- function(input, output, session) {
   ## reactiveVals ----
   debug_msg("----reactiveVals----")
 
-  my_study <- reactiveVal( list() )
+  my_paper <- reactiveVal( list() )
   text_table <- reactiveVal( data.frame() )
   gpt_table <- reactiveVal( data.frame() )
-  osf_table <- reactiveVal( data.frame() )
-  statcheck_table <- reactiveVal( data.frame() )
+  mod_table <- reactiveVal( data.frame() )
+  mod_report <- reactiveVal( "" )
+  mod_title <- reactiveVal( "" )
+  report_path <- reactiveVal( "" )
   total_cost <- reactiveVal(0)
 
-  ### return_study ----
-  observeEvent(input$return_study, {
-    debug_msg("return_study")
+  ### return_paper ----
+  observeEvent(input$return_paper, {
+    debug_msg("return_paper")
 
-    # just return sv object if only one study
-    s <- my_study()
+    # just return sv object if only one paper
+    s <- my_paper()
     if (length(s) == 1) s <- s[[1]]
 
     stopApp(s)
   })
 
   observe({
-    study <- my_study()
+    paper <- my_paper()
 
-    if (length(study) > 0) {
-      text_table(search_text(study))
+    if (length(paper) > 0) {
+      text_table(search_text(paper))
 
       # reset search interface
       # c("search_pattern",
@@ -109,11 +112,11 @@ server <- function(input, output, session) {
       #   "search_return",
       #   "search_ignore_case",
       #   "search_fixed") |> sapply(shinyjs::reset)
-      choices <- names(study)
+      choices <- names(paper)
     } else {
       choices <- c()
     }
-    updateSelectInput(session, "study_name", choices = choices)
+    updateSelectInput(session, "paper_name", choices = choices)
   })
 
   ### on text_table() change ----
@@ -147,7 +150,7 @@ server <- function(input, output, session) {
 
     filepath <- system.file("grobid", package = "papercheck")
     s <- read_grobid(filepath)
-    update_from_study(s)
+    update_from_paper(s)
   })
 
   ### load_xml ----
@@ -181,57 +184,58 @@ server <- function(input, output, session) {
         s[[i]]$full_text$file <- name
       }
 
-      update_from_study(s)
+      update_from_paper(s)
     }, error = function(e) {
       shinyjs::alert(e$message)
     })
   }, ignoreNULL = TRUE)
 
-  ### update_from_study ----
-  update_from_study <- function(study) {
-    debug_msg("update_from_study")
+  ### update_from_paper ----
+  update_from_paper <- function(paper) {
+    debug_msg("update_from_paper")
 
     text_table(data.frame())
-    osf_table(data.frame())
     gpt_table(data.frame())
-    statcheck_table(data.frame())
+    mod_table(data.frame())
+    mod_report("")
+    mod_title("")
+    report_path("")
 
-    my_study(study)
+    my_paper(paper)
   }
 
   ### n_papers_loaded ----
   output$n_papers_loaded <- renderText({
-    n <- length(my_study())
+    n <- length(my_paper())
     p <- ifelse(n==1, "paper", "papers")
     paste(n, p, "loaded")
   })
 
-  ### study_name ----
-  observeEvent(input$study_name, {
-    debug_msg("study_name")
+  ### paper_name ----
+  observeEvent(input$paper_name, {
+    debug_msg("paper_name")
 
-    info <- my_study()[[input$study_name]]$info
+    info <- my_paper()[[input$paper_name]]$info
 
-    #updateTextInput(session, "study_title", value = info$title)
-    # updateTextAreaInput(session, "study_desc",
+    #updateTextInput(session, "paper_title", value = info$title)
+    # updateTextAreaInput(session, "paper_desc",
     #                     value = info$description)
-    # updateTextInput(session, "study_keywords",
+    # updateTextInput(session, "paper_keywords",
     #                 value = paste(info$keywords, collapse = "; "))
   })
 
-  output$study_title <- renderUI({
-    h4(my_study()[[input$study_name]]$info$title)
+  output$paper_title <- renderUI({
+    h4(my_paper()[[input$paper_name]]$info$title)
   })
-  output$study_desc <- renderUI({
-    p(my_study()[[input$study_name]]$info$description)
+  output$paper_desc <- renderUI({
+    p(my_paper()[[input$paper_name]]$info$description)
   })
-  output$study_keywords <- renderText({
-    my_study()[[input$study_name]]$info$keywords |>
+  output$paper_keywords <- renderText({
+    my_paper()[[input$paper_name]]$info$keywords |>
       paste(collapse = "; ")
   })
 
   ## text ----
-  debug_msg("----text ----")
 
   ### text_table ----
   output$text_table <- renderDT({
@@ -250,7 +254,7 @@ server <- function(input, output, session) {
 
     text <- text_table()
     if (!"table" %in% input$search_options | nrow(text) == 0) {
-      text <- my_study()
+      text <- my_paper()
     }
     text_table(data.frame()) # clear table
 
@@ -300,7 +304,7 @@ server <- function(input, output, session) {
     debug_msg("search_reset")
 
     updateTextAreaInput(session, "search_pattern", value = "*")
-    s <- my_study()
+    s <- my_paper()
 
     if (length(s) > 0) {
       search_text(s) |> text_table()
@@ -317,10 +321,6 @@ server <- function(input, output, session) {
     updateTextAreaInput(session, "search_pattern", value = "N\\s*=\\s*[0-9,\\.]*\\d")
   })
 
-  observeEvent(input$search_marginal, {
-    updateTextAreaInput(session, "search_pattern", value = "margin\\w* (?:\\w+\\s+){0,5}significan\\w*|trend\\w* (?:\\w+\\s+){0,1}significan\\w*|almost (?:\\w+\\s+){0,2}significan\\w*|approach\\w* (?:\\w+\\s+){0,2}significan\\w*|border\\w* (?:\\w+\\s+){0,2}significan\\w*|close to (?:\\w+\\s+){0,2}significan\\w*")
-  })
-
 
   ### download_table ----
   output$download_table <- downloadHandler(
@@ -333,102 +333,189 @@ server <- function(input, output, session) {
     }
   )
 
-  ## osf ----
+  ## report ----
 
-  ### search_osf----
-  observeEvent(input$search_osf, {
-    osf <- tryCatch( module_run(text_table(), "osf_check"),
-                     error = function(e) {
-                       return(data.frame())
-                     })
+  ### report_run ----
+  observeEvent(input$report_run, {
+    debug_msg("report_run")
 
-    if (nrow(osf) == 0) {
+    report_path("")
+
+    waiter <- waiter::Waiter$new(id = "report_text")
+    waiter$show()
+    on.exit(waiter$hide())
+
+    # modules <- input$report_module_list
+    modules <- c(input$module_text,
+                 input$module_code,
+                 input$module_ml,
+                 input$module_ai)
+
+    if (length(my_paper()) == 0) return(NULL)
+
+    path <- tryCatch({
+       report(my_paper()[[1]],
+              modules = modules,
+              output_file = tempfile(fileext = ".qmd"),
+              output_format = "qmd")
+    }, error = function(e) {
       showModal(modalDialog(
-        title = "No OSF URLs found",
+        title = "Report Error",
+        e$message,
         easyClose = TRUE,
         footer = tagList(
           modalButton("Dismiss")
         )
       ))
-    }
-    osf_table(osf)
+      return("")
+    })
+
+    report_path(path)
   })
 
-  ### osf_table----
-  output$osf_table <- renderDT({
-    debug_msg("osf_table")
+  ### report_defaults ----
 
-    osf_table()
+  update_report_modules <- function(modules) {
+    updateCheckboxGroupInput(session, "module_text", selected = modules)
+    updateCheckboxGroupInput(session, "module_code", selected = modules)
+    updateCheckboxGroupInput(session, "module_ml", selected = modules)
+    updateCheckboxGroupInput(session, "module_ai", selected = modules)
+  }
+
+  observeEvent(input$report_defaults, {
+    debug_msg("report_defaults")
+
+    modules <- c("imprecise-p", "marginal",
+                 "osf-check", "retractionwatch")
+
+    update_report_modules(modules)
+  })
+
+  observeEvent(input$report_info, {
+    debug_msg("report_info")
+
+    modules <- c("all-p-values", "all-urls")
+
+    update_report_modules(modules)
+  })
+
+  ### report_text ----
+  output$report_text <- renderUI({
+    debug_msg("report_text")
+
+    if (!file.exists(report_path())) {
+      return("")
+    }
+
+    # waiter <- waiter::Waiter$new(id = "report_text")
+    # waiter$show()
+    # on.exit(waiter$hide())
+    #
+    # tryCatch({
+    #   quarto::quarto_render(input = report_path(),
+    #                         quiet = TRUE,
+    #                         output_format = "html",
+    #                         metadata = list(html = list(theme = NULL))
+    #                         )
+    # })
+
+    report_text <- report_path() |>
+      #sub("qmd$", "html", x = _) |>
+      readLines() |>
+      paste(collapse = "\n") |>
+      #HTML()
+      tags$textarea(rows = 20, readonly = "readonly")
+
+    return(report_text)
+  })
+
+  ### report_dl_quarto ----
+  output$report_dl_quarto <- downloadHandler(
+    filename = function() {
+      debug_msg("report_dl_quarto")
+      paste0("papercheck_report.qmd")
+    },
+    content = function(file) {
+      file.copy(report_path(), file)
+    }
+  )
+
+  ### report_dl_html ----
+  output$report_dl_html <- downloadHandler(
+    filename = function() {
+      debug_msg("report_dl_html")
+      paste0("papercheck_report.html")
+    },
+    content = function(file) {
+      waiter <- waiter::Waiter$new(id = "report_text")
+      waiter$show()
+      on.exit(waiter$hide())
+
+      tryCatch({
+        quarto::quarto_render(input = report_path(),
+                              quiet = TRUE,
+                              output_format = "html")
+      })
+
+      output_file <- sub("qmd$", "html", report_path())
+      if (!file.exists(output_file)) return(NULL)
+      file.copy(output_file, file)
+    }
+  )
+
+  ## modules ----
+
+  ### run_module ----
+  observeEvent(input$run_module, {
+    output <- tryCatch({
+      module_run(my_paper(), input$module_list)
+    }, error = function(e) {
+      err <- list(
+        module = input$run_module,
+        title = paste("Module Failure:", input$run_module),
+        table = data.frame(),
+        report = e$message,
+        traffic_light = "fail"
+      )
+      return(err)
+    })
+
+    mod_title(output$title)
+    removeCssClass("mod_title", "red")
+    removeCssClass("mod_title", "yellow")
+    removeCssClass("mod_title", "green")
+    removeCssClass("mod_title", "na")
+    removeCssClass("mod_title", "fail")
+    addCssClass("mod_title", output$traffic_light)
+    mod_table(output$table %||% data.frame())
+    mod_report(output$report %||% "")
+
+  })
+
+  ### mod_table ----
+  output$mod_table <- renderDT({
+    debug_msg("mod_table")
+
+    mod_table()
   },
   selection = 'none',
   rownames = FALSE,
   options = dt_options
   )
 
-  ## statcheck ----
+  ### mod_title ----
+  output$mod_title <- renderText({
+    debug_msg("mod_title")
 
-  ### run_statcheck ----
-  observeEvent(input$run_statcheck, {
-    statcheck_table(data.frame()) # clear table
-    sc <- tryCatch( stats(text_table()),
-                    error = function(e) {
-                      return(data.frame())
-                    })
-
-    if (nrow(sc) == 0) {
-      showModal(modalDialog(
-        title = "No stats found",
-        easyClose = TRUE,
-        footer = tagList(
-          modalButton("Dismiss")
-        )
-      ))
-    }
-    statcheck_table(sc)
+    mod_title()
   })
 
-  ### check_p_values ----
-  observeEvent(input$check_p_values, {
-    statcheck_table(data.frame()) # clear table
-    sc <- tryCatch( check_p_values(text_table()),
-                    error = function(e) {
-                      return(data.frame())
-                    })
+  ### mod_report ----
+  output$mod_report <- renderText({
+    debug_msg("mod_report")
 
-    if (nrow(sc) == 0) {
-      showModal(modalDialog(
-        title = "No p-values found",
-        easyClose = TRUE,
-        footer = tagList(
-          modalButton("Dismiss")
-        )
-      ))
-    }
-    statcheck_table(sc)
+    mod_report()
   })
-
-  ### statcheck_table----
-  output$statcheck_table <- renderDT({
-    debug_msg("statcheck_table")
-
-    st <- statcheck_table()
-    if ("computed_p" %in% names(st))
-      st$computed_p <- round(st$computed_p, 4)
-
-    if (input$statcheck_errors) {
-      if ("imprecise" %in% names(st))
-        st <- st[st$imprecise, ]
-      if ("error" %in% names(st))
-        st <- st[st$error | st$decision_error, ]
-    }
-
-    return(st)
-  },
-  selection = 'none',
-  rownames = FALSE,
-  options = dt_search_options
-  )
-
 
   ## gpt ----
 
@@ -572,13 +659,13 @@ server <- function(input, output, session) {
 
   debug_msg("server functions created")
 
-  # .app.study ----
-  if (exists(".app.study.") && !is.null(.app.study.)) {
-    if ("scivrs_paper" %in% class(.app.study.)) {
-      .app.study. <- list(.app.study.)
-      names(.app.study.) <- .app.study.[[1]]$name
+  # .app.paper ----
+  if (exists(".app.paper.") && !is.null(.app.paper.)) {
+    if ("scivrs_paper" %in% class(.app.paper.)) {
+      .app.paper. <- list(.app.paper.)
+      names(.app.paper.) <- .app.paper.[[1]]$name
     }
-    update_from_study( .app.study. )
+    update_from_paper( .app.paper. )
   }
 
 } # end server()

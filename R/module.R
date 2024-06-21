@@ -22,7 +22,11 @@ module_run <- function(paper, module) {
   }
 
   # read in module
-  json <- jsonlite::read_json(module_path, simplifyVector = TRUE)
+  json <- tryCatch({
+    jsonlite::read_json(module_path, simplifyVector = TRUE)
+  }, error = function(e) {
+    stop("The module has a problem with JSON format:\n", e$message, call. = FALSE)
+  })
   module_dir <- dirname(module_path)
 
   if (json$type == "text") {
@@ -140,6 +144,11 @@ module_run_ml <- function(paper, args, module_dir = ".") {
      class_col = class_col,
      map = args$map,
      return_prob = return_prob)
+
+  if (!is.null(args$filter)) {
+    keep <- results[[class_col]] %in% args$filter
+    results <- results[keep, ]
+  }
 
   return( list(table = results) )
 }

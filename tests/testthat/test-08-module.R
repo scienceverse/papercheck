@@ -9,6 +9,8 @@ test_that("exists", {
   expect_error( module_run() )
   expect_error( module_run(paper) )
 
+  setwd("tests/testthat/")
+
   expect_error( module_run(paper, "notamodule"),
                 "There were no modules that matched notamodule",
                 fixed = TRUE )
@@ -16,6 +18,10 @@ test_that("exists", {
   expect_error(module_run(paper, "modules/code-no-file.mod"),
              "The code file does-not-exist.R could not be found",
              fixed = TRUE)
+
+
+  expect_error(module_run(paper, "modules/error.mod"),
+               "The module has a problem with JSON format")
 })
 
 test_that("text", {

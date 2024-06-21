@@ -296,37 +296,52 @@
       "es": "Esta aplicación shiny está en desarrollo; todos los materiales creados deben ser cuidadosamente revisados."
     },
     {
+      "en": "ChatGPT"
+    },
+    {
       "en": "ChatGPT API Key"
+    },
+    {
+      "en": "Code"
     },
     {
       "en": "Context"
     },
     {
+      "en": "Defaults"
+    },
+    {
       "en": "Group By"
+    },
+    {
+      "en": "Info"
     },
     {
       "en": "Load Demo Files"
     },
     {
-      "en": "marginal significance"
-    },
-    {
       "en": "Maximum allowed calls"
     },
     {
-      "en": "Only Show Errors"
+      "en": "ML"
     },
     {
-      "en": "P-values"
+      "en": "Paper Name"
     },
     {
       "en": "Query"
     },
     {
-      "en": "Run Statcheck"
+      "en": "Run Module"
     },
     {
-      "en": "Search for OSF links"
+      "en": "Run Report"
+    },
+    {
+      "en": "Text"
+    },
+    {
+      "en": "This app is under development; all materials created should be carefully checked."
     }
   ]
 }

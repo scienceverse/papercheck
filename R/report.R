@@ -15,7 +15,7 @@
 #' report(paper)
 #' }
 report <- function(paper,
-                   modules = c("imprecise-p", "marginal", "osf-check", "retractionwatch"),
+                   modules = c("imprecise-p", "marginal", "osf-check", "retractionwatch", "ref-consistency"),
                    output_file = paste0(paper$name, "_report.", output_format),
                    output_format = c("qmd", "html", "pdf")) {
   output_format <- match.arg(output_format)

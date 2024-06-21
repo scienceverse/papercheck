@@ -183,3 +183,13 @@ test_that("sample-size", {
   expect_equal(nrow(mod_output$table), nrow(paper))
   expect_equal(mod_output$module, module)
 })
+
+test_that("ref-consistency", {
+  paper <- demofiles("xml")[[2]] |> read_grobid()
+  module <- "ref-consistency"
+
+  mod_output <- module_run(paper, module)
+  expect_equal(mod_output$traffic_light, "red")
+  expect_equal(nrow(mod_output$table), 6)
+  expect_equal(mod_output$module, module)
+})

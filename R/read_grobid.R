@@ -287,11 +287,14 @@ get_refs <- function(xml) {
     p = xml2::xml_parent(textrefs) |> as.character() |>
       gsub("</?p>", "", x = _)
   ) |>
-    tidytext::unnest_sentences(output = "text", input = "p", to_lower = FALSE, )
+    tidytext::unnest_sentences(output = "text", input = "p", to_lower = FALSE)
 
   # find refs
   matches <- gregexpr("(?<=ref type=\"bibr\" target=\"#)b\\d+", textrefp$text, perl = TRUE)
-  textrefp$bib_id <- regmatches(textrefp$text, matches) |>
+  no_targets <- gregexpr("(?<=ref type=\"bibr\">).*(?=</ref>)", textrefp$text, perl = TRUE)
+  textrefp$bib_id <- mapply(c,
+                            regmatches(textrefp$text, matches),
+                            regmatches(textrefp$text, no_targets)) |>
     sapply(paste, collapse = ";")
 
   citation_table <- textrefp[textrefp$bib_id != "", ]

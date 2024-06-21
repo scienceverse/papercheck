@@ -385,8 +385,11 @@ server <- function(input, output, session) {
   observeEvent(input$report_defaults, {
     debug_msg("report_defaults")
 
-    modules <- c("imprecise-p", "marginal",
-                 "osf-check", "retractionwatch")
+    modules <- c("imprecise-p",
+                 "marginal",
+                 "osf-check",
+                 "retractionwatch",
+                 "ref-consistency")
 
     update_report_modules(modules)
   })

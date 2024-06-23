@@ -58,6 +58,7 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/modules.html">Modules</a>
+    <a class="dropdown-item" href="../articles/report-example.html">Example Report</a>
   </div>
 </li>
       </ul>
@@ -102,6 +103,10 @@
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"scienceverse/papercheck"</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/debruine/papercheck" class="external-link">papercheck</a></span><span class="op">)</span></span></code></pre></div>
+<p>You can launch an interactive shiny app version of the code below
+with:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/papercheck_app.html">papercheck_app</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="load-from-pdf">Load from PDF<a class="anchor" aria-label="anchor" href="#load-from-pdf"></a>
 </h3>
@@ -111,18 +116,18 @@ internet connection and takes a few seconds per paper, so should only be
 done once and the results saved for later use.</p>
 <p>If the server is unavailable, you can <a href="https://huggingface.co/spaces/kermitt2/grobid" class="external-link">use a grobid web
 interface</a>.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">pdf_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/demofiles.html">demofiles</a></span><span class="op">(</span><span class="st">"pdf"</span><span class="op">)</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="va">xml_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pdf2grobid.html">pdf2grobid</a></span><span class="op">(</span><span class="va">pdf_file</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">xml_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/demofiles.html">demofiles</a></span><span class="op">(</span><span class="st">"xml"</span><span class="op">)</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">pdf_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/demopdf.html">demopdf</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">xml_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pdf2grobid.html">pdf2grobid</a></span><span class="op">(</span><span class="va">pdf_file</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">xml_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/demoxml.html">demoxml</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="load-from-xml">Load from XML<a class="anchor" aria-label="anchor" href="#load-from-xml"></a>
 </h3>
 <p>The function <code><a href="../reference/read_grobid.html">read_grobid()</a></code> can read XML files parsed by
 grobid.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">paper</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_grobid.html">read_grobid</a></span><span class="op">(</span><span class="va">xml_file</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
@@ -135,17 +140,17 @@ function <code><a href="../reference/search_text.html">search_text()</a></code>.
 each sentence, with the section type, header, div, paragraph and
 sentence numbers, and file name. (The section type is a best guess from
 the headers, so may not always be accurate.)</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">text</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/search_text.html">search_text</a></span><span class="op">(</span><span class="va">paper</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <colgroup>
-<col width="79%">
-<col width="5%">
-<col width="5%">
+<col width="72%">
+<col width="4%">
+<col width="10%">
 <col width="1%">
 <col width="1%">
 <col width="1%">
-<col width="5%">
+<col width="8%">
 </colgroup>
 <thead><tr class="header">
 <th align="left">text</th>
@@ -158,83 +163,57 @@ the headers, so may not always be accurate.)</p>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left">Moral opposition to incest is thought to play an
-important role in preventing inbreeding.</td>
+<td align="left">This paper demonstrates some good and poor practices
+for use with the {papercheck} R package and Shiny app.</td>
 <td align="left">abstract</td>
 <td align="left">Abstract</td>
 <td align="right">0</td>
 <td align="right">1</td>
 <td align="right">1</td>
-<td align="left">incest.xml</td>
+<td align="left">to_err_is_human.xml</td>
 </tr>
 <tr class="even">
-<td align="left">Inbreeding is damaging to reproductive fitness.</td>
+<td align="left">Although intentional dishonestly might be a successful
+way to boost creativity (Gino &amp; Wiltermuth, 2014), it is safe to say
+most mistakes researchers make are unintentional.</td>
 <td align="left">intro</td>
 <td align="left">Introduction</td>
 <td align="right">1</td>
 <td align="right">1</td>
 <td align="right">1</td>
-<td align="left">incest.xml</td>
+<td align="left">to_err_is_human.xml</td>
 </tr>
 <tr class="odd">
-<td align="left">Participants 1998 participants took part in this online
-study (see online supplemental materials, <a href="https://osf.io/mwzuq/" class="external-link uri">https://osf.io/mwzuq/</a>).</td>
+<td align="left">In this study we examine whether automated checks
+reduce the amount of errors that researchers make in scientific
+manuscripts.</td>
 <td align="left">method</td>
-<td align="left">Methods</td>
+<td align="left">Method and Participants</td>
 <td align="right">2</td>
 <td align="right">1</td>
 <td align="right">1</td>
-<td align="left">incest.xml</td>
+<td align="left">to_err_is_human.xml</td>
 </tr>
 <tr class="even">
-<td align="left">Participants completed the same moral wrongness task
-that had been used by Lieberman and colleagues.</td>
-<td align="left">method</td>
-<td align="left">Procedure</td>
+<td align="left">All data needed to reproduce these analyses is
+available from <a href="https://osf.io/5tbm9" class="external-link uri">https://osf.io/5tbm9</a> and code is available from <a href="https://osf.io/629bx" class="external-link uri">https://osf.io/629bx</a>.</td>
+<td align="left">results</td>
+<td align="left">Results</td>
 <td align="right">3</td>
 <td align="right">1</td>
 <td align="right">1</td>
-<td align="left">incest.xml</td>
+<td align="left">to_err_is_human.xml</td>
 </tr>
 <tr class="odd">
-<td align="left">Following Lieberman et al.</td>
-<td align="left">method</td>
-<td align="left">Analysis</td>
+<td align="left">It seems automated tools can help prevent errors by
+providing researchers with feedback about potential mistakes, and
+researchers feel the app is useful.</td>
+<td align="left">discussion</td>
+<td align="left">Discussion</td>
 <td align="right">4</td>
 <td align="right">1</td>
 <td align="right">1</td>
-<td align="left">incest.xml</td>
-</tr>
-<tr class="even">
-<td align="left">Our main, omnibus analysis showed a significant
-three-way interaction among incest type, participant sex, and sibling
-type (Estimate = 0.285, t(578.003) = 2.359, p = 0.019).</td>
-<td align="left">results</td>
-<td align="left">Results</td>
-<td align="right">5</td>
-<td align="right">1</td>
-<td align="right">1</td>
-<td align="left">incest.xml</td>
-</tr>
-<tr class="odd">
-<td align="left">We found that having other-sex siblings is associated
-with greater moral opposition to sibling incest.</td>
-<td align="left">discussion</td>
-<td align="left">Discussion</td>
-<td align="right">6</td>
-<td align="right">1</td>
-<td align="right">1</td>
-<td align="left">incest.xml</td>
-</tr>
-<tr class="even">
-<td align="left">Figure 1: The three-way interaction among incest type,
-participant sex, and sibling type.</td>
-<td align="left">figure</td>
-<td align="left">[div-07]</td>
-<td align="right">7</td>
-<td align="right">1</td>
-<td align="right">1</td>
-<td align="left">incest.xml</td>
+<td align="left">to_err_is_human.xml</td>
 </tr>
 </tbody>
 </table>
@@ -245,17 +224,17 @@ participant sex, and sibling type.</td>
 <code>pattern</code> argument. The pattern is a regex string by default;
 set <code>fixed = TRUE</code> if you want to find exact text
 matches.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">text</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/search_text.html">search_text</a></span><span class="op">(</span><span class="va">paper</span>, pattern <span class="op">=</span> <span class="st">"signific"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">text</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/search_text.html">search_text</a></span><span class="op">(</span><span class="va">paper</span>, pattern <span class="op">=</span> <span class="st">"papercheck"</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <colgroup>
-<col width="82%">
-<col width="4%">
-<col width="4%">
+<col width="67%">
+<col width="5%">
+<col width="8%">
+<col width="2%">
 <col width="1%">
 <col width="1%">
-<col width="1%">
-<col width="4%">
+<col width="12%">
 </colgroup>
 <thead><tr class="header">
 <th align="left">text</th>
@@ -268,49 +247,24 @@ matches.</p>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left">Our main, omnibus analysis showed a significant
-three-way interaction among incest type, participant sex, and sibling
-type (Estimate = 0.285, t(578.003) = 2.359, p = 0.019).</td>
-<td align="left">results</td>
-<td align="left">Results</td>
-<td align="right">5</td>
+<td align="left">This paper demonstrates some good and poor practices
+for use with the {papercheck} R package and Shiny app.</td>
+<td align="left">abstract</td>
+<td align="left">Abstract</td>
+<td align="right">0</td>
 <td align="right">1</td>
 <td align="right">1</td>
-<td align="left">incest.xml</td>
+<td align="left">to_err_is_human.xml</td>
 </tr>
 <tr class="even">
-<td align="left">Our analysis of moral wrongness scores for sibling
-incest scores showed a significant interaction between participant sex
-and sibling type (Estimate = -0.559, t(578) = -2.84, p = 0.005).</td>
-<td align="left">results</td>
-<td align="left">Results</td>
-<td align="right">5</td>
-<td align="right">2</td>
+<td align="left">In this study we examine the usefulness of Papercheck
+to improve best practices.</td>
+<td align="left">intro</td>
+<td align="left">Introduction</td>
 <td align="right">1</td>
-<td align="left">incest.xml</td>
-</tr>
-<tr class="odd">
-<td align="left">In contrast, our analysis of moral wrongness scores for
-parental incest scores showed no significant interaction between
-participant sex and sibling type (Estimate = -0.268, t(578) = -1.373, p
-= 0.17).</td>
-<td align="left">results</td>
-<td align="left">Results</td>
-<td align="right">5</td>
-<td align="right">2</td>
-<td align="right">3</td>
-<td align="left">incest.xml</td>
-</tr>
-<tr class="even">
-<td align="left">In contrast, having other-sex siblings was not
-significantly associated with greater moral opposition to parent-child
-incest.</td>
-<td align="left">discussion</td>
-<td align="left">Discussion</td>
-<td align="right">6</td>
-<td align="right">2</td>
 <td align="right">1</td>
-<td align="left">incest.xml</td>
+<td align="right">4</td>
+<td align="left">to_err_is_human.xml</td>
 </tr>
 </tbody>
 </table>
@@ -320,18 +274,18 @@ incest.</td>
 </h3>
 <p>Set <code>section</code> to a vector of the sections to search
 in.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">text</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/search_text.html">search_text</a></span><span class="op">(</span><span class="va">paper</span>, <span class="st">"signific"</span>, </span>
-<span>                    section <span class="op">=</span> <span class="st">"results"</span><span class="op">)</span></span></code></pre></div>
-<table style="width:100%;" class="table">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">text</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/search_text.html">search_text</a></span><span class="op">(</span><span class="va">paper</span>, <span class="st">"papercheck"</span>, </span>
+<span>                    section <span class="op">=</span> <span class="st">"abstract"</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
 <colgroup>
-<col width="84%">
-<col width="3%">
-<col width="3%">
+<col width="69%">
+<col width="5%">
+<col width="5%">
+<col width="2%">
 <col width="1%">
 <col width="1%">
-<col width="1%">
-<col width="4%">
+<col width="12%">
 </colgroup>
 <thead><tr class="header">
 <th align="left">text</th>
@@ -342,42 +296,16 @@ in.</p>
 <th align="right">s</th>
 <th align="left">id</th>
 </tr></thead>
-<tbody>
-<tr class="odd">
-<td align="left">Our main, omnibus analysis showed a significant
-three-way interaction among incest type, participant sex, and sibling
-type (Estimate = 0.285, t(578.003) = 2.359, p = 0.019).</td>
-<td align="left">results</td>
-<td align="left">Results</td>
-<td align="right">5</td>
+<tbody><tr class="odd">
+<td align="left">This paper demonstrates some good and poor practices
+for use with the {papercheck} R package and Shiny app.</td>
+<td align="left">abstract</td>
+<td align="left">Abstract</td>
+<td align="right">0</td>
 <td align="right">1</td>
 <td align="right">1</td>
-<td align="left">incest.xml</td>
-</tr>
-<tr class="even">
-<td align="left">Our analysis of moral wrongness scores for sibling
-incest scores showed a significant interaction between participant sex
-and sibling type (Estimate = -0.559, t(578) = -2.84, p = 0.005).</td>
-<td align="left">results</td>
-<td align="left">Results</td>
-<td align="right">5</td>
-<td align="right">2</td>
-<td align="right">1</td>
-<td align="left">incest.xml</td>
-</tr>
-<tr class="odd">
-<td align="left">In contrast, our analysis of moral wrongness scores for
-parental incest scores showed no significant interaction between
-participant sex and sibling type (Estimate = -0.268, t(578) = -1.373, p
-= 0.17).</td>
-<td align="left">results</td>
-<td align="left">Results</td>
-<td align="right">5</td>
-<td align="right">2</td>
-<td align="right">3</td>
-<td align="left">incest.xml</td>
-</tr>
-</tbody>
+<td align="left">to_err_is_human.xml</td>
+</tr></tbody>
 </table>
 </div>
 <div class="section level3">
@@ -385,19 +313,19 @@ participant sex and sibling type (Estimate = -0.268, t(578) = -1.373, p
 </h3>
 <p>Set <code>return</code> to one of “sentence”, “paragraph”, “section”,
 or “match” to control what gets returned.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">text</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/search_text.html">search_text</a></span><span class="op">(</span><span class="va">paper</span>, <span class="st">"signific"</span>, </span>
-<span>                    section <span class="op">=</span> <span class="st">"results"</span>, </span>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">text</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/search_text.html">search_text</a></span><span class="op">(</span><span class="va">paper</span>, <span class="st">"papercheck"</span>, </span>
+<span>                    section <span class="op">=</span> <span class="st">"intro"</span>, </span>
 <span>                    return <span class="op">=</span> <span class="st">"paragraph"</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <colgroup>
-<col width="94%">
+<col width="90%">
 <col width="1%">
-<col width="1%">
+<col width="2%">
 <col width="0%">
 <col width="0%">
 <col width="0%">
-<col width="1%">
+<col width="3%">
 </colgroup>
 <thead><tr class="header">
 <th align="left">text</th>
@@ -408,40 +336,21 @@ or “match” to control what gets returned.</p>
 <th align="left">s</th>
 <th align="left">id</th>
 </tr></thead>
-<tbody>
-<tr class="odd">
-<td align="left">Our main, omnibus analysis showed a significant
-three-way interaction among incest type, participant sex, and sibling
-type (Estimate = 0.285, t(578.003) = 2.359, p = 0.019). This interaction
-is illustrated in Figure 1. Next we analyzed scores for sibling and
-parent-child incest separately.</td>
-<td align="left">results</td>
-<td align="left">Results</td>
-<td align="right">5</td>
+<tbody><tr class="odd">
+<td align="left">Although intentional dishonestly might be a successful
+way to boost creativity (Gino &amp; Wiltermuth, 2014), it is safe to say
+most mistakes researchers make are unintentional. From a human factors
+perspective, human error is a symptom of a poor design (Smithy, 2020).
+Automation can be use to check for errors in scientific manuscripts, and
+inform authors about possible corrections. In this study we examine the
+usefulness of Papercheck to improve best practices.</td>
+<td align="left">intro</td>
+<td align="left">Introduction</td>
+<td align="right">1</td>
 <td align="right">1</td>
 <td align="left">NA</td>
-<td align="left">incest.xml</td>
-</tr>
-<tr class="even">
-<td align="left">Our analysis of moral wrongness scores for sibling
-incest scores showed a significant interaction between participant sex
-and sibling type (Estimate = -0.559, t(578) = -2.84, p = 0.005). Women
-with brothers only tended to view sibling incest more negatively than
-did women with sisters only (Estimate = 0.179, t(452) = 2.022, p =
-0.044) while men with brothers only tended to view sibling incest less
-negatively than did men with sisters only (Estimate = -0.38, t(126) =
--1.933, p = 0.055). In contrast, our analysis of moral wrongness scores
-for parental incest scores showed no significant interaction between
-participant sex and sibling type (Estimate = -0.268, t(578) = -1.373, p
-= 0.17).</td>
-<td align="left">results</td>
-<td align="left">Results</td>
-<td align="right">5</td>
-<td align="right">2</td>
-<td align="left">NA</td>
-<td align="left">incest.xml</td>
-</tr>
-</tbody>
+<td align="left">to_err_is_human.xml</td>
+</tr></tbody>
 </table>
 </div>
 <div class="section level3">
@@ -452,8 +361,8 @@ setting <code>return = "match"</code>. The extra <code>...</code>
 arguments in <code><a href="../reference/search_text.html">search_text()</a></code> are passed to
 <code><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep()</a></code>, so <code>perl = TRUE</code> allows you to use more
 complex regex, like below.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">pattern</span> <span class="op">&lt;-</span> <span class="st">"[^\\s\\(\\)]+\\s*(=|&lt;)\\s*[0-9\\.-]+"</span></span>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">pattern</span> <span class="op">&lt;-</span> <span class="st">"[a-zA-Z]\\S*\\s*(=|&lt;)\\s*[0-9\\.,-]*\\d"</span></span>
 <span><span class="va">text</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/search_text.html">search_text</a></span><span class="op">(</span><span class="va">paper</span>, <span class="va">pattern</span>, return <span class="op">=</span> <span class="st">"match"</span>, perl <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <thead><tr class="header">
@@ -467,212 +376,113 @@ complex regex, like below.</p>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left">N=313</td>
-<td align="left">abstract</td>
-<td align="left">Abstract</td>
-<td align="right">0</td>
-<td align="right">1</td>
-<td align="right">4</td>
-<td align="left">incest.xml</td>
-</tr>
-<tr class="even">
-<td align="left">N=269</td>
-<td align="left">abstract</td>
-<td align="left">Abstract</td>
-<td align="right">0</td>
-<td align="right">1</td>
-<td align="right">4</td>
-<td align="left">incest.xml</td>
-</tr>
-<tr class="odd">
-<td align="left">Estimate = 0.285</td>
+<td align="left">M = 9.12</td>
 <td align="left">results</td>
 <td align="left">Results</td>
-<td align="right">5</td>
+<td align="right">3</td>
 <td align="right">1</td>
-<td align="right">1</td>
-<td align="left">incest.xml</td>
-</tr>
-<tr class="even">
-<td align="left">p = 0.019</td>
-<td align="left">results</td>
-<td align="left">Results</td>
-<td align="right">5</td>
-<td align="right">1</td>
-<td align="right">1</td>
-<td align="left">incest.xml</td>
-</tr>
-<tr class="odd">
-<td align="left">Estimate = -0.559</td>
-<td align="left">results</td>
-<td align="left">Results</td>
-<td align="right">5</td>
 <td align="right">2</td>
+<td align="left">to_err_is_human.xml</td>
+</tr>
+<tr class="even">
+<td align="left">M = 10.9</td>
+<td align="left">results</td>
+<td align="left">Results</td>
+<td align="right">3</td>
 <td align="right">1</td>
-<td align="left">incest.xml</td>
+<td align="right">2</td>
+<td align="left">to_err_is_human.xml</td>
+</tr>
+<tr class="odd">
+<td align="left">t(97.7) = 2.9</td>
+<td align="left">results</td>
+<td align="left">Results</td>
+<td align="right">3</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="left">to_err_is_human.xml</td>
 </tr>
 <tr class="even">
 <td align="left">p = 0.005</td>
 <td align="left">results</td>
 <td align="left">Results</td>
-<td align="right">5</td>
+<td align="right">3</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="left">to_err_is_human.xml</td>
+</tr>
+<tr class="odd">
+<td align="left">M = 5.06</td>
+<td align="left">results</td>
+<td align="left">Results</td>
+<td align="right">3</td>
 <td align="right">2</td>
 <td align="right">1</td>
-<td align="left">incest.xml</td>
-</tr>
-<tr class="odd">
-<td align="left">Estimate = 0.179</td>
-<td align="left">results</td>
-<td align="left">Results</td>
-<td align="right">5</td>
-<td align="right">2</td>
-<td align="right">2</td>
-<td align="left">incest.xml</td>
+<td align="left">to_err_is_human.xml</td>
 </tr>
 <tr class="even">
-<td align="left">p = 0.044</td>
+<td align="left">M = 4.5</td>
 <td align="left">results</td>
 <td align="left">Results</td>
-<td align="right">5</td>
-<td align="right">2</td>
-<td align="right">2</td>
-<td align="left">incest.xml</td>
-</tr>
-<tr class="odd">
-<td align="left">Estimate = -0.38</td>
-<td align="left">results</td>
-<td align="left">Results</td>
-<td align="right">5</td>
-<td align="right">2</td>
-<td align="right">2</td>
-<td align="left">incest.xml</td>
-</tr>
-<tr class="even">
-<td align="left">p = 0.055</td>
-<td align="left">results</td>
-<td align="left">Results</td>
-<td align="right">5</td>
-<td align="right">2</td>
-<td align="right">2</td>
-<td align="left">incest.xml</td>
-</tr>
-<tr class="odd">
-<td align="left">Estimate = -0.268</td>
-<td align="left">results</td>
-<td align="left">Results</td>
-<td align="right">5</td>
-<td align="right">2</td>
 <td align="right">3</td>
-<td align="left">incest.xml</td>
+<td align="right">2</td>
+<td align="right">1</td>
+<td align="left">to_err_is_human.xml</td>
 </tr>
-<tr class="even">
-<td align="left">p = 0.17</td>
+<tr class="odd">
+<td align="left">t(97.2) = -1.96</td>
 <td align="left">results</td>
 <td align="left">Results</td>
-<td align="right">5</td>
-<td align="right">2</td>
 <td align="right">3</td>
-<td align="left">incest.xml</td>
+<td align="right">2</td>
+<td align="right">1</td>
+<td align="left">to_err_is_human.xml</td>
+</tr>
+<tr class="even">
+<td align="left">p = 0.052</td>
+<td align="left">results</td>
+<td align="left">Results</td>
+<td align="right">3</td>
+<td align="right">2</td>
+<td align="right">1</td>
+<td align="left">to_err_is_human.xml</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
 <div class="section level2">
-<h2 id="batch-processing">Batch Processing<a class="anchor" aria-label="anchor" href="#batch-processing"></a>
-</h2>
-<p>The functions <code><a href="../reference/pdf2grobid.html">pdf2grobid()</a></code> and
-<code><a href="../reference/read_grobid.html">read_grobid()</a></code> also work on a folder of files, returning a
-list of XML file paths or scienceverse study objects, respectively.
-<code><a href="../reference/search_text.html">search_text()</a></code> also works on a list of study objects.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">grobid_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"grobid"</span>, package<span class="op">=</span><span class="st">"papercheck"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">papers</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_grobid.html">read_grobid</a></span><span class="op">(</span><span class="va">grobid_dir</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">hypotheses</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/search_text.html">search_text</a></span><span class="op">(</span><span class="va">papers</span>, <span class="st">"hypothesi"</span>, </span>
-<span>                          section <span class="op">=</span> <span class="st">"intro"</span>, </span>
-<span>                          return <span class="op">=</span> <span class="st">"paragraph"</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="modules">Modules<a class="anchor" aria-label="anchor" href="#modules"></a>
-</h2>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/module_list.html">module_list</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;              name                     title type</span></span>
-<span><span class="co">#&gt; 1    ai-summarise        Summarise Sections   ai</span></span>
-<span><span class="co">#&gt; 2    all-p-values         List All P-Values text</span></span>
-<span><span class="co">#&gt; 3        all-urls             List All URLs text</span></span>
-<span><span class="co">#&gt; 4     imprecise-p        Imprecise P-Values code</span></span>
-<span><span class="co">#&gt; 5        marginal     Marginal Significance text</span></span>
-<span><span class="co">#&gt; 6       osf-check Check Status of OSF Links code</span></span>
-<span><span class="co">#&gt; 7 ref-consistency     Reference Consistency code</span></span>
-<span><span class="co">#&gt; 8 retractionwatch           RetractionWatch code</span></span>
-<span><span class="co">#&gt;                                                                     path</span></span>
-<span><span class="co">#&gt; 1    /home/runner/work/_temp/Library/papercheck/modules/ai-summarise.mod</span></span>
-<span><span class="co">#&gt; 2    /home/runner/work/_temp/Library/papercheck/modules/all-p-values.mod</span></span>
-<span><span class="co">#&gt; 3        /home/runner/work/_temp/Library/papercheck/modules/all-urls.mod</span></span>
-<span><span class="co">#&gt; 4     /home/runner/work/_temp/Library/papercheck/modules/imprecise-p.mod</span></span>
-<span><span class="co">#&gt; 5        /home/runner/work/_temp/Library/papercheck/modules/marginal.mod</span></span>
-<span><span class="co">#&gt; 6       /home/runner/work/_temp/Library/papercheck/modules/osf-check.mod</span></span>
-<span><span class="co">#&gt; 7 /home/runner/work/_temp/Library/papercheck/modules/ref-consistency.mod</span></span>
-<span><span class="co">#&gt; 8 /home/runner/work/_temp/Library/papercheck/modules/retractionwatch.mod</span></span></code></pre></div>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/module_run.html">module_run</a></span><span class="op">(</span><span class="va">papers</span>, <span class="st">"all-p-values"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $module</span></span>
-<span><span class="co">#&gt; [1] "all-p-values"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $title</span></span>
-<span><span class="co">#&gt; [1] "List All P-Values"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $table</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 24 × 7</span></span></span>
-<span><span class="co">#&gt;    text      section header              div     p     s id          </span></span>
-<span><span class="co">#&gt;  <span style="color: #BCBCBC;">*</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> p = 0.012 intro   [div-01]              1     4     6 eyecolor.xml</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> p = 0.849 intro   [div-01]              1     4     7 eyecolor.xml</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> p = 0.019 intro   [div-01]              1     4     8 eyecolor.xml</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> p = 0.879 intro   [div-01]              1     4     9 eyecolor.xml</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> p = 0.266 intro   [div-01]              1     4    11 eyecolor.xml</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> p = 0.403 intro   [div-01]              1     4    13 eyecolor.xml</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> p = 0.13  intro   [div-01]              1     4    14 eyecolor.xml</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> p = 0.337 intro   [div-01]              1     4    15 eyecolor.xml</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> p = 0.1   intro   [div-01]              1     4    16 eyecolor.xml</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> p = 0.029 method  Statistical tests     5     1    13 eyecolor.xml</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 14 more rows</span></span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $report</span></span>
-<span><span class="co">#&gt; NULL</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $traffic_light</span></span>
-<span><span class="co">#&gt; [1] "info"</span></span></code></pre></div>
-</div>
-<div class="section level2">
 <h2 id="chatgpt">ChatGPT<a class="anchor" aria-label="anchor" href="#chatgpt"></a>
 </h2>
-<p>You can query the extracted text of papers with chatGPT.</p>
+<p>You can query the extracted text of papers with ChatGPT.</p>
 <div class="section level3">
 <h3 id="setup">Setup<a class="anchor" aria-label="anchor" href="#setup"></a>
 </h3>
 <p>Run</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">gpt_setup</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>You will need to provide your own <a href="https://platform.openai.com/api-keys" class="external-link">API key</a>. You can enter
 it manually for each call to <code><a href="../reference/gpt.html">gpt()</a></code>, or add the following
 lines in the .Renviron file for your user or project.</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="va">CHATGPT_KEY</span><span class="op">=</span><span class="st">"sk-proj-abcdefghijklmnopqrs0123456789ABCDEFGHIJKLMNOPQRS"</span></span>
-<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a><span class="va">RETICULATE_PYTHON</span><span class="op">=</span><span class="st">"~/.virtualenvs/r-reticulate/bin/python"</span></span></code></pre></div>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="va">CHATGPT_KEY</span><span class="op">=</span><span class="st">"sk-proj-abcdefghijklmnopqrs0123456789ABCDEFGHIJKLMNOPQRS"</span></span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a><span class="va">RETICULATE_PYTHON</span><span class="op">=</span><span class="st">"~/.virtualenvs/r-reticulate/bin/python"</span></span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># useful if you aren't sure where this file is</span></span>
 <span><span class="fu">usethis</span><span class="fu">::</span><span class="fu">edit_r_environ</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="gpt-queries">GPT Queries<a class="anchor" aria-label="anchor" href="#gpt-queries"></a>
 </h3>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">query</span> <span class="op">&lt;-</span> <span class="st">"What is the hypothesis of this study?"</span></span>
+<p>You can ask ChatGPT to process text. Use <code><a href="../reference/search_text.html">search_text()</a></code>
+first to narrow down the text into what you want to query. Below, we
+returned the first two papers’ introduction sections, and returned the
+full section. Then we asked ChatGPT “What is the hypothesis of this
+study?”.</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">hypotheses</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/search_text.html">search_text</a></span><span class="op">(</span><span class="va">papers</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span>, </span>
+<span>                          section <span class="op">=</span> <span class="st">"intro"</span>, </span>
+<span>                          return <span class="op">=</span> <span class="st">"section"</span><span class="op">)</span></span>
+<span><span class="va">query</span> <span class="op">&lt;-</span> <span class="st">"What is the hypothesis of this study?"</span></span>
 <span><span class="va">gpt_hypo</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gpt.html">gpt</a></span><span class="op">(</span><span class="va">hypotheses</span>, <span class="va">query</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <colgroup>
@@ -701,16 +511,125 @@ adaptations to reduce inbreeding, and that the strong moral opposition
 to incest plays an important role in preventing inbreeding.</td>
 <td align="right">0.000216</td>
 </tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section level2">
+<h2 id="batch-processing">Batch Processing<a class="anchor" aria-label="anchor" href="#batch-processing"></a>
+</h2>
+<p>The functions <code><a href="../reference/pdf2grobid.html">pdf2grobid()</a></code> and
+<code><a href="../reference/read_grobid.html">read_grobid()</a></code> also work on a folder of files, returning a
+list of XML file paths or paper objects, respectively. The functions
+<code><a href="../reference/search_text.html">search_text()</a></code> and <code><a href="../reference/gpt.html">gpt()</a></code> also work on a list of
+paper objects.</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">grobid_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/demodir.html">demodir</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">papers</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_grobid.html">read_grobid</a></span><span class="op">(</span><span class="va">grobid_dir</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">hypotheses</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/search_text.html">search_text</a></span><span class="op">(</span><span class="va">papers</span>, <span class="st">"hypothesi"</span>, </span>
+<span>                          section <span class="op">=</span> <span class="st">"intro"</span>, </span>
+<span>                          return <span class="op">=</span> <span class="st">"paragraph"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="modules">Modules<a class="anchor" aria-label="anchor" href="#modules"></a>
+</h2>
+<p>Papercheck is designed modularly, so you can add modules to check for
+anything. It comes with a set of pre-defined modules, and we hope people
+will share more modules.</p>
+<div class="section level3">
+<h3 id="module-list">Module List<a class="anchor" aria-label="anchor" href="#module-list"></a>
+</h3>
+<p>You can see the list of built-in modules with the function below.</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/module_list.html">module_list</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt;  * ai-summarise: Generate a 1-sentence summary for each section</span></span>
+<span><span class="co">#&gt;  * all-p-values: List all p-values in the text, returning the matched text (e.g., 'p = 0.04') and document location in a table.</span></span>
+<span><span class="co">#&gt;  * all-urls: List all the URLs in the main text</span></span>
+<span><span class="co">#&gt;  * imprecise-p: List any p-values reported with insufficient precision (e.g., p &lt; .05 or p = n.s.)</span></span>
+<span><span class="co">#&gt;  * marginal: List all sentences that describe an effect as 'marginally significant'.</span></span>
+<span><span class="co">#&gt;  * osf-check: List all OSF links and whether they are open, closed, or do not exist.</span></span>
+<span><span class="co">#&gt;  * ref-consistency: Check if all references are cited and all citations are referenced</span></span>
+<span><span class="co">#&gt;  * retractionwatch: Flag any cited papers in the RetractionWatch database</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="running-modules">Running modules<a class="anchor" aria-label="anchor" href="#running-modules"></a>
+</h3>
+<p>To run a built-in module on a paper, you can reference it by
+name.</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/module_run.html">module_run</a></span><span class="op">(</span><span class="va">paper</span>, <span class="st">"all-p-values"</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<thead><tr class="header">
+<th align="left">text</th>
+<th align="left">section</th>
+<th align="left">header</th>
+<th align="right">div</th>
+<th align="right">p</th>
+<th align="right">s</th>
+<th align="left">id</th>
+</tr></thead>
+<tbody>
 <tr class="odd">
-<td align="left">prereg.xml</td>
-<td align="left">The hypothesis of this study is that more efficient
-study designs might increase the willingness to pre-register in
-psychological science.</td>
-<td align="right">0.000608</td>
+<td align="left">p = 0.005</td>
+<td align="left">results</td>
+<td align="left">Results</td>
+<td align="right">3</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="left">to_err_is_human.xml</td>
+</tr>
+<tr class="even">
+<td align="left">p = 0.052</td>
+<td align="left">results</td>
+<td align="left">Results</td>
+<td align="right">3</td>
+<td align="right">2</td>
+<td align="right">1</td>
+<td align="left">to_err_is_human.xml</td>
+</tr>
+<tr class="odd">
+<td align="left">p &gt; .05</td>
+<td align="left">results</td>
+<td align="left">Results</td>
+<td align="right">3</td>
+<td align="right">2</td>
+<td align="right">2</td>
+<td align="left">to_err_is_human.xml</td>
 </tr>
 </tbody>
 </table>
 </div>
+<div class="section level3">
+<h3 id="creating-modules">Creating modules<a class="anchor" aria-label="anchor" href="#creating-modules"></a>
+</h3>
+<p>You can create your own modules by specifying the arguments to
+<code><a href="../reference/search_text.html">search_text()</a></code> or <code><a href="../reference/gpt.html">gpt()</a></code> in JSON format and/or
+including R code. Modules can also contain instructions for reporting,
+to give “traffic lights” for whether a check passed or failed, and to
+include appropriate text feedback in a report. See the <a href="modules.html">modules vignette</a> for more details.</p>
+<p>Below is an abbreviated example of the module that detects all
+p-values in the text and returns the matching text.</p>
+<pre><code>{
+  "title": "List All P-Values",
+  "description": "List all p-values in the text, returning the matched text (e.g., 'p = 0.04') and document location in a table.",
+  "text": {
+    "pattern": "(?&lt;=[^a-z])p-?(value)?\\s*[&lt;&gt;=≤≥]{1,2}\\s*(n\\.?s\\.?|\\d?\\.\\d+e?-?\\d*)",
+    "return": "match",
+    "perl": true
+  }
+}</code></pre>
+</div>
+</div>
+<div class="section level2">
+<h2 id="reports">Reports<a class="anchor" aria-label="anchor" href="#reports"></a>
+</h2>
+<p>You can generate a report from any set of modules. The default set is
+<code>c("imprecise-p", "marginal", "osf-check", "retractionwatch", "ref-consistency")</code></p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/report.html">report</a></span><span class="op">(</span><span class="va">paper</span>, output_format <span class="op">=</span> <span class="st">"qmd"</span><span class="op">)</span></span></code></pre></div>
+<p>See the <a href="report-example.html">example report</a>.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>

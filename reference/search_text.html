@@ -34,6 +34,7 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/modules.html">Modules</a>
+    <a class="dropdown-item" href="../articles/report-example.html">Example Report</a>
   </div>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
@@ -108,27 +109,15 @@
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">filename</span> <span class="op">&lt;-</span> <span class="fu"><a href="demofiles.html">demofiles</a></span><span class="op">(</span><span class="st">"xml"</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">filename</span> <span class="op">&lt;-</span> <span class="fu"><a href="demoxml.html">demoxml</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">paper</span> <span class="op">&lt;-</span> <span class="fu"><a href="read_grobid.html">read_grobid</a></span><span class="op">(</span><span class="va">filename</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">search_text</span><span class="op">(</span><span class="va">paper</span>, <span class="st">"p\\s*(=|&lt;)\\s*[0-9\\.]+"</span>, return <span class="op">=</span> <span class="st">"match"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 14 × 7</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    text      section header              div     p     s id          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> p = 0.012 intro   [div-01]              1     4     6 eyecolor.xml</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> p = 0.849 intro   [div-01]              1     4     7 eyecolor.xml</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> p = 0.019 intro   [div-01]              1     4     8 eyecolor.xml</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> p = 0.879 intro   [div-01]              1     4     9 eyecolor.xml</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> p = 0.266 intro   [div-01]              1     4    11 eyecolor.xml</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> p = 0.403 intro   [div-01]              1     4    13 eyecolor.xml</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> p = 0.13  intro   [div-01]              1     4    14 eyecolor.xml</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> p = 0.337 intro   [div-01]              1     4    15 eyecolor.xml</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> p = 0.1   intro   [div-01]              1     4    16 eyecolor.xml</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> p = 0.029 method  Statistical tests     5     1    13 eyecolor.xml</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">11</span> p = 0.027 method  Statistical tests     5     1    14 eyecolor.xml</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">12</span> p = 0.076 method  Statistical tests     5     1    16 eyecolor.xml</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">13</span> p = 0.091 method  Statistical tests     5     1    18 eyecolor.xml</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">14</span> p = 0.196 method  Statistical tests     5     1    19 eyecolor.xml</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 × 7</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   text       section header    div     p     s id                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> p = 0.005. results Results     3     1     2 to_err_is_human.xml</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> p = 0.052. results Results     3     2     1 to_err_is_human.xml</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

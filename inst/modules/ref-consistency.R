@@ -1,10 +1,13 @@
-if (nrow(paper$references) == 0 & nrow(paper$citations) == 0) {
+refs <- concat_tables(paper, "references")
+cites <- concat_tables(paper, "citations")
+
+if (nrow(refs) == 0 & nrow(cites) == 0) {
   table <- data.frame()
   traffic_light <- "na"
 } else {
-  missing_cites <- dplyr::anti_join(paper$references, paper$citations, by = "bib_id")
+  missing_cites <- dplyr::anti_join(refs, cites, by = c("id", "bib_id"))
   if (nrow(missing_cites)) missing_cites$missing <- "citation"
-  missing_refs <- dplyr::anti_join(paper$citations, paper$references, by = "bib_id")
+  missing_refs <- dplyr::anti_join(cites, refs,  by = c("id", "bib_id"))
   if (nrow(missing_refs)) missing_refs$missing <- "reference"
   names(missing_refs) <- names(missing_refs) |> sub("text", "ref", x = _)
 

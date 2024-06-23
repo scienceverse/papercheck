@@ -8,7 +8,7 @@
 #' @export
 #'
 #' @examples
-#' filename <- demofiles("xml")[1]
+#' filename <- demoxml()
 #' paper <- read_grobid(filename)
 #'
 read_grobid <- function(filename) {

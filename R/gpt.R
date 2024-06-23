@@ -2,7 +2,7 @@
 #'
 #' Ask ChatGPT any question you want about the text from a search_text()
 #'
-#' You need to use your own ChatGPT API key. To avoid having to type it ou, add it to the .Renviron file in the following format (you can use `usethis::edit_r_environ()` to access the .Renviron file)
+#' You need to use your own ChatGPT API key. To avoid having to type it out, add it to the .Renviron file in the following format (you can use `usethis::edit_r_environ()` to access the .Renviron file)
 #'
 #' CHATGPT_KEY="key_value_asdf"
 #'
@@ -78,11 +78,9 @@ gpt <- function(text, query,
   # set up progress bar ----
   if (getOption("scienceverse.verbose")) {
     pb <- progress::progress_bar$new(
-      total = ncalls, clear = FALSE,
+      total = ncalls, clear = FALSE, show_after = 0,
       format = "Querying ChatGPT [:bar] :current/:total :elapsedfull"
     )
-    pb$tick(0)
-    Sys.sleep(0.2)
     pb$tick(0)
   }
 

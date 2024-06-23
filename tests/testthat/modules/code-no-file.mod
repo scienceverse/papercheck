@@ -1,6 +1,5 @@
 {
   "title": "No file found",
-  "type": "code",
   "code": {
     "path": "does-not-exist.R"
   },

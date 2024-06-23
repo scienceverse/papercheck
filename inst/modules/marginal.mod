@@ -1,6 +1,6 @@
 {
   "title": "Marginal Significance",
-  "type": "text",
+  "description": "List all sentences that describe an effect as 'marginally significant'.",
   "authors": [{
     "orcid": "0000-0002-0247-239X",
     "name":{

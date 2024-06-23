@@ -1,6 +1,6 @@
 {
   "title": "List All P-Values",
-  "type": "text",
+  "description": "List all p-values in the text, returning the matched text (e.g., 'p = 0.04') and document location in a table.",
   "authors": [{
     "orcid": "0000-0002-7523-5539",
     "name":{

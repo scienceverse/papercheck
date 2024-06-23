@@ -1,6 +1,6 @@
 {
   "title": "Imprecise P-Values",
-  "type": "code",
+  "description": "List any p-values reported with insufficient precision (e.g., p < .05 or p = n.s.)",
   "authors": [{
     "orcid": "0000-0002-7523-5539",
     "name":{

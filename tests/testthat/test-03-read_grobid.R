@@ -14,17 +14,17 @@ test_that("error", {
 })
 
 test_that("basics", {
-  filename <- demofiles("xml")[2]
+  filename <- demoxml()
   s <- read_grobid(filename)
   expect_equal(class(s), c("scivrs_paper", "list"))
 
-  title <- "Having other-sex siblings predicts moral attitudes to sibling incest, but not parent-child incest"
-  expect_equal(s$name, "incest")
+  title <- "To Err is Human: An Empirical Investigation"
+  expect_equal(s$name, "to_err_is_human")
   expect_equal(s$info$title, title)
 
-  expect_equal(substr(s$info$description, 1, 5), "Moral")
+  expect_equal(substr(s$info$description, 1, 10), "This paper")
 
-  expect_equal(nrow(s$full_text), 56)
+  expect_equal(nrow(s$full_text), 24)
 })
 
 
@@ -38,26 +38,26 @@ test_that("read_grobid_xml", {
   expect_error( read_grobid_xml(filename),
                 "does not parse as a valid Grobid TEI")
 
-  filename <- demofiles("xml")[2]
+  filename <- demoxml()
   xml <- read_grobid_xml(filename)
   expect_s3_class(xml, "xml_document")
 
   title <- xml2::xml_find_first(xml, "//title") |> xml2::xml_text()
-  exp <- "Having other-sex siblings predicts moral attitudes to sibling incest, but not parent-child incest"
+  exp <- "To Err is Human: An Empirical Investigation"
   expect_equal(title, exp)
 })
 
 test_that("get_refs", {
   expect_true(is.function(get_refs))
 
-  filename <- demofiles("xml")[3]
+  filename <- demoxml()
   xml <- read_grobid_xml(filename)
 
   refs <- get_refs(xml)
   expect_equal(names(refs), c("references", "citations"))
 
   expect_equal(names(refs$references), c("bib_id", "doi", "ref"))
-  expect_equal(nrow(refs$references), 23)
+  expect_equal(nrow(refs$references), 2)
 
   expect_equal(names(refs$citations), c("bib_id", "text"))
 
@@ -69,7 +69,7 @@ test_that("iteration", {
   expect_error(read_grobid("."),
                "^There are no xml files in the directory")
 
-  grobid_dir <- demofiles()
+  grobid_dir <- demodir()
   s <- read_grobid(grobid_dir)
 
   file_list <- list.files(grobid_dir, ".xml")
@@ -89,7 +89,7 @@ test_that("iteration", {
   expect_equal(s[[3]]$info$title, "Will knowledge about more efficient study designs increase the willingness to pre-register?")
 
   # separate xmls
-  filenames <- demofiles("xml")
+  filenames <- demodir() |> list.files(".xml", full.names = TRUE)
   s <- read_grobid(filenames)
   expect_equal(names(s), file_list)
 
@@ -98,7 +98,11 @@ test_that("iteration", {
 
   # recursive file search
   s <- read_grobid(system.file(package="papercheck"))
-  expect_equal(names(s), file_list)
+  nested_files <- c("extdata/to_err_is_human.xml",
+                    "grobid/eyecolor.xml",
+                    "grobid/incest.xml",
+                    "grobid/prereg.xml")
+  expect_equal(names(s), nested_files)
 })
 
 

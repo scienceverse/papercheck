@@ -1,6 +1,6 @@
 {
   "title": "RetractionWatch",
-  "type": "code",
+  "description": "Flag any cited papers in the RetractionWatch database",
   "authors": [{
     "orcid": "0000-0002-7523-5539",
     "name":{

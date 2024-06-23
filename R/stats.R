@@ -7,8 +7,8 @@
 #' @export
 #'
 #' @examples
-#' dir <- demofiles()
-#' papers <- read_grobid(dir)
+#' filename <- demoxml()
+#' papers <- read_grobid(filename)
 #' stats(papers)
 stats <- function(text, ...) {
   if (!is.data.frame(text)) {

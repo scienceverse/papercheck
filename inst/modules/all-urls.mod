@@ -1,6 +1,6 @@
 {
   "title": "List All URLs",
-  "type": "text",
+  "description": "List all the URLs in the main text",
   "authors": [{
     "orcid": "0000-0002-0247-239X",
     "name":{

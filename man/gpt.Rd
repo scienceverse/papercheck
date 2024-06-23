@@ -48,7 +48,7 @@ a list of results
 Ask ChatGPT any question you want about the text from a search_text()
 }
 \details{
-You need to use your own ChatGPT API key. To avoid having to type it ou, add it to the .Renviron file in the following format (you can use \code{usethis::edit_r_environ()} to access the .Renviron file)
+You need to use your own ChatGPT API key. To avoid having to type it out, add it to the .Renviron file in the following format (you can use \code{usethis::edit_r_environ()} to access the .Renviron file)
 
 CHATGPT_KEY="key_value_asdf"
 }

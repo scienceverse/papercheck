@@ -16,7 +16,7 @@ A paper object with class scivrs_paper, or. list of paper objects
 You can create a grobid XML file from a paper PDF at https://huggingface.co/spaces/kermitt2/grobid.
 }
 \examples{
-filename <- demofiles("xml")[1]
+filename <- demoxml()
 paper <- read_grobid(filename)
 
 }

@@ -13,7 +13,7 @@
 #' @export
 #'
 #' @examples
-#' filename <- demofiles("xml")[1]
+#' filename <- demoxml()
 #' paper <- read_grobid(filename)
 #'
 #' search_text(paper, "p\\s*(=|<)\\s*[0-9\\.]+", return = "match")

@@ -1,6 +1,6 @@
 {
   "title": "Summarise Sections",
-  "type": "ai",
+  "description": "Generate a 1-sentence summary for each section",
   "authors": [{
     "orcid": "0000-0002-7523-5539",
     "name":{

@@ -14,23 +14,21 @@ test_that("site_down", {
   expect_false(site_down("localhost/otherstuff"))
 })
 
-test_that("demofiles", {
+test_that("demo functions", {
 
-  d <- demofiles()
-  d2 <- demofiles(type = "dir")
+  d <- demodir()
   e <- system.file("grobid", package = "papercheck")
-  expect_equal(d, d2)
   expect_equal(d, e)
 
-  x <- demofiles("xml")
+  x <- demoxml()
   expect_true(all(grepl("\\.xml$", x)))
 
-  p <- demofiles("pdf")
+  p <- demopdf()
   expect_true(all(grepl("\\.pdf$", p)))
 })
 
 test_that("concat_tables", {
-  papers <- read_grobid(demofiles())
+  papers <- read_grobid(demodir())
 
   refs <- concat_tables(papers, c("references"))
   expect_equal(nrow(refs), 48)
@@ -40,10 +38,10 @@ test_that("concat_tables", {
 })
 
 test_that("print.scivrs_paper", {
-  paper <- demofiles("xml")[[1]] |> read_grobid()
+  paper <- demoxml() |> read_grobid()
   op <- capture_output(print(paper))
   op.sv <- capture_output(print.scivrs_paper(paper))
 
   expect_equal(op, op.sv)
-  expect_true(grepl("eyecolor", op))
+  expect_true(grepl("to_err_is_human", op))
 })

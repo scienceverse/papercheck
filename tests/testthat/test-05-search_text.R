@@ -1,5 +1,5 @@
 test_that("error", {
-  filename <- demofiles("xml")[2]
+  filename <- demoxml()
   s <- read_grobid(filename)
 
   expect_true(is.function(search_text))
@@ -12,42 +12,39 @@ test_that("error", {
 })
 
 test_that("default", {
-  filename <- demofiles("xml")[2]
-  s <- read_grobid(filename)
+  s <- read_grobid(demoxml())
 
   sig <- search_text(s, "significant")
 
   expect_true(all(grepl("significant", sig$text)))
-  expect_equal(nrow(sig), 4)
+  expect_equal(nrow(sig), 2)
 
   # section
   res <- search_text(s, "significant", "results")
-  expect_equal(nrow(res), 3)
+  expect_equal(nrow(res), 2)
   expect_true(all(res$section == "results"))
 
   # multiple matches in a sentence
-  equal <- search_text(s, "[a-zA-Z]*\\s*=\\s*[\\.0-9-]*",
-                       section = "abstract",
+  equal <- search_text(s, "[a-zA-Z][a-zA-Z\\(\\)]*\\s*=\\s*[\\.0-9-]*\\d",
+                       section = "results",
                        return = "match")
-  expect_equal(nrow(equal), 2)
-  expect_equal(equal$text, c("N=313", "N=269"))
+  expect_equal(nrow(equal), 6)
+  expect_equal(equal$text[[1]], c("M = 9.12"))
 })
 
 test_that("table as first argument", {
-  filename <- demofiles("xml")[2]
-  s <- read_grobid(filename)
+  s <- read_grobid(demoxml())
 
   sig <- search_text(s, "significant")
   sig2 <- search_text(sig, "significant")
   expect_equal(sig, sig2)
 
-  s3 <- search_text(sig, "[a-zA-Z]*\\s*=\\s*[\\.0-9-]*", return = "match")
-  expect_equal(nrow(s3), 9)
+  s3 <- search_text(sig, "[a-zA-Z]+\\s*=\\s*[\\.0-9-]*\\d", return = "match")
+  expect_equal(nrow(s3), 3)
 })
 
 test_that("return", {
-  filename <- demofiles("xml")[2]
-  s <- read_grobid(filename)
+  s <- read_grobid(demoxml())
 
   res_s1 <- search_text(s, "significant")
   res_s2 <- search_text(s, "significant", return = "sentence")
@@ -57,17 +54,17 @@ test_that("return", {
 
   expect_equal(res_s1$text, res_s2$text)
 
-  expect_equal(nrow(res_s1), 4)
-  expect_equal(nrow(res_p), 3)
-  expect_equal(nrow(res_sec), 2)
-  expect_equal(res_m$text, rep("significant", 4))
+  expect_equal(nrow(res_s1), 2)
+  expect_equal(nrow(res_p), 1)
+  expect_equal(nrow(res_sec), 1)
+  expect_equal(res_m$text, rep("significant", 2))
 
-  p <- search_text(s, "p\\s*[><=]{1,2}\\s*[0-9\\.]+", return = "match")
-  expect_equal(p$text[[1]], "p = 0.019")
+  p <- search_text(s, "p\\s*[><=]{1,2}\\s*[0-9\\.]+\\d", return = "match")
+  expect_equal(p$text[[1]], "p = 0.005")
 })
 
 test_that("iteration", {
-  s <- read_grobid(demofiles())
+  s <- read_grobid(demodir())
 
   # search full text
   sig <- search_text(s, "significant")

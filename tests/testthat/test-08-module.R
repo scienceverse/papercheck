@@ -4,12 +4,14 @@ test_that("exists", {
 
   builtin <- module_list()
   expect_true(is.data.frame(builtin))
+  exp <- c("name", "title", "description", "type", "path")
+  expect_equal(names(builtin), exp)
 
-  paper <- read_grobid(demofiles("xml")[[1]])
+  paper <- read_grobid(demoxml())
   expect_error( module_run() )
   expect_error( module_run(paper) )
 
-  setwd("tests/testthat/")
+  # setwd("tests/testthat/")
 
   expect_error( module_run(paper, "notamodule"),
                 "There were no modules that matched notamodule",
@@ -25,14 +27,14 @@ test_that("exists", {
 })
 
 test_that("text", {
-  paper <- demofiles("xml")[[1]] |> read_grobid()
+  paper <- demoxml() |> read_grobid()
 
   module <- "all-p-values"
   mod_output <- module_run(paper, module)
 
   expect_equal(mod_output$module, module)
   expect_equal(mod_output$title, "List All P-Values")
-  expect_equal(mod_output$traffic_light, "na")
+  expect_equal(mod_output$traffic_light, "info")
   expect_null(mod_output$report)
 
   first_char <- substr(mod_output$table$text, 1, 1)
@@ -40,19 +42,19 @@ test_that("text", {
 })
 
 test_that("code", {
-  paper <- demofiles("xml")[[1]] |> read_grobid()
+  paper <- demoxml() |> read_grobid()
 
   # code from json
   mod_output <- module_run(paper, "retractionwatch")
   expect_equal(names(mod_output$table), c("bib_id", "doi", "ref", "id"))
-  expect_equal(mod_output$report, "You cited no papers in the Retraction Watch database")
+  expect_equal(mod_output$report, "You cited some papers in the Retraction Watch database; double-check that you are acknowledging their retracted status when citing them.")
 })
 
 test_that("ml", {
   # errors
-  paper <- demofiles("xml")[[1]] |> read_grobid()
+  paper <- demoxml() |> read_grobid()
 
-  args <- list(path = "no-exist",
+  args <- list(model_dir = "no-exist",
                result_col = "class",
                map = c(`0` = "no", `1` = "yes"))
   expect_error( module_run_ml(paper, args, "."),
@@ -63,7 +65,7 @@ test_that("AI", {
   skip("AI")
   skip_if_offline()
 
-  paper <- read_grobid(demofiles("xml")[2])
+  paper <- read_grobid(demoxml())
   hypo <- search_text(paper, "hypothes", return = "paragraph")
 
   mod_output <- module_run(hypo, "ai-summarise")
@@ -73,19 +75,19 @@ test_that("AI", {
 })
 
 test_that("all-p-values", {
-  paper <- read_grobid(demofiles("xml")[2])
+  paper <- read_grobid(demoxml())
   module <- "all-p-values"
   p <- module_run(paper, module)
-  expect_equal(p$traffic_light, "na")
-  expect_equal(nrow(p$table), 5)
+  expect_equal(p$traffic_light, "info")
+  expect_equal(nrow(p$table), 3)
   expect_equal(p$module, module)
 })
 
 test_that("all-urls", {
-  paper <- read_grobid(demofiles("xml")[2])
+  paper <- read_grobid(demoxml())
   module <- "all-urls"
   urls <- module_run(paper, module)
-  expect_equal(urls$traffic_light, "na")
+  expect_equal(urls$traffic_light, "info")
   expect_equal(nrow(urls$table), 3)
   expect_equal(urls$module, module)
 })
@@ -107,24 +109,17 @@ test_that("osf-check", {
 })
 
 test_that("retractionwatch", {
-  paper <- demofiles("xml")[[1]] |> read_grobid()
-
-  # add a retracted paper
-  retracted <- data.frame(
-    bib_id = "x",
-    doi = retractionwatch$doi[[1]],
-    ref = "Test retracted paper"
-  )
-  paper$references <- rbind(paper$references, retracted)
+  paper <- demoxml() |> read_grobid()
 
   mod_output <- module_run(paper, "retractionwatch")
   expect_equal(mod_output$traffic_light, "yellow")
-  expect_equal(mod_output$table[, 1:3], retracted)
+  expect_equal(mod_output$table$doi, "10.1177/0956797614520714")
   expect_equal(mod_output$report, "You cited some papers in the Retraction Watch database; double-check that you are acknowledging their retracted status when citing them.")
 })
 
 test_that("imprecise-p", {
-  paper <- demofiles("xml")[[1]] |> read_grobid()
+  paper <- demodir() |> read_grobid()
+  paper <- paper[[1]]
 
   module <- "imprecise-p"
   mod_output <- module_run(paper, module)
@@ -152,7 +147,8 @@ test_that("imprecise-p", {
 })
 
 test_that("marginal", {
-  paper <- demofiles("xml")[[1]] |> read_grobid()
+  paper <- demodir() |> read_grobid()
+  paper <- paper[[1]]
   module <- "marginal"
 
   # no relevant text
@@ -174,7 +170,7 @@ test_that("marginal", {
 test_that("sample-size", {
   skip("ml")
 
-  paper <- demofiles("xml")[[1]] |> read_grobid() |>
+  paper <- demoxml() |> read_grobid() |>
     search_text(".{30, }", section = "method", return = "paragraph")
   module <- "sample-size-ml"
 
@@ -185,11 +181,12 @@ test_that("sample-size", {
 })
 
 test_that("ref-consistency", {
-  paper <- demofiles("xml")[[2]] |> read_grobid()
+  paper <- demoxml() |> read_grobid()
   module <- "ref-consistency"
 
   mod_output <- module_run(paper, module)
   expect_equal(mod_output$traffic_light, "red")
-  expect_equal(nrow(mod_output$table), 6)
+  expect_equal(nrow(mod_output$table), 2)
   expect_equal(mod_output$module, module)
 })
+

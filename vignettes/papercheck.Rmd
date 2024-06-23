@@ -28,6 +28,12 @@ devtools::install_github("scienceverse/papercheck")
 library(papercheck)
 ```
 
+You can launch an interactive shiny app version of the code below with:
+
+``` r
+papercheck_app()
+```
+
 ### Load from PDF
 
 The function `pdf2grobid()` can read PDF files and save them in the [TEI](https://tei-c.org/) format created by [grobid](https://grobid.readthedocs.io/). This requires an internet connection and takes a few seconds per paper, so should only be done once and the results saved for later use.
@@ -35,12 +41,12 @@ The function `pdf2grobid()` can read PDF files and save them in the [TEI](https:
 If the server is unavailable, you can [use a grobid web interface](https://huggingface.co/spaces/kermitt2/grobid).
 
 ```{r, eval = FALSE}
-pdf_file <- demofiles("pdf")[[2]]
+pdf_file <- demopdf()
 xml_file <- pdf2grobid(pdf_file)
 ```
 
 ```{r, inlcude = FALSE}
-xml_file <- demofiles("xml")[[2]]
+xml_file <- demoxml()
 ```
 
 
@@ -70,7 +76,7 @@ dplyr::filter(text, p == 1, s == 1) |>
 You can search for a specific word or phrase by setting the `pattern` argument. The pattern is a regex string by default; set `fixed = TRUE` if you want to find exact text matches.
 
 ```{r}
-text <- search_text(paper, pattern = "signific")
+text <- search_text(paper, pattern = "papercheck")
 ```
 
 ```{r, echo = FALSE}
@@ -82,8 +88,8 @@ knitr::kable(text)
 Set `section` to a vector of the sections to search in.
 
 ```{r}
-text <- search_text(paper, "signific", 
-                    section = "results")
+text <- search_text(paper, "papercheck", 
+                    section = "abstract")
 ```
 
 ```{r, echo = FALSE}
@@ -96,8 +102,8 @@ knitr::kable(text)
 Set `return` to one of "sentence", "paragraph", "section", or "match" to control what gets returned.
 
 ```{r}
-text <- search_text(paper, "signific", 
-                    section = "results", 
+text <- search_text(paper, "papercheck", 
+                    section = "intro", 
                     return = "paragraph")
 ```
 
@@ -110,7 +116,7 @@ knitr::kable(text)
 You can also return just the matched text from a regex search by setting `return = "match"`. The extra `...` arguments in `search_text()` are passed to `grep()`, so `perl = TRUE` allows you to use more complex regex, like below.
 
 ```{r}
-pattern <- "[^\\s\\(\\)]+\\s*(=|<)\\s*[0-9\\.-]+"
+pattern <- "[a-zA-Z]\\S*\\s*(=|<)\\s*[0-9\\.,-]*\\d"
 text <- search_text(paper, pattern, return = "match", perl = TRUE)
 ```
 
@@ -119,35 +125,10 @@ knitr::kable(text)
 ```
 
 
-## Batch Processing
-
-The functions `pdf2grobid()` and `read_grobid()` also work on a folder of files, returning a list of XML file paths or scienceverse study objects, respectively.  `search_text()` also works on a list of study objects.
-
-```{r}
-grobid_dir <- system.file("grobid", package="papercheck")
-
-papers <- read_grobid(grobid_dir)
-
-hypotheses <- search_text(papers, "hypothesi", 
-                          section = "intro", 
-                          return = "paragraph")
-```
-
-## Modules
-
-```{r}
-module_list()
-```
-
-```{r}
-p <- module_run(papers, "all-p-values")
-
-head(p)
-```
 
 ## ChatGPT
 
-You can query the extracted text of papers with chatGPT.
+You can query the extracted text of papers with ChatGPT.
 
 ### Setup
 
@@ -173,24 +154,96 @@ usethis::edit_r_environ()
 
 ### GPT Queries
 
+You can ask ChatGPT to process text. Use `search_text()` first to narrow down the text into what you want to query. Below, we returned the first two papers' introduction sections, and returned the full section. Then we asked ChatGPT "What is the hypothesis of this study?".
+
 ```{r, eval = FALSE}
+hypotheses <- search_text(papers[1:2], 
+                          section = "intro", 
+                          return = "section")
 query <- "What is the hypothesis of this study?"
 gpt_hypo <- gpt(hypotheses, query)
 ```
 
 ```{r, echo = FALSE}
 gpt_hypo <- data.frame(
-  id = c("eyecolor.xml", "incest.xml", "prereg.xml"
-), 
+  id = c("eyecolor.xml", "incest.xml"), 
   answer = c("The hypothesis of this study is to test the matching hypothesis, sex-linked heritable preference hypothesis, and positive sexual imprinting hypothesis in relation to eye color and partner selection.", 
-"The hypothesis of this study is that humans possess adaptations to reduce inbreeding, and that the strong moral opposition to incest plays an important role in preventing inbreeding.", 
-"The hypothesis of this study is that more efficient study designs might increase the willingness to pre-register in psychological science."
+"The hypothesis of this study is that humans possess adaptations to reduce inbreeding, and that the strong moral opposition to incest plays an important role in preventing inbreeding."
 ), 
-  cost = c(0.000612, 0.000216, 0.000608), 
+  cost = c(0.000612, 0.000216), 
   row.names = NULL
 )
 knitr::kable(gpt_hypo)
 ```
+
+
+## Batch Processing
+
+The functions `pdf2grobid()` and `read_grobid()` also work on a folder of files, returning a list of XML file paths or paper objects, respectively. The functions `search_text()` and `gpt()` also work on a list of paper objects.
+
+```{r}
+grobid_dir <- demodir()
+
+papers <- read_grobid(grobid_dir)
+
+hypotheses <- search_text(papers, "hypothesi", 
+                          section = "intro", 
+                          return = "paragraph")
+```
+
+## Modules
+
+Papercheck is designed modularly, so you can add modules to check for anything. It comes with a set of pre-defined modules, and we hope people will share more modules.
+
+### Module List
+
+You can see the list of built-in modules with the function below.
+
+```{r}
+module_list()
+```
+
+### Running modules
+
+To run a built-in module on a paper, you can reference it by name.
+
+```{r}
+p <- module_run(paper, "all-p-values")
+```
+
+```{r, echo = FALSE}
+knitr::kable(p$table)
+```
+
+### Creating modules
+
+You can create your own modules by specifying the arguments to `search_text()` or `gpt()` in JSON format and/or including R code. Modules can also contain instructions for reporting, to give "traffic lights" for whether a check passed or failed, and to include appropriate text feedback in a report. See the [modules vignette](modules.html) for more details. 
+
+Below is an abbreviated example of the module that detects all p-values in the text and returns the matching text. 
+
+```
+{
+  "title": "List All P-Values",
+  "description": "List all p-values in the text, returning the matched text (e.g., 'p = 0.04') and document location in a table.",
+  "text": {
+    "pattern": "(?<=[^a-z])p-?(value)?\\s*[<>=≤≥]{1,2}\\s*(n\\.?s\\.?|\\d?\\.\\d+e?-?\\d*)",
+    "return": "match",
+    "perl": true
+  }
+}
+```
+
+## Reports
+
+
+You can generate a report from any set of modules. The default set is `c("imprecise-p", "marginal", "osf-check", "retractionwatch", "ref-consistency")`
+
+```{r, eval = FALSE}
+report(paper, output_format = "qmd")
+```
+
+See the [example report](report-example.html).
+
 
 
 

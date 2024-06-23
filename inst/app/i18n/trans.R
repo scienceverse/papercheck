@@ -13,6 +13,19 @@ trans_labels <- list(
   #updateFileInput = c()
 )
 
+trans_choices <- list(
+  updateSelectInput = list(),
+  updateCheckboxInput = list(),
+  updateCheckboxGroupInput = list()
+)
+
+menuItem <- function(text, ...) {
+  trans_text[text] <<- text
+  mi <- shinydashboard::menuItem(text, ...)
+  mi$children[[1]]$children[[2]]$attribs <- c("en" = text)
+  mi
+}
+
 h2 <- function(x, ...) {
   trans_text[x] <<- x
   shiny::h2(x, en = x, ...)
@@ -46,10 +59,16 @@ textAreaInput <- function(inputId, label, ...) {
   shiny::textAreaInput(inputId, label, ...)
 }
 
-selectInput <- function(inputId, label, ...) {
+selectInput <- function(inputId, label, choices, ...) {
   if (!is.null(label))
     trans_labels$updateSelectInput[inputId] <<- label
-  shiny::selectInput(inputId, label, ...)
+
+  if (!is.null(choices)) {
+    if (is.null(names(choices))) names(choices) <- choices
+    trans_choices$updateSelectInput[[inputId]] <<- choices
+  }
+
+  shiny::selectInput(inputId, label, choices, ...)
 }
 
 numericInput <- function(inputId, label, ...) {
@@ -58,16 +77,28 @@ numericInput <- function(inputId, label, ...) {
   shiny::numericInput(inputId, label, ...)
 }
 
-checkboxInput <- function(inputId, label, ...) {
+checkboxInput <- function(inputId, label, choices, ...) {
   if (!is.null(label))
     trans_labels$updateCheckboxInput[inputId] <<- label
-  shiny::checkboxInput(inputId, label, ...)
+
+  if (!is.null(choices)) {
+    if (is.null(names(choices))) names(choices) <- choices
+    trans_choices$updateCheckboxInput[[inputId]] <<- choices
+  }
+
+  shiny::checkboxInput(inputId, label, choices, ...)
 }
 
-checkboxGroupInput<- function(inputId, label, ...) {
+checkboxGroupInput<- function(inputId, label, choices, ...) {
   if (!is.null(label))
     trans_labels$updateCheckboxGroupInput[inputId] <<- label
-  shiny::checkboxGroupInput(inputId, label, ...)
+
+  if (!is.null(choices)) {
+    if (is.null(names(choices))) names(choices) <- choices
+    trans_choices$updateCheckboxGroupInput[[inputId]] <<- choices
+  }
+
+  shiny::checkboxGroupInput(inputId, label, choices, ...)
 }
 
 actionButton <- function(inputId, label, ...) {
@@ -91,7 +122,9 @@ save_trans <- function(trans_text, trans_labels) {
   ## save translations ----
   is_local <- Sys.getenv('SHINY_PORT') == ""
   if (is_local) {
-    all_text <- c(trans_text, trans_labels) |>
+    all_text <- trans_choices |>
+      lapply(\(x) sapply(x, names)) |>
+      c(trans_text, trans_labels) |>
       unname() |>
       unlist() |>
       unique() |>

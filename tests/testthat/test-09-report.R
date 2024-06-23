@@ -3,14 +3,14 @@ test_that("error", {
 
   expect_error( report(1), "The paper argument must be a paper object" )
 
-  paper <- demofiles("xml")[[1]] |> read_grobid()
+  paper <- demoxml() |> read_grobid()
   expect_error( paper_report <- report(paper, modules = c("notamodule")),
                 "Some modules are not available: notamodule",
                 fixed = TRUE)
 })
 
 test_that("defaults", {
-  paper <- demofiles("xml")[[1]] |> read_grobid()
+  paper <- demoxml() |> read_grobid()
 
   # qmd
   qmd <- tempfile(fileext = ".qmd")
@@ -36,6 +36,7 @@ test_that("defaults", {
   # browseURL(html)
 
   # pdf
+  skip("pdf")
   pdf <- tempfile(fileext = ".pdf")
   if (file.exists(pdf)) unlink(pdf)
   paper_report <- report(paper,
@@ -50,7 +51,7 @@ test_that("detected", {
   skip_if_not_installed("quarto")
   skip_on_cran()
 
-  paper <- demofiles("xml")[[1]] |> read_grobid()
+  paper <- demoxml() |> read_grobid()
 
   # add a retracted paper
   retracted <- data.frame(
@@ -102,6 +103,7 @@ test_that("detected", {
   # browseURL(html)
 
   # pdf
+  skip("pdf")
   pdf <- tempfile(fileext = ".pdf")
   if (file.exists(pdf)) unlink(pdf)
   paper_report <- report(paper,

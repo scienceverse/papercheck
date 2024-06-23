@@ -59,7 +59,7 @@ test_that("basic", {
   skip_if_offline(host = "chat.openai.com")
   skip_if(Sys.getenv("CHATGPT_KEY") == "", message = "Requires ChatGPT API key")
 
-  s <- read_grobid(demofiles())
+  s <- read_grobid(demodir())
   text <- search_text(s, section = "method", return = "section")
   query <- "What is the sample size of this study (e.g., the number of participants tested?"
   context <- "Please give your answer exactly like this: 'XXX (XX men, XX women)', with the total number first, then any subsets in parentheses."
@@ -86,8 +86,7 @@ test_that("multiple group by", {
   skip_if_offline(host = "chat.openai.com")
   skip_if(Sys.getenv("CHATGPT_KEY") == "", message = "Requires ChatGPT API key")
 
-  filename <- demofiles("xml")
-  s <- read_grobid(filename[1:2])
+  s <- read_grobid(demodir())
   text <- search_text(s, return = "section", section = c("method", "results"))
   groups <- dplyr::summarise(text, .by = c(id, section))
 

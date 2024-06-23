@@ -10,7 +10,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' filename <- demofiles("xml")[[1]]
+#' filename <- demoxml()
 #' paper <- read_grobid(filename)
 #' report(paper)
 #' }
@@ -34,9 +34,22 @@ report <- function(paper,
          paste(custom[!cm_exists], collapse = ", "))
   }
 
+  # set up progress bar ----
+  if (getOption("scienceverse.verbose")) {
+    pb <- progress::progress_bar$new(
+      total = length(modules) + 3,
+      clear = FALSE,
+      show_after = 0,
+      format = ":what [:bar] :current/:total :elapsedfull"
+    )
+    pb$tick(0, tokens = list(what = "Running modules"))
+  }
+
   # run each module ----
   module_output <- lapply(modules, \(module) {
-    tryCatch(module_run(paper, module),
+    if (getOption("scienceverse.verbose"))
+      pb$tick(tokens = list(what = module))
+    op <- tryCatch(module_run(paper, module),
              error = function(e) {
                report_items <- list(
                  module = module,
@@ -51,6 +64,8 @@ report <- function(paper,
   })
 
   # set up report ----
+  if (getOption("scienceverse.verbose"))
+    pb$tick(tokens = list(what = "Creating report"))
   if (output_format == "pdf") {
     format <- paste0("  pdf:\n",
                      "    toc: true\n")
@@ -67,7 +82,7 @@ report <- function(paper,
 
   head <- paste0("---\n",
                 "title: PaperCheck Report\n",
-                "subtitle: ", paper$info$title, "\n",
+                "subtitle: \"", paper$info$title, "\"\n",
                 "date: ", Sys.Date(), "\n",
                 "format:\n", format,
                 "---\n\n",
@@ -106,6 +121,8 @@ report <- function(paper,
     paste(collapse = "\n\n") |>
     gsub("\\n{3,}", "\n\n", x = _)
 
+  if (getOption("scienceverse.verbose"))
+    pb$tick(tokens = list(what = "Rendering Report"))
   if (output_format == "qmd") {
     write(paste0(head, body), output_file)
   } else {
@@ -125,6 +142,8 @@ report <- function(paper,
     file.rename(temp_output, output_file)
     unlink(temp_input) # clean up
   }
+  if (getOption("scienceverse.verbose"))
+    pb$tick(tokens = list(what = "Report Saved"))
 
   return(output_file)
 }

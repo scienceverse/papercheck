@@ -6,7 +6,8 @@
 \usage{
 report(
   paper,
-  modules = c("imprecise-p", "marginal", "osf-check", "retractionwatch"),
+  modules = c("imprecise-p", "marginal", "osf-check", "retractionwatch",
+    "ref-consistency"),
   output_file = paste0(paper$name, "_report.", output_format),
   output_format = c("qmd", "html", "pdf")
 )
@@ -28,7 +29,7 @@ Create a report
 }
 \examples{
 \dontrun{
-filename <- demofiles("xml")[[1]]
+filename <- demoxml()
 paper <- read_grobid(filename)
 report(paper)
 }

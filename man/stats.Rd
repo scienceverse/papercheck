@@ -18,7 +18,7 @@ a table of statistics
 Check Stats
 }
 \examples{
-dir <- demofiles()
-papers <- read_grobid(dir)
+filename <- demoxml()
+papers <- read_grobid(filename)
 stats(papers)
 }

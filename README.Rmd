@@ -29,6 +29,12 @@ You can install the development version of papercheck from [GitHub](https://gith
 devtools::install_github("scienceverse/papercheck")
 ```
 
+You can launch an interactive shiny app version of the code below with:
+
+``` r
+papercheck_app()
+```
+
 ## Example
 
 ```{r}
@@ -38,21 +44,23 @@ library(papercheck)
 Convert a PDF to grobid XML format, then read it in as a scienceverse paper object.
 
 ```{r, eval = FALSE}
-pdf <- demofiles("pdf")[2]
+pdf <- demopdf() # use the path of your own PDF
 grobid <- pdf2grobid(pdf)
 paper <- read_grobid(grobid)
 ```
 
 ```{r, include = FALSE}
 # load paper without need for grobid server online
-paper <- demofiles("xml")[2] |> read_grobid()
+paper <- demoxml() |> read_grobid()
 ```
 
+
+### Search Text 
 
 Search the returned text. The regex pattern below searches for text that looks like statistical values (e.g., `N=313` or `p = 0.17`).
 
 ```{r}
-pattern <- "[^\\s\\(\\)]+\\s*(=|<)\\s*[0-9\\.-]+"
+pattern <- "[a-zA-Z]\\S*\\s*(=|<)\\s*[0-9\\.-]*\\d"
 text <- search_text(paper, pattern, 
                     return = "match", 
                     perl = TRUE)
@@ -62,12 +70,35 @@ text <- search_text(paper, pattern,
 knitr::kable(text)
 ```
 
+### ChatGPT
 
-## Batch Processing
+You can ask ChatGPT to process text. Use `search_text()` first to narrow down the text into what you want to query. Below, we returned the first two papers' introduction sections, and returned the full section. Then we asked ChatGPT "What is the hypothesis of this study?".
+
+```{r, eval = FALSE}
+# ask chatGPT a question
+hypotheses <- search_text(papers[1:2], 
+                          section = "intro", 
+                          return = "section")
+query <- "What is the hypothesis of this study?"
+gpt_hypo <- gpt(hypotheses, query)
+```
+
+```{r, echo = FALSE}
+gpt_hypo <- structure(list(id = c("eyecolor.xml", "incest.xml"), answer = c("The hypothesis of this study is to test the sex-linked heritable preference hypothesis and the positive sexual imprinting hypothesis in relation to eye color and partner selection in heterosexual and same-sex couples.", 
+"The hypothesis of this study is that moral opposition to third-party sibling incest may be greater among individuals with other-sex siblings than among individuals who do not have other-sex siblings."
+), cost = c(0.000671, 0.000635)), row.names = c(NA, -2L), class = c("tbl_df", 
+"tbl", "data.frame"))
+
+knitr::kable(gpt_hypo)
+```
+
+### Batch Processing
+
+The functions `pdf2grobid()` and `read_grobid()` also work on a folder of files, returning a list of XML file paths or paper objects, respectively. The functions `search_text()` and `gpt()` also work on a list of paper objects.
 
 ```{r}
 # read in all the XML files in the demo directory
-grobid_dir <- demofiles()
+grobid_dir <- demodir()
 papers <- read_grobid(grobid_dir)
 
 # select sentences in the intros containing the text "previous"
@@ -76,59 +107,39 @@ previous <- search_text(papers, "previous",
                         return = "sentence")
 ```
 
-```{r}
+```{r, echo = FALSE}
 knitr::kable(previous)
 ```
 
-## Modules
+### Modules
 
 Papercheck is designed modularly, so you can add modules to check for anything. It comes with a set of pre-defined modules, and we hope people will share more modules.
 
 You can see the list of built-in modules with the function below.
 
-```{r}
+```{r, results='asis'}
 module_list()
 ```
 
 To run a built-in module on a paper, you can reference it by name.
 
 ```{r}
-p <- module_run(papers, "all-p-values")
-
-head(p$table)
+p <- module_run(paper, "all-p-values")
 ```
 
 
-## Ask ChatGPT
+```{r, echo = FALSE}
+knitr::kable(p$table)
+```
+
+### Reports
+
+You can generate a report from any set of modules. The default set is `c("imprecise-p", "marginal", "osf-check", "retractionwatch", "ref-consistency")`
 
 ```{r, eval = FALSE}
-# ask chatGPT a question
-query <- "What is the hypothesis of this study?"
-gpt_hypo <- gpt(hypotheses, query, group_by = "id")
+paper_path <- report(paper, output_format = "html")
 ```
 
-```{r, echo = FALSE}
-gpt_hypo <- structure(list(id = c("eyecolor.xml", "incest.xml", "prereg.xml"
-), answer = c("The hypothesis of this study is to test the matching hypothesis, sex-linked heritable preference hypothesis, and positive sexual imprinting hypothesis in relation to eye color and partner selection.", 
-"The hypothesis of this study is that humans possess adaptations to reduce inbreeding, and that the strong moral opposition to incest plays an important role in preventing inbreeding.", 
-"The hypothesis of this study is that more efficient study designs might increase the willingness to pre-register in psychological science."
-), cost = c(0.000612, 0.000216, 0.000608)), row.names = c(NA, 
--3L), class = c("tbl_df", "tbl", "data.frame"))
-knitr::kable(gpt_hypo)
-```
 
-## Check Stats
-
-```{r}
-statcheck <- stats(papers)
-
-check <- statcheck |>
-  dplyr::filter(error == TRUE) |>
-  dplyr::select(id, computed_p:one_tailed_in_txt)
-```
-
-```{r, echo = FALSE}
-knitr::kable(check)
-```
 
 

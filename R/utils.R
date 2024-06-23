@@ -104,30 +104,56 @@ print.scivrs_paper <- function(x, ...) {
   cat(txt)
 }
 
-
-#' Get demo files
+#' Print Module List Object
 #'
-#' @param type whether to return the path to the demo directory, or demo XML or PDF files
+#' @param x The ppchk_module_list object
+#' @param ... Additional parameters for print
+#'
+#' @export
+#' @keywords internal
+#'
+print.ppchk_module_list <- function(x, ...) {
+  txt <- paste0("* ", x$name, ": ", x$description, "\n")
+  cat("", txt)
+}
+
+
+#' Get demo PDF file
 #'
 #' @return vector of paths
 #' @export
 #'
 #' @examples
-#' demofiles()
-#' demofiles("xml")
-#' demofiles("pdf")
-demofiles <- function(type = c("dir", "xml", "pdf")) {
+#' demopdf()
+demopdf <- function() {
+  grobid_dir <- system.file("extdata", package="papercheck")
+  pattern <- "\\.pdf$"
+  file <- list.files(grobid_dir, pattern, full.names = TRUE)
+  return(file)
+}
+
+#' Get demo XML file
+#'
+#' @return vector of paths
+#' @export
+#'
+#' @examples
+#' demoxml()
+demoxml <- function() {
+  grobid_dir <- system.file("extdata", package="papercheck")
+  pattern <- "\\.xml$"
+  file <- list.files(grobid_dir, pattern, full.names = TRUE)
+  return(file)
+}
+
+#' Get demo directory of grobid XML files
+#'
+#' @return paths
+#' @export
+#'
+#' @examples
+#' demodir()
+demodir <- function() {
   grobid_dir <- system.file("grobid", package="papercheck")
-
-  type <- match.arg(type)
-
-  if (type == "dir") return(grobid_dir)
-  if (type == "xml") {
-    pattern <- "\\.xml$"
-  } else if (type == "pdf") {
-    pattern <- "\\.pdf$"
-  }
-
-  files <- list.files(grobid_dir, pattern, full.names = TRUE)
-  return(files)
+  return(grobid_dir)
 }

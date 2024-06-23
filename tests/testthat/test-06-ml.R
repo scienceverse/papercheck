@@ -36,11 +36,10 @@ test_that("basic", {
 
   # paper ----
   skip("long")
-  paper <- read_grobid(demofiles("xml")[[1]])
+  paper <- read_grobid(demoxml())
   text <- search_text(paper, section = "method")
   system.time( gresults <- ml(text, model_dir) )
 
-  dplyr::filter(gresults, classification == 1)$text |> paste(collapse = "\n\n") |> cat()
-
-
+  dplyr::filter(gresults, classification == 1)$text |>
+    paste(collapse = "\n\n") |> cat()
 })

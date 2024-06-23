@@ -40,7 +40,8 @@ ui <- dashboardPage(
       menuItem("ChatGPT", tabName = "gpt_tab",
                icon = icon("robot"))
     ),
-    actionButton("demo", "Load Demo Files"),
+    actionButton("demo", "Load Demo File"),
+    actionButton("batch_demo", "Load Batch Demo"),
     #actionButton("reset_paper", "Reset"),
     actionButton("return_paper", "Quit & Return"),
     tags$br(),
@@ -148,8 +149,20 @@ server <- function(input, output, session) {
   observeEvent(input$demo, {
     debug_msg("demo")
 
-    filepath <- system.file("grobid", package = "papercheck")
-    s <- read_grobid(filepath)
+    p <- list(read_grobid(demoxml()))
+    id <- "to_err_is_human.xml"
+    names(p) <- id
+    p[[1]]$name <- id
+    p[[1]]$info$filename <- id
+    p[[1]]$full_text$id = id
+    update_from_paper(p)
+  })
+
+  ### batch_demo ----
+  observeEvent(input$batch_demo, {
+    debug_msg("batch_demo")
+
+    s <- read_grobid(demodir())
     update_from_paper(s)
   })
 
@@ -181,7 +194,7 @@ server <- function(input, output, session) {
         name <- names(s)[[i]]
         s[[i]]$name <- name
         s[[i]]$info$filename <- name
-        s[[i]]$full_text$file <- name
+        s[[i]]$full_text$id <- name
       }
 
       update_from_paper(s)
@@ -200,6 +213,13 @@ server <- function(input, output, session) {
     mod_report("")
     mod_title("")
     report_path("")
+
+    removeCssClass("mod_title", "red")
+    removeCssClass("mod_title", "yellow")
+    removeCssClass("mod_title", "green")
+    removeCssClass("mod_title", "na")
+    removeCssClass("mod_title", "fail")
+    removeCssClass("mod_title", "info")
 
     my_paper(paper)
   }
@@ -474,8 +494,8 @@ server <- function(input, output, session) {
       module_run(my_paper(), input$module_list)
     }, error = function(e) {
       err <- list(
-        module = input$run_module,
-        title = paste("Module Failure:", input$run_module),
+        module = input$module_list,
+        title = paste("Module Failure:", input$module_list),
         table = data.frame(),
         report = e$message,
         traffic_light = "fail"
@@ -489,6 +509,7 @@ server <- function(input, output, session) {
     removeCssClass("mod_title", "green")
     removeCssClass("mod_title", "na")
     removeCssClass("mod_title", "fail")
+    removeCssClass("mod_title", "info")
     addCssClass("mod_title", output$traffic_light)
     mod_table(output$table %||% data.frame())
     mod_report(output$report %||% "")
@@ -652,6 +673,19 @@ server <- function(input, output, session) {
           inputId = nm,
           label = tl
         )
+
+        # set up choices for relevant inputs
+        ch <- trans_choices[[func]][[nm]]
+        if (!is.null(ch)) {
+          tch <- suppressWarnings(
+            i18n()$t(names(ch))
+          )
+          new_choices <- setNames(ch, tch)
+          #debug_msg(dput(new_choices))
+          args$choices <- new_choices
+          args$selected <- input[[nm]]
+        }
+
         do.call(func, args)
       }
     }

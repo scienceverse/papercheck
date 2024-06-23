@@ -296,52 +296,268 @@
       "es": "Esta aplicación shiny está en desarrollo; todos los materiales creados deben ser cuidadosamente revisados."
     },
     {
-      "en": "ChatGPT"
+      "en": "ChatGPT",
+      "nl": "ChatGPT",
+      "zh": "ChatGPT",
+      "es": "ChatGPT"
     },
     {
-      "en": "ChatGPT API Key"
+      "en": "ChatGPT API Key",
+      "nl": "ChatGPT API-sleutel",
+      "zh": "ChatGPT API密钥",
+      "es": "Clave API de ChatGPT"
     },
     {
-      "en": "Code"
+      "en": "Code",
+      "nl": "Code",
+      "zh": "代码",
+      "es": "Código"
     },
     {
-      "en": "Context"
+      "en": "Context",
+      "nl": "Context",
+      "zh": "上下文",
+      "es": "Contexto"
     },
     {
-      "en": "Defaults"
+      "en": "Defaults",
+      "nl": "Standaardinstellingen",
+      "zh": "默认设置",
+      "es": "Predeterminados"
     },
     {
-      "en": "Group By"
+      "en": "Group By",
+      "nl": "Groepeer op",
+      "zh": "分组依据",
+      "es": "Agrupar por"
     },
     {
-      "en": "Info"
+      "en": "Info",
+      "nl": "Info",
+      "zh": "信息",
+      "es": "Información"
     },
     {
-      "en": "Load Demo Files"
+      "en": "Load Batch Demo",
+      "nl": "Laad batch demo",
+      "zh": "加载批量演示",
+      "es": "Cargar demostración por lotes"
     },
     {
-      "en": "Maximum allowed calls"
+      "en": "Load Demo File",
+      "nl": "Laad demobestand",
+      "zh": "加载演示文件",
+      "es": "Cargar archivo de demostración"
     },
     {
-      "en": "ML"
+      "en": "Maximum allowed calls",
+      "nl": "Maximaal toegestane oproepen",
+      "zh": "最大允许调用次数",
+      "es": "Máximo de llamadas permitidas"
     },
     {
-      "en": "Paper Name"
+      "en": "ML",
+      "nl": "ML",
+      "zh": "机器学习",
+      "es": "ML"
     },
     {
-      "en": "Query"
+      "en": "Paper Name",
+      "nl": "Papier naam",
+      "zh": "论文名称",
+      "es": "Nombre del papel"
     },
     {
-      "en": "Run Module"
+      "en": "Query",
+      "nl": "Query",
+      "zh": "查询",
+      "es": "Consulta"
     },
     {
-      "en": "Run Report"
+      "en": "Run Module",
+      "nl": "Voer module uit",
+      "zh": "运行模块",
+      "es": "Ejecutar módulo"
     },
     {
-      "en": "Text"
+      "en": "Run Report",
+      "nl": "Rapport uitvoeren",
+      "zh": "运行报告",
+      "es": "Ejecutar informe"
     },
     {
-      "en": "This app is under development; all materials created should be carefully checked."
+      "en": "Text",
+      "nl": "Tekst",
+      "zh": "文本",
+      "es": "Texto"
+    },
+    {
+      "en": "This app is under development; all materials created should be carefully checked.",
+      "nl": "Deze app is in ontwikkeling; alle gemaakte materialen moeten zorgvuldig worden gecontroleerd.",
+      "zh": "这个应用程序正在开发中; 所有创建的材料应仔细检查。",
+      "es": "Esta aplicación está en desarrollo; todos los materiales creados deben ser cuidadosamente revisados."
+    },
+    {
+      "en": "Check Status of OSF Links",
+      "nl": "Controleer de status van OSF-links",
+      "zh": "检查OSF链接状态",
+      "es": "Verificar el estado de los enlaces de OSF"
+    },
+    {
+      "en": "Chinese",
+      "nl": "Chinees",
+      "zh": "中文",
+      "es": "Chino"
+    },
+    {
+      "en": "Imprecise P-Values",
+      "nl": "Onnauwkeurige P-waarden",
+      "zh": "不精确的P值",
+      "es": "Valores P imprecisos"
+    },
+    {
+      "en": "List All P-Values",
+      "nl": "Lijst van alle P-waarden",
+      "zh": "列出所有P值",
+      "es": "Listar todos los valores P"
+    },
+    {
+      "en": "List All URLs",
+      "nl": "Lijst van alle URL's",
+      "zh": "列出所有网址",
+      "es": "Listar todas las URLs"
+    },
+    {
+      "en": "Marginal Significance",
+      "nl": "Marginale significantie",
+      "zh": "边际显著性",
+      "es": "Significancia marginal"
+    },
+    {
+      "en": "Reference Consistency",
+      "nl": "Referentieconsistentie",
+      "zh": "参考一致性",
+      "es": "Consistencia de referencias"
+    },
+    {
+      "en": "RetractionWatch",
+      "nl": "RetractionWatch",
+      "zh": "撤回观察",
+      "es": "RetractionWatch"
+    },
+    {
+      "en": "Sample Size",
+      "nl": "Steekproefgrootte",
+      "zh": "样本大小",
+      "es": "Tamaño de la muestra"
+    },
+    {
+      "en": "Spanish",
+      "nl": "Spaans",
+      "zh": "西班牙语",
+      "es": "Español"
+    },
+    {
+      "en": "Summarise Sections",
+      "nl": "Samenvatten secties",
+      "zh": "总结部分",
+      "es": "Resumir secciones"
+    },
+    {
+      "en": "abstract",
+      "nl": "abstract",
+      "zh": "摘要",
+      "es": "resumen"
+    },
+    {
+      "en": "all",
+      "nl": "alles",
+      "zh": "全部",
+      "es": "todo"
+    },
+    {
+      "en": "discussion",
+      "nl": "discussie",
+      "zh": "讨论",
+      "es": "discusión"
+    },
+    {
+      "en": "intro",
+      "nl": "introductie",
+      "zh": "介绍",
+      "es": "introducción"
+    },
+    {
+      "en": "match",
+      "nl": "overeenkomen",
+      "zh": "匹配",
+      "es": "coincidir"
+    },
+    {
+      "en": "method",
+      "nl": "methode",
+      "zh": "方法",
+      "es": "método"
+    },
+    {
+      "en": "paragraph",
+      "nl": "paragraaf",
+      "zh": "段落",
+      "es": "párrafo"
+    },
+    {
+      "en": "results",
+      "nl": "resultaten",
+      "zh": "结果",
+      "es": "resultados"
+    },
+    {
+      "en": "section",
+      "nl": "sectie",
+      "zh": "部分",
+      "es": "sección"
+    },
+    {
+      "en": "sentence",
+      "nl": "zin",
+      "zh": "句子",
+      "es": "oración"
+    },
+    {
+      "en": "Fixed",
+      "nl": "Vast",
+      "zh": "固定",
+      "es": "Fijo"
+    },
+    {
+      "en": "Ignore Case",
+      "nl": "Negeer hoofdletters",
+      "zh": "忽略大小写",
+      "es": "Ignorar mayúsculas"
+    },
+    {
+      "en": "PERL regex",
+      "nl": "PERL-regex",
+      "zh": "PERL正则表达式",
+      "es": "regex de PERL"
+    },
+    {
+      "en": "Search this table",
+      "nl": "Doorzoek deze tabel",
+      "zh": "搜索此表",
+      "es": "Buscar en esta tabla"
+    },
+    {
+      "en": "Load Files"
+    },
+    {
+      "en": "Modules"
+    },
+    {
+      "en": "Report"
+    },
+    {
+      "en": "Search Text"
     }
   ]
 }

@@ -29,19 +29,30 @@ module_run <- function(paper, module) {
   })
   module_dir <- dirname(module_path)
 
-  if (json$type == "text") {
-    results <- module_run_text(paper, json$text)
-  } else if (json$type == "code") {
-    results <- module_run_code(paper, json$code, module_dir)
-  } else if (json$type == "ml") {
-    results <- module_run_ml(paper, json$ml, module_dir)
-  } else if (json$type == "ai") {
-    results <- module_run_ai(paper, json$ai)
-  } else {
-    stop("The module has an invalid type of ", json$type)
+  mod_chunks <- names(json) %in% c("text", "code", "ml", "ai") |>
+    which()
+
+  results <- paper
+  for (chunk in mod_chunks) {
+    type <- names(json)[[chunk]]
+    if (is.data.frame(results$table)) {
+      results <- results$table
+    }
+
+    if (type == "text") {
+      results <- module_run_text(results, json[[chunk]])
+    } else if (type == "code") {
+      results <- module_run_code(results, json[[chunk]], module_dir)
+    } else if (type == "ml") {
+      results <- module_run_ml(results, json[[chunk]], module_dir)
+    } else if (type == "ai") {
+      results <- module_run_ai(results, json[[chunk]])
+    } else {
+      stop("The module has an invalid type of ", type)
+    }
   }
 
-  # TODO: figure out module template for this
+  # traffic light ----
   if (is.null(results$traffic_light) &&
       !is.null(json$traffic_light)) {
     results$traffic_light <- ifelse(
@@ -53,10 +64,12 @@ module_run <- function(paper, module) {
 
   results$traffic_light <- results$traffic_light %||% "na"
 
-  # TODO: determine what kind of report text to send back
-  if (is.null(results$report) &&
-      !is.null(json$report)) {
-    results$report <- json$report[[results$traffic_light]]
+  # report text ----
+  if (is.null(results$report) && !is.null(json$report)) {
+    results$report <- paste(
+      json$report[["all"]],
+      json$report[[results$traffic_light]]
+    ) |> trimws()
   }
 
   report_items <- list(
@@ -124,9 +137,9 @@ module_run_code <- function(paper, args, module_dir = ".") {
 #' @return data frame
 #' @keywords internal
 module_run_ml <- function(paper, args, module_dir = ".") {
-  model_dir <- file.path(module_dir, args$path)
+  model_dir <- file.path(module_dir, args$model_dir)
   if (!file.exists(model_dir)) {
-    stop("The model directory ", args$path, " could not be found; make sure the module specification file is using a relative path to the directory")
+    stop("The model directory ", args$model_dir, " could not be found; make sure the module specification file is using a relative path to the directory")
   }
 
   if (is.vector(paper)) {
@@ -183,12 +196,25 @@ module_list <- function(module_dir = system.file("modules", package = "paperchec
                       recursive = TRUE)
   json <- lapply(files, jsonlite::read_json, simplifyVector = TRUE)
 
+  type <- sapply(json, function(j) {
+    if ("ai" %in% names(j)) return("ai")
+    if ("ml" %in% names(j)) return("ml")
+    if ("code" %in% names(j)) return("code")
+    if ("text" %in% names(j)) return("text")
+  })
+
   display <- data.frame(
     name = basename(files) |> sub("\\.mod$", "", x = _),
     title = sapply(json, `[[`, "title"),
-    type = sapply(json, `[[`, "type"),
+    description = sapply(json, `[[`, "description") |>
+      sapply(\(x) x %||% ""),
+    type = type,
     path = files
   )
+  class(display) <- c("ppchk_module_list", "data.frame")
+  rownames(display) <- NULL
 
   return(display)
 }
+
+

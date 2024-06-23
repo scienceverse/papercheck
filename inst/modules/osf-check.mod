@@ -1,6 +1,6 @@
 {
   "title": "Check Status of OSF Links",
-  "type": "code",
+  "description": "List all OSF links and whether they are open, closed, or do not exist.",
   "authors": [{
     "orcid": "0000-0002-0247-239X",
     "name":{
@@ -25,6 +25,7 @@
     "na": "No OSF links were detected",
     "red": "We detected closed OSF links",
     "yellow": "There may be problems with some OSF links",
-    "green": "All OSF links are open"
+    "green": "All OSF links are open",
+    "fail": "All attempts to check OSF links failed; check if you are offline."
   }
 }

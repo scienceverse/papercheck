@@ -13,9 +13,9 @@ test_that("exists", {
   expect_equal(p$references, data.frame())
   expect_equal(p$citations, data.frame())
 
-  xml <- demofiles("xml")[1]
+  xml <- demoxml()
   p <- paper(xml)
-  expect_equal(nrow(p$full_text), 93)
-  expect_equal(nrow(p$references), 21)
-  expect_equal(nrow(p$citations), 22)
+  expect_equal(nrow(p$full_text), 24)
+  expect_equal(nrow(p$references), 2)
+  expect_equal(nrow(p$citations), 2)
 })

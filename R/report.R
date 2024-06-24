@@ -158,7 +158,7 @@ module_report <- function(module_output, header = 2) {
         paste(collapse = "\n")
     }
   }
-  head <- rep("#", header) |> paste(collapse = )
+  head <- rep("#", header) |> paste(collapse = "")
   paste0(head, " ", module_output$title,
          " {.", module_output$traffic_light, "}\n\n",
          module_output$report, "\n\n", tab)

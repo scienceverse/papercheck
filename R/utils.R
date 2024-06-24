@@ -92,16 +92,13 @@ concat_tables <- function(papers, name_path) {
 #' @keywords internal
 #'
 print.scivrs_paper <- function(x, ...) {
-  ft <- sprintf("%d sentences; %d sections",
-                nrow(x$full_text),
-                max(x$full_text$div))
-
-  ref <- sprintf("%d", nrow(x$references))
-
-  cite <- sprintf("%d", nrow(x$citations))
-
   underline <- rep("-", nchar(x$name)) |> paste(collapse="")
-  txt <- sprintf("%s\n%s\n%s\n\n* Full Text: %s\n* References: %s\n* Citations: %s\n\n", underline, x$name, underline, ft, ref, cite)
+  txt <- sprintf("%s\n%s\n%s\n\n* Sections: %d\n* Sentences: %d\n* References: %d\n* Citations: %d\n\n",
+                 underline, x$name, underline,
+                 max(x$full_text$div),
+                 nrow(x$full_text),
+                 nrow(x$references),
+                 nrow(x$citations))
 
   cat(txt)
 }

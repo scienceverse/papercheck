@@ -67,6 +67,9 @@
     <loc>https://scienceverse.github.io/papercheck/reference/module_list.html</loc>
   </url>
   <url>
+    <loc>https://scienceverse.github.io/papercheck/reference/module_report.html</loc>
+  </url>
+  <url>
     <loc>https://scienceverse.github.io/papercheck/reference/module_run.html</loc>
   </url>
   <url>
@@ -92,6 +95,9 @@
   </url>
   <url>
     <loc>https://scienceverse.github.io/papercheck/reference/print.ppchk_module_list.html</loc>
+  </url>
+  <url>
+    <loc>https://scienceverse.github.io/papercheck/reference/print.ppchk_module_output.html</loc>
   </url>
   <url>
     <loc>https://scienceverse.github.io/papercheck/reference/print.scivrs_paper.html</loc>

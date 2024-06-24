@@ -92,11 +92,13 @@ concat_tables <- function(papers, name_path) {
 #' @keywords internal
 #'
 print.scivrs_paper <- function(x, ...) {
-  ft <- sprintf("%d sentences", nrow(x$full_text))
+  ft <- sprintf("%d sentences; %d sections",
+                nrow(x$full_text),
+                max(x$full_text$div))
 
-  ref <- sprintf("%d references", nrow(x$references))
+  ref <- sprintf("%d", nrow(x$references))
 
-  cite <- sprintf("%d citations", nrow(x$citations))
+  cite <- sprintf("%d", nrow(x$citations))
 
   underline <- rep("-", nchar(x$name)) |> paste(collapse="")
   txt <- sprintf("%s\n%s\n%s\n\n* Full Text: %s\n* References: %s\n* Citations: %s\n\n", underline, x$name, underline, ft, ref, cite)
@@ -115,6 +117,19 @@ print.scivrs_paper <- function(x, ...) {
 print.ppchk_module_list <- function(x, ...) {
   txt <- paste0("* ", x$name, ": ", x$description, "\n")
   cat("", txt)
+}
+
+#' Print Module Output
+#'
+#' @param x The ppchk_module_output object
+#' @param ... Additional parameters for print
+#'
+#' @export
+#' @keywords internal
+#'
+print.ppchk_module_output <- function(x, ...) {
+  txt <- module_report(x, 3)
+  cat(txt)
 }
 
 

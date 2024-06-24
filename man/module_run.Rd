@@ -17,3 +17,8 @@ a list of the returned table and report text
 \description{
 Run a module
 }
+\examples{
+filename <- demoxml()
+paper <- read_grobid(filename)
+op <- module_run(paper, "imprecise-p")
+}

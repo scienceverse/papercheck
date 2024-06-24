@@ -667,6 +667,7 @@ server <- function(input, output, session) {
         tl <- suppressWarnings(
           i18n()$t(l)
         )
+        if (tl == "") tl <- NULL
 
         args <- list(
           session = session,

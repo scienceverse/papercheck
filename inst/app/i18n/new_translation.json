@@ -363,7 +363,7 @@
     },
     {
       "en": "Paper Name",
-      "nl": "Papier naam",
+      "nl": "Naam van artikel",
       "zh": "论文名称",
       "es": "Nombre del papel"
     },
@@ -489,9 +489,9 @@
     },
     {
       "en": "match",
-      "nl": "overeenkomen",
+      "nl": "match",
       "zh": "匹配",
-      "es": "coincidir"
+      "es": "match"
     },
     {
       "en": "method",
@@ -548,16 +548,31 @@
       "es": "Buscar en esta tabla"
     },
     {
-      "en": "Load Files"
+      "en": "Load Files",
+      "nl": "Bestanden laden",
+      "zh": "加载文件",
+      "es": "Cargar archivos"
     },
     {
-      "en": "Modules"
+      "en": "Modules",
+      "nl": "Modules",
+      "zh": "模块",
+      "es": "Módulos"
     },
     {
-      "en": "Report"
+      "en": "Report",
+      "nl": "Rapport",
+      "zh": "报告",
+      "es": "Informe"
     },
     {
-      "en": "Search Text"
+      "en": "Search Text",
+      "nl": "Tekst zoeken",
+      "zh": "搜索文本",
+      "es": "Buscar texto"
+    },
+    {
+      "en": ""
     }
   ]
 }

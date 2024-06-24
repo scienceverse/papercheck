@@ -363,7 +363,7 @@
     },
     {
       "en": "Paper Name",
-      "nl": "Papier naam",
+      "nl": "Naam van artikel",
       "zh": "论文名称",
       "es": "Nombre del papel"
     },
@@ -489,9 +489,9 @@
     },
     {
       "en": "match",
-      "nl": "overeenkomen",
+      "nl": "match",
       "zh": "匹配",
-      "es": "coincidir"
+      "es": "match"
     },
     {
       "en": "method",
@@ -525,7 +525,7 @@
     },
     {
       "en": "Fixed",
-      "nl": "Vast",
+      "nl": "Fixed",
       "zh": "固定",
       "es": "Fijo"
     },

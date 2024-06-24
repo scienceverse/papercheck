@@ -8,3 +8,4 @@
 ^\.github$
 ^profile$
 ^data-raw$
+inst/modules/sample-size*

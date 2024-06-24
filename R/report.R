@@ -103,21 +103,7 @@ report <- function(paper,
                 "⚫️ check failed\n",
                 ":::\n\n")
 
-  body <- sapply(module_output, function(mop) {
-    tab <- mop$table
-    if (is.data.frame(tab)) {
-      tab$id <- NULL
-      if (nrow(tab) == 0) {
-        tab <- ""
-      } else {
-        tab <- knitr::kable(tab, format = "markdown") |>
-          as.character() |>
-          paste(collapse = "\n")
-      }
-    }
-    paste0("## ", mop$title, " {.", mop$traffic_light, "}\n\n",
-           mop$report, "\n\n", tab)
-  }) |>
+  body <- sapply(module_output, module_report) |>
     paste(collapse = "\n\n") |>
     gsub("\\n{3,}", "\n\n", x = _)
 
@@ -146,4 +132,34 @@ report <- function(paper,
     pb$tick(tokens = list(what = "Report Saved"))
 
   return(output_file)
+}
+
+#' Report from module output
+#'
+#' @param module_output the output of a `module_run()`
+#'
+#' @return text
+#' @export
+#'
+#' @examples
+#' filename <- demoxml()
+#' paper <- read_grobid(filename)
+#' op <- module_run(paper, "imprecise-p")
+#' module_report(op) |> cat()
+module_report <- function(module_output, header = 2) {
+  tab <- module_output$table
+  if (is.data.frame(tab)) {
+    tab$id <- NULL
+    if (nrow(tab) == 0) {
+      tab <- ""
+    } else {
+      tab <- knitr::kable(tab, format = "markdown") |>
+        as.character() |>
+        paste(collapse = "\n")
+    }
+  }
+  head <- rep("#", header) |> paste(collapse = )
+  paste0(head, " ", module_output$title,
+         " {.", module_output$traffic_light, "}\n\n",
+         module_output$report, "\n\n", tab)
 }

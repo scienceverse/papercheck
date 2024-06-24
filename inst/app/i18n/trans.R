@@ -60,8 +60,8 @@ textAreaInput <- function(inputId, label, ...) {
 }
 
 selectInput <- function(inputId, label, choices, ...) {
-  if (!is.null(label))
-    trans_labels$updateSelectInput[inputId] <<- label
+  #if (!is.null(label))
+    trans_labels$updateSelectInput[inputId] <<- label %||% ""
 
   if (!is.null(choices)) {
     if (is.null(names(choices))) names(choices) <- choices
@@ -78,8 +78,8 @@ numericInput <- function(inputId, label, ...) {
 }
 
 checkboxInput <- function(inputId, label, choices, ...) {
-  if (!is.null(label))
-    trans_labels$updateCheckboxInput[inputId] <<- label
+  #if (!is.null(label))
+    trans_labels$updateCheckboxInput[inputId] <<- label %||% ""
 
   if (!is.null(choices)) {
     if (is.null(names(choices))) names(choices) <- choices
@@ -90,8 +90,8 @@ checkboxInput <- function(inputId, label, choices, ...) {
 }
 
 checkboxGroupInput<- function(inputId, label, choices, ...) {
-  if (!is.null(label))
-    trans_labels$updateCheckboxGroupInput[inputId] <<- label
+  #if (!is.null(label))
+    trans_labels$updateCheckboxGroupInput[inputId] <<- label %||% ""
 
   if (!is.null(choices)) {
     if (is.null(names(choices))) names(choices) <- choices

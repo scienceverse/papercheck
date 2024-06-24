@@ -6,6 +6,10 @@
 #' @return a list of the returned table and report text
 #' @export
 #'
+#' @examples
+#' filename <- demoxml()
+#' paper <- read_grobid(filename)
+#' module_run(paper, "imprecise-p")
 module_run <- function(paper, module) {
   # search for module in built-in directory
   module_libs <- system.file("modules", package = "papercheck")
@@ -79,6 +83,8 @@ module_run <- function(paper, module) {
     report = results$report,
     traffic_light = results$traffic_light
   )
+  class(report_items) <- "ppchk_module_output"
+
   return(report_items)
 }
 

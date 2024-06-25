@@ -190,3 +190,13 @@ test_that("ref-consistency", {
   expect_equal(mod_output$module, module)
 })
 
+test_that("statcheck", {
+  paper <- demoxml() |> read_grobid()
+  module <- "statcheck"
+
+  mod_output <- module_run(paper, module)
+  expect_equal(mod_output$traffic_light, "green")
+  expect_equal(nrow(mod_output$table), 2)
+  expect_equal(mod_output$module, module)
+})
+

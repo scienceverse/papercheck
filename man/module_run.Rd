@@ -20,5 +20,5 @@ Run a module
 \examples{
 filename <- demoxml()
 paper <- read_grobid(filename)
-op <- module_run(paper, "imprecise-p")
+module_run(paper, "imprecise-p")
 }

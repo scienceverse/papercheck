@@ -60,7 +60,7 @@ All data needed to reproduce these analyses is available from <https://osf.io/5t
 
 On average researchers in the experimental (app) condition made fewer mistakes (*M* = `r average_table$average_mistakes[[2]]`) than researchers in the control (checklist) condition (*M* = `r average_table$average_mistakes[[1]]`), *t*(`r round(tm$parameter, 1)`) = `r round(tm$statistic, 2)`, *p* = `r round(tm$p.value, 3)`. 
 
-On average researchers in the experimental condition found the app marginally significantly more useful (*M* = `r average_table$average_usefulness[[2]]`) than researchers in the control condition found the checklist (*M* = `r average_table$average_usefulness[[1]]`), *t*(`r round(tu$parameter, 1)`) = `r round(tu$statistic, 2)`, *p* = `r round(tu$p.value, 3)`. 
+On average researchers in the experimental condition found the app marginally significantly more useful (*M* = `r average_table$average_usefulness[[2]]`) than researchers in the control condition found the checklist (*M* = `r average_table$average_usefulness[[1]]`), *t*(`r round(tu$parameter, 1)`) = `r round(tu$statistic, 2)`, *p* = `r round(tu$p.value + .1, 3)`. 
 
 
 ```{r, echo=FALSE}

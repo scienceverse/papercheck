@@ -525,7 +525,7 @@
     },
     {
       "en": "Fixed",
-      "nl": "Vast",
+      "nl": "Fixed",
       "zh": "固定",
       "es": "Fijo"
     },
@@ -573,6 +573,9 @@
     },
     {
       "en": ""
+    },
+    {
+      "en": "StatCheck"
     }
   ]
 }

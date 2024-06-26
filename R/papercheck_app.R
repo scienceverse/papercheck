@@ -21,7 +21,7 @@ papercheck_app <- function(study = NULL, quiet = FALSE, ...) {
 
   # check required packages
   pckgs <- c("shiny", "shinydashboard", "shinyjs",
-             "scienceverse", "shiny.i18n", "DT")
+             "scienceverse", "shiny.i18n", "DT", "waiter")
   names(pckgs) <- pckgs
   req_pckgs <- sapply(pckgs, requireNamespace, quietly = TRUE)
 

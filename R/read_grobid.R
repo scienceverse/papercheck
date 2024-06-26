@@ -271,39 +271,51 @@ get_authors <- function(xml) {
 get_refs <- function(xml) {
   refs <- xml2::xml_find_all(xml, "//listBibl //biblStruct")
 
-  ref_table <- data.frame(
-    bib_id = xml2::xml_attr(refs, "id")
-  )
-  ref_table$doi <- xml2::xml_find_first(refs, ".//analytic //idno[@type='DOI']") |>
-    xml2::xml_text()
-  ref_table$ref <- xml2::xml_find_first(refs, ".//note[@type='raw_reference']") |>
-    xml2::xml_text()
+  if (length(refs) > 0) {
+    ref_table <- data.frame(
+      bib_id = xml2::xml_attr(refs, "id")
+    )
+    ref_table$doi <- xml2::xml_find_first(refs, ".//analytic //idno[@type='DOI']") |>
+      xml2::xml_text()
+    ref_table$ref <- xml2::xml_find_first(refs, ".//note[@type='raw_reference']") |>
+      xml2::xml_text()
+  } else {
+    ref_table <- data.frame(
+      bib_id = character(0),
+      doi = character(0),
+      ref = character(0)
+    )
+  }
 
   # get in-text citation ----
   textrefs <- xml2::xml_find_all(xml, "//body //ref[@type='bibr']")
 
-  # get parent paragraphs of all in-text references and parse into sentences
-  textrefp <- data.frame(
-    p = xml2::xml_parent(textrefs) |> as.character() |>
-      gsub("</?p>", "", x = _)
-  ) |>
-    tidytext::unnest_sentences(output = "text", input = "p", to_lower = FALSE)
+  if (length(textrefs) > 0) {
+    # get parent paragraphs of all in-text references and parse into sentences
+    textrefp <- data.frame(
+      p = xml2::xml_parent(textrefs) |> as.character() |>
+        gsub("</?p>", "", x = _)
+    ) |>
+      tidytext::unnest_sentences(output = "text", input = "p", to_lower = FALSE)
 
-  # find refs
-  matches <- gregexpr("(?<=ref type=\"bibr\" target=\"#)b\\d+", textrefp$text, perl = TRUE)
-  no_targets <- gregexpr("(?<=ref type=\"bibr\">).*(?=</ref>)", textrefp$text, perl = TRUE)
-  textrefp$bib_id <- mapply(c,
-                            regmatches(textrefp$text, matches),
-                            regmatches(textrefp$text, no_targets)) |>
-    sapply(paste, collapse = ";")
+    # find refs
+    matches <- gregexpr("(?<=ref type=\"bibr\" target=\"#)b\\d+", textrefp$text, perl = TRUE)
+    no_targets <- gregexpr("(?<=ref type=\"bibr\">).*(?=</ref>)", textrefp$text, perl = TRUE)
+    textrefp$bib_id <- mapply(c,
+                              regmatches(textrefp$text, matches),
+                              regmatches(textrefp$text, no_targets)) |>
+      sapply(paste, collapse = ";")
 
-  citation_table <- textrefp[textrefp$bib_id != "", ]
-  citation_table$text <- lapply(citation_table$text, xml2::read_html) |>
-    sapply(xml2::xml_text)
+    citation_table <- textrefp[textrefp$bib_id != "", ]
+    citation_table$text <- lapply(citation_table$text, xml2::read_html) |>
+      sapply(xml2::xml_text)
 
-  citation_table <- citation_table |>
-    tidyr::separate_longer_delim("bib_id", delim = ";")
-
+    citation_table <- citation_table |>
+      tidyr::separate_longer_delim("bib_id", delim = ";")
+  } else {
+    citation_table = data.frame(bib_id = character(0),
+                                text = character(0))
+  }
 
   return(list(
     references = ref_table,

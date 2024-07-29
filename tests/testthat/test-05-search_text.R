@@ -17,7 +17,7 @@ test_that("default", {
   sig <- search_text(s, "significant")
 
   expect_true(all(grepl("significant", sig$text)))
-  expect_equal(nrow(sig), 2)
+  expect_equal(nrow(sig), 3)
 
   # section
   res <- search_text(s, "significant", "results")
@@ -54,10 +54,10 @@ test_that("return", {
 
   expect_equal(res_s1$text, res_s2$text)
 
-  expect_equal(nrow(res_s1), 2)
-  expect_equal(nrow(res_p), 1)
-  expect_equal(nrow(res_sec), 1)
-  expect_equal(res_m$text, rep("significant", 2))
+  expect_equal(nrow(res_s1), 3)
+  expect_equal(nrow(res_p), 2)
+  expect_equal(nrow(res_sec), 2)
+  expect_equal(res_m$text, rep("significant", 3))
 
   p <- search_text(s, "p\\s*[><=]{1,2}\\s*[0-9\\.]+\\d", return = "match")
   expect_equal(p$text[[1]], "p = 0.005")

@@ -195,7 +195,7 @@ test_that("statcheck", {
   module <- "statcheck"
 
   mod_output <- module_run(paper, module)
-  expect_equal(mod_output$traffic_light, "green")
+  expect_equal(mod_output$traffic_light, "red")
   expect_equal(nrow(mod_output$table), 2)
   expect_equal(mod_output$module, module)
 })

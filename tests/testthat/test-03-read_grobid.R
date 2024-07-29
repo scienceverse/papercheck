@@ -8,9 +8,19 @@ test_that("error", {
   filename <- tempfile(fileext = "xml")
   xml2::read_html("<p>Hello</p>") |>
     xml2::write_xml(filename, options = "as_xml")
-  expect_error(read_grobid(filename))
-  expect_error(read_grobid(filename, xml_type = "grobid"))
-  expect_error(read_grobid(filename, xml_type = "huh"))
+  expect_warning(g1 <- read_grobid(filename))
+  expect_null(g1)
+
+  # bad file
+  expect_warning(g2 <- read_grobid("examples/badxml.xml"),
+                 "The file examples/badxml.xml was not valid XML",
+                 fixed = TRUE)
+  expect_null(g2)
+
+  expect_warning(g3 <- read_grobid("examples"),
+                 "The file examples/badxml.xml was not valid XML",
+                 fixed = TRUE)
+  expect_equal(length(g3), 1)
 })
 
 test_that("basics", {
@@ -66,7 +76,7 @@ test_that("get_refs", {
 })
 
 test_that("iteration", {
-  expect_error(read_grobid("."),
+  expect_error(read_grobid("noxml"),
                "^There are no xml files in the directory")
 
   grobid_dir <- demodir()
@@ -104,6 +114,8 @@ test_that("iteration", {
                     "grobid/prereg.xml")
   expect_equal(names(s), nested_files)
 })
+
+
 
 
 

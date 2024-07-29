@@ -137,6 +137,7 @@ report <- function(paper,
 #' Report from module output
 #'
 #' @param module_output the output of a `module_run()`
+#' @param header header level (default 2)
 #'
 #' @return text
 #' @export

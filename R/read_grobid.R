@@ -46,9 +46,12 @@ read_grobid <- function(filename) {
 
     names(p) <- unique_names
     for (un in unique_names) {
-      p[[un]]$full_text$id <- un
+      if (!is.null(p[[un]])) p[[un]]$full_text$id <- un
     }
-    return(p)
+
+    # remove NULLs
+    valid <- !sapply(p, is.null)
+    return(p[valid])
   } else if (dir.exists(filename)) {
     xmls <- list.files(filename, "\\.xml",
                        full.names = TRUE,
@@ -65,7 +68,14 @@ read_grobid <- function(filename) {
   }
 
   # read xml ----
-  xml <- read_grobid_xml(filename)
+  xml <- tryCatch(read_grobid_xml(filename),
+                  error = function(e) {
+                    warning("The file ", filename, " was not valid XML", call. = FALSE)
+                    return(FALSE)
+                  })
+
+  # return nothing if the file can't be read, so iteration doesn't fail
+  if (isFALSE(xml)) return(NULL)
 
   # set up paper object ----
   p <- paper()

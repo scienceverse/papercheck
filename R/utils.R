@@ -95,7 +95,7 @@ print.scivrs_paper <- function(x, ...) {
   underline <- rep("-", nchar(x$name)) |> paste(collapse="")
   txt <- sprintf("%s\n%s\n%s\n\n* Sections: %d\n* Sentences: %d\n* References: %d\n* Citations: %d\n\n",
                  underline, x$name, underline,
-                 max(x$full_text$div),
+                 max(c(0, x$full_text$div)),
                  nrow(x$full_text),
                  nrow(x$references),
                  nrow(x$citations))

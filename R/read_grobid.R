@@ -46,7 +46,9 @@ read_grobid <- function(filename) {
 
     names(p) <- unique_names
     for (un in unique_names) {
-      if (!is.null(p[[un]])) p[[un]]$full_text$id <- un
+      if (!is.null(p[[un]]) && nrow(p[[un]]$full_text) > 0) {
+        p[[un]]$full_text$id <- un
+      }
     }
 
     # remove NULLs
@@ -180,11 +182,22 @@ get_full_text<- function(xml, id = NULL) {
   ## tokenize sentences ----
   # TODO: get tidytext to stop breaking sentences at "S.E. ="
   text <- NULL # hack to stop cmdcheck warning :(
-  ft <- do.call(rbind, c(list(abst_table), div_text)) |>
-    tidytext::unnest_sentences(text, text, to_lower = FALSE) |>
-    dplyr::mutate(s = dplyr::row_number(), .by = c("div", "p"))
-
-  ft$id <- id
+  alltext <- do.call(rbind, c(list(abst_table), div_text))
+  if (nrow(alltext) > 0) {
+    ft <- alltext |>
+      tidytext::unnest_sentences(text, text, to_lower = FALSE) |>
+      dplyr::mutate(s = dplyr::row_number(), .by = c("div", "p"))
+    ft$id <- id
+  } else {
+    ft <- data.frame(
+      header = character(0),
+      text = character(0),
+      div = double(0),
+      p = double(0),
+      s = double(0),
+      id = character(0)
+    )
+  }
 
   # classify headers ----
   abstract <- grepl("abstract", ft$header, ignore.case = TRUE)
@@ -192,7 +205,7 @@ get_full_text<- function(xml, id = NULL) {
   method <- grepl("method", ft$header, ignore.case = TRUE)
   results <- grepl("result", ft$header, ignore.case = TRUE)
   discussion <- grepl("discuss", ft$header, ignore.case = TRUE)
-  ft$section <- NA
+  ft$section <- rep(NA_character_, nrow(ft))
   ft$section[abstract] <- "abstract"
   ft$section[intro] <- "intro"
   ft$section[method] <- "method"

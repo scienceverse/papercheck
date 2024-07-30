@@ -11,6 +11,10 @@ test_that("error", {
   expect_warning(g1 <- read_grobid(filename))
   expect_null(g1)
 
+  # valid grobid with no text
+  expect_no_error(notext <- read_grobid("examples/notext.xml"))
+  expect_equal( nrow( search_text(notext) ), 0)
+
   # bad file
   expect_warning(g2 <- read_grobid("examples/badxml.xml"),
                  "The file examples/badxml.xml was not valid XML",
@@ -20,7 +24,7 @@ test_that("error", {
   expect_warning(g3 <- read_grobid("examples"),
                  "The file examples/badxml.xml was not valid XML",
                  fixed = TRUE)
-  expect_equal(length(g3), 1)
+  expect_equal(length(g3), 2)
 })
 
 test_that("basics", {

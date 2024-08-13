@@ -322,11 +322,13 @@ get_refs <- function(xml) {
       tidytext::unnest_sentences(output = "text", input = "p", to_lower = FALSE)
 
     # find refs
-    matches <- gregexpr("(?<=ref type=\"bibr\" target=\"#)b\\d+", textrefp$text, perl = TRUE)
-    no_targets <- gregexpr("(?<=ref type=\"bibr\">).*(?=</ref>)", textrefp$text, perl = TRUE)
-    textrefp$bib_id <- mapply(c,
-                              regmatches(textrefp$text, matches),
-                              regmatches(textrefp$text, no_targets)) |>
+    matches <- gregexpr("(?<=ref type=\"bibr\" target=\"#)b\\d+",
+                        textrefp$text, perl = TRUE) |>
+      regmatches(textrefp$text, m = _)
+    no_targets <- gregexpr("(?<=ref type=\"bibr\">)[^</ref>]*(?=</ref>)",
+                           textrefp$text, perl = TRUE) |>
+      regmatches(textrefp$text, m = _)
+    textrefp$bib_id <- mapply(c, matches, no_targets, SIMPLIFY = FALSE) |>
       sapply(paste, collapse = ";")
 
     citation_table <- textrefp[textrefp$bib_id != "", ]

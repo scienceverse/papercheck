@@ -1,3 +1,5 @@
+# setwd("tests/testthat/")
+
 test_that("error", {
   expect_true(is.function(read_grobid))
 
@@ -21,10 +23,14 @@ test_that("error", {
                  fixed = TRUE)
   expect_null(g2)
 
-  expect_warning(g3 <- read_grobid("examples"),
+  # bib problem
+  expect_no_error(g3 <- read_grobid("examples/bib_problem.xml"))
+
+  # warning on batch import
+  expect_warning(g4 <- read_grobid("examples"),
                  "The file examples/badxml.xml was not valid XML",
                  fixed = TRUE)
-  expect_equal(length(g3), 2)
+  expect_equal(length(g4), 3)
 })
 
 test_that("basics", {

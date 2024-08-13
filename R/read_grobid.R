@@ -302,6 +302,14 @@ get_refs <- function(xml) {
       xml2::xml_text()
     ref_table$ref <- xml2::xml_find_first(refs, ".//note[@type='raw_reference']") |>
       xml2::xml_text()
+
+    # handle if raw_reference is missing
+    ref_is_na <- is.na(ref_table$ref)
+    ref_table$ref[ref_is_na] <- refs[ref_is_na] |>
+      xml2::xml_text() |>
+      gsub("(\\n|\\t)+", " ", x = _) |>
+      trimws()
+
   } else {
     ref_table <- data.frame(
       bib_id = character(0),
@@ -311,7 +319,8 @@ get_refs <- function(xml) {
   }
 
   # get in-text citation ----
-  textrefs <- xml2::xml_find_all(xml, "//body //ref[@type='bibr']")
+  #textrefs <- xml2::xml_find_all(xml, "//body //ref[@type='bibr']")
+  textrefs <- xml2::xml_find_all(xml, "//ref[@type='bibr']")
 
   if (length(textrefs) > 0) {
     # get parent paragraphs of all in-text references and parse into sentences

@@ -23,14 +23,14 @@ test_that("error", {
                  fixed = TRUE)
   expect_null(g2)
 
-  # bib problem
+  # bib problems
   expect_no_error(g3 <- read_grobid("examples/bib_problem.xml"))
 
   # warning on batch import
-  expect_warning(g4 <- read_grobid("examples"),
+  expect_warning(all <- read_grobid("examples"),
                  "The file examples/badxml.xml was not valid XML",
                  fixed = TRUE)
-  expect_equal(length(g4), 3)
+  expect_equal(length(all), 4)
 })
 
 test_that("basics", {
@@ -80,6 +80,10 @@ test_that("get_refs", {
   expect_equal(nrow(refs$references), 2)
 
   expect_equal(names(refs$citations), c("bib_id", "text"))
+
+  # no raw_references
+  expect_no_error(g <- read_grobid("examples/bib2.xml"))
+  expect_true( all(!is.na(g$references$ref)) )
 
   #skip_if_offline("api.labs.crossref.org")
   #updated_refs <- crossref(refs$references[1:2, ])

@@ -1,11 +1,11 @@
 pandoc: 3.1.11
-pkgdown: 2.1.0
+pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
   modules: modules.html
   papercheck: papercheck.html
   report-example: report-example.html
-last_built: 2024-08-13T10:46Z
+last_built: 2024-10-31T13:28Z
 urls:
   reference: https://scienceverse.github.io/papercheck/reference
   article: https://scienceverse.github.io/papercheck/articles

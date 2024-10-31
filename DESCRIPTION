@@ -1,6 +1,6 @@
 Package: papercheck
 Title: Check Scientific Papers for Best Practices
-Version: 0.0.0.9020
+Version: 0.0.0.9021
 Authors@R: c(
   person(  given = "Lisa",
            family = "DeBruine",
@@ -16,7 +16,7 @@ Description: Automatically check papers for best practices.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 Suggests: 
     rmarkdown,
     scienceverse (>= 0.0.0.9021),
